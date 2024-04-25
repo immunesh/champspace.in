@@ -1,3 +1,6 @@
+
+
+# Create your views here.
 from django.shortcuts import render
 from base.models import CustomUser,Course,isPurchased
 from collections import defaultdict
