@@ -1,5 +1,3 @@
-
-
 # Create your views here.
 from django.shortcuts import render
 from base.models import CustomUser,Course,isPurchased
@@ -46,4 +44,15 @@ def admindashboard(request):
     for purchases in purchased:
         totalearnings+=purchases.course.course_price
     
-    return render(request,'admin/dashboard.html',{'activedata':activelist,'joineddata':joinedlist,'months':monthlist[:-1],'recentUsers':recentJoinedusers,'courses':courses,'breakchartdata':data,'profit':profit[1],'profitmonth':profit[0],'totalearn':totalearnings})
+    context = {'activedata':activelist,
+               'joineddata':joinedlist,
+               'months':monthlist[:-1],
+               'recentUsers':recentJoinedusers,
+               'courses':courses,
+               'breakchartdata':data,
+               'profit':profit[1],
+               'profitmonth':profit[0],
+               'totalearn':totalearnings
+               }
+
+    return render(request,'admin/dashboard.html', context=context)
