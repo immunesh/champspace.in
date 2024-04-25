@@ -6,6 +6,6 @@ urlpatterns = [
     
     path('',include('base.urls')),
     path('gamma/', include('gamma.urls')),
-    path('admin/',include('betaadmin.urls')),
+    path('betaadmin/',include('betaadmin.urls')),
     path('djangoadmin/', admin.site.urls),
 ]
