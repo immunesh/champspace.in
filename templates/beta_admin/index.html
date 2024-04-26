@@ -95,21 +95,22 @@
 <body>
 
     <!-- Header START -->
-    {% include 'navbar.html' %}
+    {% include 'beta_admin/navbar.html' %}
     <!-- Header END -->
 
     <!-- **************** MAIN CONTENT START **************** -->
     <main>
-        {% if messages %}<ul class="message">
+        {% if messages %}
+        <div style="display: flex;justify-content: center;"><div class="message" style="width: 80%;">
             {% for message in messages %}
             
             {% if message.tags == 'error' %}
-            <li class="alert alert-danger" >{{ message }}</li>
+            <div class="alert alert-danger" >{{ message }}</div>
             {% else %}
-            <li class="alert alert-success" >{{ message }}</li>
+            <div class="alert alert-success" >{{ message }}</div>
               {% endif %}
           
-          {% endfor %}</ul>
+          {% endfor %}</div></div>
             {% endif %}
         <!-- =======================
 Main Banner START -->
@@ -1779,7 +1780,7 @@ Reviews END -->
 
     <!-- =======================
 Footer START -->
-{% include 'footer.html' %}
+{% include 'beta_admin/footer.html' %}
     <!-- =======================
 Footer END -->
 

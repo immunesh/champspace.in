@@ -3,15 +3,16 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth import logout as djlogout,login as djlogin,authenticate
 from .models import *
 from django.contrib import messages
-
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
 # Create your views here.
 def dashboard(request):
-    return render(request,'index.html')
+    return render(request,'beta_admin/index.html')
 
 def notfound(request, exception):
     response = HttpResponseNotFound()
-    response.content = render('404.html', {}, request=request)
+    response.content = render('beta_admin/404.html', {}, request=request)
     return response
 
 def login(request):
@@ -36,7 +37,7 @@ def login(request):
             messages.error(request,'Invalid Credentials')
             return redirect('login')
 
-    return render(request,'userlogin.html')
+    return render(request,'beta_admin/userlogin.html')
 def register(request):
     if request.method == 'POST':
         username=request.POST['username']
@@ -55,9 +56,31 @@ def register(request):
             messages.error(request,'Passwords do not match')
             return redirect('signup')
 
-    return render(request,'signup.html')
+    return render(request,'beta_admin/signup.html')
 
 
 def logout(request):
     djlogout(request)
     return redirect('index')
+def viewProfile(request,id):
+    user=CustomUser.objects.get(id=id)
+    return render (request,'beta_admin/viewprofile.html',{'user':user})
+def editprofile(request):
+    user=request.user
+    if request.method== 'POST':
+        if request.FILES.get('profilepic'):
+            user.profilepic=request.FILES['profilepic']
+            
+        user.first_name=request.POST['first']
+        user.last_name=request.POST['last']
+        user.email=request.POST['email']
+
+        user.phone=request.POST['phone']
+        user.birthday=request.POST['birthday']
+        user.website=request.POST['website']
+        
+        user.save()
+        messages.success(request,'Profile Updated Successfully')
+        return redirect('editprofile')
+    
+    return render(request,'beta_admin/editprofile.html',{'user':user})
