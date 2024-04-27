@@ -43,7 +43,7 @@ def register(request):
         username=request.POST['username']
         email=request.POST['email']
         password=request.POST['password1']
-        password2=request.POST['password2']
+        password2=password
         if password==password2:
             if CustomUser.objects.filter(username=username).exists():
                 messages.error(request,'Username already exists')
