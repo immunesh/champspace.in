@@ -82,7 +82,7 @@
 	<!-- Plugins CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
-
+	
 	<!-- Theme CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
 <style>
@@ -160,10 +160,21 @@
 							<h2>Sign up for your account!</h2>
 							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
 							
-							<div class="container col-md-6 col-xl-10"><button onclick="sclfun()" class="btn btn-outline-primary active" id="school">School</button>
-							<button class="btn btn-outline-info" onclick="colgffun()" id="college">Graduates</button>
-							<button class="btn btn-outline-danger" onclick="devfun()" id="dev">Developers</button>
-							</div>
+							<div><div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle col-12 bg-info" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								  Select Your Level
+								</button>
+								<div class="dropdown-menu">
+									<button class="dropdown-item btn btn-secondary" onclick="sclfun()">School</button>
+									<button class="dropdown-item btn btn-secondary" onclick="colgffun()">Graduates</button>
+									<button class="dropdown-item btn btn-secondary" onclick="devfun()" >Developers</button>
+								</div>
+								<!-- <ul class="dropdown-menu">
+								  <li><a class="dropdown-item" href="#">Action</a></li>
+								  <li><a class="dropdown-item" href="#">Another action</a></li>
+								  <li><a class="dropdown-item" href="#">Something else here</a></li>
+								</ul> -->
+							  </div></div>
 							<!-- Form START -->
 							<form id="school_form" method="post" class="anim">
 								{% csrf_token %}
@@ -313,40 +324,46 @@
 <!-- Bootstrap JS -->
 <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
+
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
 <script>
-	let sclbutton=document.getElementById("school");
-	let collegebutton=document.getElementById("college");
-	let devbutton=document.getElementById("dev");
+	// let sclbutton=document.getElementById("school");
+	// let collegebutton=document.getElementById("college");
+	// let devbutton=document.getElementById("dev");
+	let drop=document.querySelector('.dropdown-toggle');
 	let scl_form=document.getElementById('school_form');
 	let clg_form=document.getElementById('college_form');
 	let dev_form=document.getElementById('dev_form');
 	const sclfun=()=>{
-		sclbutton.classList.add("active");
-		collegebutton.classList.remove("active");
-		devbutton.classList.remove("active");
+		console.log('working')
+		// sclbutton.classList.add("active");
+		// collegebutton.classList.remove("active");
+		// devbutton.classList.remove("active");
 		scl_form.style.display="block";
 		clg_form.style.display="none";
 		dev_form.style.display="none";
+		drop.innerText="School";
 	};
 	const colgffun=()=>{
-		sclbutton.classList.remove("active");
-		collegebutton.classList.add("active");
-		devbutton.classList.remove("active");
+		// sclbutton.classList.remove("active");
+		// collegebutton.classList.add("active");
+		// devbutton.classList.remove("active");
 		scl_form.style.display="none";
 		clg_form.style.display="block";
 		clg_form.classList.add('anim');
 		dev_form.style.display="none";
+		drop.innerText="Graduate";
 	};
 	const devfun=()=>{
-		sclbutton.classList.remove("active");
-		collegebutton.classList.remove("active");
-		devbutton.classList.add("active");
+		// sclbutton.classList.remove("active");
+		// collegebutton.classList.remove("active");
+		// devbutton.classList.add("active");
 		scl_form.style.display="none";
 		clg_form.style.display="none";
 		dev_form.style.display="block";
 		dev_form.classList.add('anim');
+		drop.innerText="Developer";
 	};
 </script>
 </body>
