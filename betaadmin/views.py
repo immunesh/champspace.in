@@ -55,4 +55,4 @@ def admindashboard(request):
                'totalearn':totalearnings
                }
 
-    return render(request,'admin/dashboard.html', context=context)
+    return render(request,'beta_admin/admin/dashboard.html', context=context)

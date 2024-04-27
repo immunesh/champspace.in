@@ -9,6 +9,8 @@ urlpatterns=[
     path('logout/',logout,name='logout'),
     path('login/',login,name='login'),
     path('signup/',register,name='signup'),
+    path('editProfile/',editprofile,name='editprofile'),
+    path('viewprofile/<str:id>/',viewProfile,name='viewprofile')
     # path('/*',notfound,name='notfound')
 ]
 
