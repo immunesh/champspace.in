@@ -43,18 +43,21 @@ def register(request):
         username=request.POST['username']
         email=request.POST['email']
         password=request.POST['password1']
+        level=request.POST['level']
         password2=password
-        if password==password2:
-            if CustomUser.objects.filter(username=username).exists():
-                messages.error(request,'Username already exists')
-                return redirect('signup')
+        if level == '1':
+
+            if password==password2:
+                if CustomUser.objects.filter(username=username).exists():
+                    messages.error(request,'Username already exists')
+                    return redirect('signup')
+                else:
+                    CustomUser.objects.create_user(username=username,email=email,password=password)
+                    messages.success(request,'Account Created Successfully')
+                    return redirect('login')
             else:
-                CustomUser.objects.create_user(username=username,email=email,password=password)
-                messages.success(request,'Account Created Successfully')
-                return redirect('login')
-        else:
-            messages.error(request,'Passwords do not match')
-            return redirect('signup')
+                messages.error(request,'Passwords do not match')
+                return redirect('signup')
 
     return render(request,'beta_admin/signup.html')
 

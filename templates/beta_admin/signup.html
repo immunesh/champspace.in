@@ -169,14 +169,10 @@
 									<button class="dropdown-item btn btn-secondary" onclick="colgffun()">Graduates</button>
 									<button class="dropdown-item btn btn-secondary" onclick="devfun()" >Developers</button>
 								</div>
-								<!-- <ul class="dropdown-menu">
-								  <li><a class="dropdown-item" href="#">Action</a></li>
-								  <li><a class="dropdown-item" href="#">Another action</a></li>
-								  <li><a class="dropdown-item" href="#">Something else here</a></li>
-								</ul> -->
+								
 							  </div></div>
 							<!-- Form START -->
-							<form id="school_form" method="post" class="anim">
+							<form id="school_form" method="post" class="anim" >
 								{% csrf_token %}
 								<!-- Email -->
 								<div class="mb-4">
@@ -200,6 +196,7 @@
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="0">
 									</div>
 								</div>
 								
@@ -207,7 +204,7 @@
 								<!-- Button -->
 								<div class="align-items-center mt-0">
 									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="submit">Sign Up</button>
+										<button class="btn btn-primary mb-0" type="submit" id="disbtn" disabled>Sign Up</button>
 									</div>
 								</div>
 							</form>
@@ -237,6 +234,7 @@
 	<div class="input-group input-group-lg">
 		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 		<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+		<input type="hidden" name="level" value="1">
 	</div>
 </div>
 
@@ -275,6 +273,7 @@
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="2">
 									</div>
 								</div>
 								
@@ -328,27 +327,22 @@
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
 <script>
-	// let sclbutton=document.getElementById("school");
-	// let collegebutton=document.getElementById("college");
-	// let devbutton=document.getElementById("dev");
+	let disbtn=document.getElementById('disbtn');
 	let drop=document.querySelector('.dropdown-toggle');
 	let scl_form=document.getElementById('school_form');
 	let clg_form=document.getElementById('college_form');
 	let dev_form=document.getElementById('dev_form');
+
 	const sclfun=()=>{
-		console.log('working')
-		// sclbutton.classList.add("active");
-		// collegebutton.classList.remove("active");
-		// devbutton.classList.remove("active");
+		
+		disbtn.disabled=false
 		scl_form.style.display="block";
 		clg_form.style.display="none";
 		dev_form.style.display="none";
 		drop.innerText="School";
 	};
 	const colgffun=()=>{
-		// sclbutton.classList.remove("active");
-		// collegebutton.classList.add("active");
-		// devbutton.classList.remove("active");
+		
 		scl_form.style.display="none";
 		clg_form.style.display="block";
 		clg_form.classList.add('anim');
@@ -356,9 +350,7 @@
 		drop.innerText="Graduate";
 	};
 	const devfun=()=>{
-		// sclbutton.classList.remove("active");
-		// collegebutton.classList.remove("active");
-		// devbutton.classList.add("active");
+		
 		scl_form.style.display="none";
 		clg_form.style.display="none";
 		dev_form.style.display="block";
