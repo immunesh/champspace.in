@@ -2,14 +2,22 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class CustomUser(AbstractUser):
-    is_student=models.BooleanField(default=False)
     profilepic=models.ImageField(upload_to='static/profile_pics',null=True)
+    def __str__(self):
+        return self.username
+
+class BetaUser(models.Model):
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     website=models.URLField(default='')
     phone=models.CharField(max_length=10,default='')
     birthday=models.CharField(max_length=20,null=True)
-
     def __str__(self):
-        return self.username
+        return self.user.username
+class GammaUser(models.Model):
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    dev=models.BooleanField(default=False)
+    def __str__(self):
+        return self.user.username
 
 class Course(models.Model):
     COURSE_LEVELS = [
