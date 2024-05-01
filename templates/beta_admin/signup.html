@@ -82,7 +82,7 @@
 	<!-- Plugins CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
-
+	
 	<!-- Theme CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
 <style>
@@ -95,10 +95,7 @@
 	}
 	@keyframes show{
 		0%{
-			opacity: 0;
-			
-			
-			
+			opacity: 0;	
 		}
 	100%{
 			opacity: 1;
@@ -163,12 +160,19 @@
 							<h2>Sign up for your account!</h2>
 							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
 							
-							<div class="container col-md-6 col-xl-10"><button onclick="sclfun()" class="btn btn-outline-primary active" id="school">School</button>
-							<button class="btn btn-outline-info" onclick="colgffun()" id="college">Graduates</button>
-							<button class="btn btn-outline-danger" onclick="devfun()" id="dev">Developers</button>
-							</div>
+							<div><div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle col-12 bg-info" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								  Select Your Level
+								</button>
+								<div class="dropdown-menu">
+									<button class="dropdown-item btn btn-secondary" onclick="sclfun()">School</button>
+									<button class="dropdown-item btn btn-secondary" onclick="colgffun()">Graduates</button>
+									<button class="dropdown-item btn btn-secondary" onclick="devfun()" >Developers</button>
+								</div>
+								
+							  </div></div>
 							<!-- Form START -->
-							<form id="school_form" method="post" class="anim">
+							<form id="school_form" method="post" class="anim" >
 								{% csrf_token %}
 								<!-- Email -->
 								<div class="mb-4">
@@ -192,6 +196,7 @@
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="0">
 									</div>
 								</div>
 								
@@ -199,7 +204,7 @@
 								<!-- Button -->
 								<div class="align-items-center mt-0">
 									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="submit">Sign Up</button>
+										<button class="btn btn-primary mb-0" type="submit" id="disbtn" disabled>Sign Up</button>
 									</div>
 								</div>
 							</form>
@@ -229,6 +234,7 @@
 	<div class="input-group input-group-lg">
 		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 		<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+		<input type="hidden" name="level" value="1">
 	</div>
 </div>
 
@@ -267,6 +273,7 @@
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="2">
 									</div>
 								</div>
 								
@@ -316,40 +323,39 @@
 <!-- Bootstrap JS -->
 <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
+
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
 <script>
-	let sclbutton=document.getElementById("school");
-	let collegebutton=document.getElementById("college");
-	let devbutton=document.getElementById("dev");
+	let disbtn=document.getElementById('disbtn');
+	let drop=document.querySelector('.dropdown-toggle');
 	let scl_form=document.getElementById('school_form');
 	let clg_form=document.getElementById('college_form');
 	let dev_form=document.getElementById('dev_form');
+
 	const sclfun=()=>{
-		sclbutton.classList.add("active");
-		collegebutton.classList.remove("active");
-		devbutton.classList.remove("active");
+		
+		disbtn.disabled=false
 		scl_form.style.display="block";
 		clg_form.style.display="none";
 		dev_form.style.display="none";
+		drop.innerText="School";
 	};
 	const colgffun=()=>{
-		sclbutton.classList.remove("active");
-		collegebutton.classList.add("active");
-		devbutton.classList.remove("active");
+		
 		scl_form.style.display="none";
 		clg_form.style.display="block";
 		clg_form.classList.add('anim');
 		dev_form.style.display="none";
+		drop.innerText="Graduate";
 	};
 	const devfun=()=>{
-		sclbutton.classList.remove("active");
-		collegebutton.classList.remove("active");
-		devbutton.classList.add("active");
+		
 		scl_form.style.display="none";
 		clg_form.style.display="none";
 		dev_form.style.display="block";
 		dev_form.classList.add('anim');
+		drop.innerText="Developer";
 	};
 </script>
 </body>

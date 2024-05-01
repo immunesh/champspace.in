@@ -1,83 +1,344 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-{% load static %}
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Champspace Login</title>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="{% static 'login/assets/css/styles.min.css' %}" />
+<!-- Mirrored from eduport.webestica.com/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 27 Apr 2024 04:56:27 GMT -->
+<head>
+	<title>Sign Up</title>
+	{% load static %}
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Eduport- LMS, Education and Course Theme">
+
+	<!-- Dark mode -->
+	<script>
+		const storedTheme = localStorage.getItem('theme')
+ 
+		const getPreferredTheme = () => {
+			if (storedTheme) {
+				return storedTheme
+			}
+			return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
+		}
+
+		const setTheme = function (theme) {
+			if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				document.documentElement.setAttribute('data-bs-theme', 'dark')
+			} else {
+				document.documentElement.setAttribute('data-bs-theme', theme)
+			}
+		}
+
+		setTheme(getPreferredTheme())
+
+		window.addEventListener('DOMContentLoaded', () => {
+		    var el = document.querySelector('.theme-icon-active');
+			if(el != 'undefined' && el != null) {
+				const showActiveTheme = theme => {
+				const activeThemeIcon = document.querySelector('.theme-icon-active use')
+				const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+				const svgOfActiveBtn = btnToActive.querySelector('.mode-switch use').getAttribute('href')
+
+				document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+					element.classList.remove('active')
+				})
+
+				btnToActive.classList.add('active')
+				activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+			}
+
+			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+				if (storedTheme !== 'light' || storedTheme !== 'dark') {
+					setTheme(getPreferredTheme())
+				}
+			})
+
+			showActiveTheme(getPreferredTheme())
+
+			document.querySelectorAll('[data-bs-theme-value]')
+				.forEach(toggle => {
+					toggle.addEventListener('click', () => {
+						const theme = toggle.getAttribute('data-bs-theme-value')
+						localStorage.setItem('theme', theme)
+						setTheme(theme)
+						showActiveTheme(theme)
+					})
+				})
+
+			}
+		})
+		
+	</script>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/favicon.ico">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com/">
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
+	
+	<!-- Theme CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+<style>
+	.hide{
+		display: none;
+	}
+	.anim{
+		animation: show 0.5s linear;
+
+	}
+	@keyframes show{
+		0%{
+			opacity: 0;	
+		}
+	100%{
+			opacity: 1;
+			
+		}
+	}
+</style>
 </head>
 
 <body>
-  
 
-  <!--  Body Wrapper -->
-  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-    data-sidebar-position="fixed" data-header-position="fixed">
-    <div
-      class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
-      <div class="d-flex align-items-center justify-content-center w-100">
-        <div class="row justify-content-center w-100">
-          <div class="col-md-8 col-lg-6 col-xxl-3">
-            <div class="card mb-0">
-              <div class="card-body">
-                <a href="/" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="{% static 'assets/images/icon.png' %}" width="180" alt="">
-                </a>
-                <p class="text-center">Champspace</p>
-                <form method="post">
-                  {% csrf_token %}
-                  <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email</label>
-                    <input type="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="username">
-                  </div>
-                  <div class="mb-4">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" name="password" >
-                  </div>
-                  <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="form-check">
-                      <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
-                      <label class="form-check-label text-dark" for="flexCheckChecked">
-                        Remeber this Device
-                      </label>
-                    </div>
-                    <!-- <a class="text-primary fw-bold" href="">Forgot Password ?</a> -->
-                  </div>
-                  {% if messages %}<ul class="message">
-                  {% for message in messages %}
-                  
-                  {% if message.tags == 'error' %}
-                  <li class="alert alert-danger" >{{ message }}</li>
-                  {% else %}
-                  <li class="alert alert-success" >{{ message }}</li>
-                    {% endif %}
-                
-                {% endfor %}</ul>
-                  {% endif %}
-                  <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Log In</button>
-                  <div class="d-flex align-items-center justify-content-center">
-                    <p class="fs-4 mb-0 fw-bold">New to Champspace?</p>
-                    <a class="text-primary fw-bold ms-2" href="{% url 'signup' %}">Create an account</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-   
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	<section class="p-0 d-flex align-items-center position-relative overflow-hidden">
+	
+		<div class="container-fluid">
+			<div class="row">
+				
+				<!-- left -->
+				<div class="col-12 col-lg-6 d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
+					<div class="p-3 p-lg-5">
+						<!-- Title -->
+						<div class="text-center">
+							<h2 class="fw-bold">Welcome to our largest community</h2>
+							<p class="mb-0 h6 fw-light">Let's learn something new today!</p>
+						</div>
+						<!-- SVG Image -->
+						<img src="{% static 'assets/images/element/02.svg' %}" class="mt-5" alt="">
+						<!-- Info -->
+						<div class="d-sm-flex mt-5 align-items-center justify-content-center">
+							<ul class="avatar-group mb-2 mb-sm-0">
+								<li class="avatar avatar-sm"><img class="avatar-img rounded-circle" src="{% static 'assets/images/avatar/01.jpg' %}" alt="avatar"></li>
+								<li class="avatar avatar-sm"><img class="avatar-img rounded-circle" src="{% static 'assets/images/avatar/02.jpg' %}" alt="avatar"></li>
+								<li class="avatar avatar-sm"><img class="avatar-img rounded-circle" src="{% static 'assets/images/avatar/03.jpg' %}" alt="avatar"></li>
+								<li class="avatar avatar-sm"><img class="avatar-img rounded-circle" src="{% static 'assets/images/avatar/04.jpg' %}" alt="avatar"></li>
+							</ul>
+							<!-- Content -->
+							<p class="mb-0 h6 fw-light ms-0 ms-sm-3">4k+ Students joined us, now it's your turn.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Right -->
+				<div class="col-12 col-lg-6 m-auto">
+					{% if messages %}
+        <div style="display: flex;justify-content: center;"><div class="message" style="width: 80%;">
+            {% for message in messages %}
+            
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger" >{{ message }}</div>
+            {% else %}
+            <div class="alert alert-success" >{{ message }}</div>
+              {% endif %}
+          
+          {% endfor %}</div></div>
+            {% endif %}
+					<div class="row my-5">
+
+						<div class="col-sm-10 col-xl-8 m-auto">
+							<!-- Title -->
+							<img src="{% static 'assets/images/element/03.svg' %}" class="h-40px mb-2" alt="">
+							<h2>Login for your account!</h2>
+							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
+							
+							<div><div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle col-12 bg-info" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								  Choose Your Platform
+								</button>
+								<div class="dropdown-menu">
+									<button class="dropdown-item btn btn-secondary" onclick="sclfun()">School</button>
+									<button class="dropdown-item btn btn-secondary" onclick="colgffun()">Graduates</button>
+									<button class="dropdown-item btn btn-secondary" onclick="devfun()" >Developers</button>
+								</div>
+								
+							  </div></div>
+							<!-- Form START -->
+							<form id="school_form" method="post" class="anim" >
+								{% csrf_token %}
+								
+								<!-- username -->
+								<div class="mb-4">
+									<label for="exampleInputEmail1" class="form-label">Username *</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+										<input type="text" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
+									</div>
+								</div>
+								<!-- Password -->
+								<div class="mb-4">
+									<label for="inputPassword5" class="form-label">Password *</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="0">
+									</div>
+								</div>
+								
+								
+								<!-- Button -->
+								<div class="align-items-center mt-0">
+									<div class="d-grid">
+										<button class="btn btn-primary mb-0" type="submit" id="disbtn" disabled>Login</button>
+									</div>
+								</div>
+							</form>
+							<!-- School Form END -->
+							<!-- College Form START -->
+							<form id="college_form" method="post" class="hide">
+								<!-- Email -->
+{% csrf_token %}
+
+<!-- username -->
+<div class="mb-4">
+	<label for="exampleInputEmail1" class="form-label">Username *</label>
+	<div class="input-group input-group-lg">
+		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+		<input type="username" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
+	</div>
+</div>
+<!-- Password -->
+<div class="mb-4">
+	<label for="inputPassword5" class="form-label">Password *</label>
+	<div class="input-group input-group-lg">
+		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+		<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+		<input type="hidden" name="level" value="1">
+	</div>
+</div>
+
+								
+								<!-- Button -->
+								<div class="align-items-center mt-0">
+									<div class="d-grid">
+										<button class="btn btn-primary mb-0" type="submit">login</button>
+									</div>
+								</div>
+								
+							</form>
+							<!-- College form END -->
+							<!-- Dev form -->
+							<form id="dev_form" class="hide" method="post">
+								{% csrf_token %}
+								<!-- Email -->
+								
+								<!-- username -->
+								<div class="mb-4">
+									<label for="exampleInputEmail1" class="form-label">Username *</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+										<input type="username" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
+									</div>
+								</div>
+								<!-- Password -->
+								<div class="mb-4">
+									<label for="inputPassword5" class="form-label">Password *</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										<input type="hidden" name="level" value="2">
+									</div>
+								</div>
+								
+								
+								<!-- Button -->
+								<div class="align-items-center mt-0">
+									<div class="d-grid">
+										<button class="btn btn-primary mb-0" type="submit">Login</button>
+									</div>
+								</div>
+							</form>
+							<!-- Dev form END -->
+							
+							<!-- Social buttons -->
+							<div class="row">
+								<!-- Divider with text -->
+								<div class="position-relative my-4">
+									<hr>
+									<p class="small position-absolute top-50 start-50 translate-middle bg-body px-5">Or</p>
+								</div>
+								<!-- Social btn -->
+								<div class="col-xxl-6 d-grid">
+									<a href="#" class="btn bg-google mb-2 mb-xxl-0"><i class="fab fa-fw fa-google text-white me-2"></i>Login with Google</a>
+								</div>
+								<!-- Social btn -->
+								<div class="col-xxl-6 d-grid">
+									<a href="#" class="btn bg-facebook mb-0"><i class="fab fa-fw fa-facebook-f me-2"></i>Login with Facebook</a>
+								</div>
+							</div>
+
+							<!-- Sign up link -->
+							<div class="mt-4 text-center">
+								<span>New Member?<a href="{% url 'signup' %}"> Sign Up here</a></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
 
+<!-- Template Functions -->
+<script src="{% static 'assets/js/functions.js' %}"></script>
+<script>
+	let disbtn=document.getElementById('disbtn');
+	let drop=document.querySelector('.dropdown-toggle');
+	let scl_form=document.getElementById('school_form');
+	let clg_form=document.getElementById('college_form');
+	let dev_form=document.getElementById('dev_form');
 
-  <script src="{% static 'login/assets/libs/jquery/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'login/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
- 
+	const sclfun=()=>{
+		
+		disbtn.disabled=false
+		scl_form.style.display="block";
+		clg_form.style.display="none";
+		dev_form.style.display="none";
+		drop.innerText="School";
+	};
+	const colgffun=()=>{
+		
+		scl_form.style.display="none";
+		clg_form.style.display="block";
+		clg_form.classList.add('anim');
+		dev_form.style.display="none";
+		drop.innerText="Graduate";
+	};
+	const devfun=()=>{
+		
+		scl_form.style.display="none";
+		clg_form.style.display="none";
+		dev_form.style.display="block";
+		dev_form.classList.add('anim');
+		drop.innerText="Developer";
+	};
+</script>
 </body>
 
 </html>
