@@ -1,8 +1,13 @@
 # Create your views here.
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from base.models import CustomUser,Course,isPurchased
 from collections import defaultdict
 
+from django.http import HttpResponseNotFound
+from django.contrib.auth import logout as djlogout,login as djlogin,authenticate
+from base.models import *
+
+from django.contrib import messages
 # Create your views here.
 def admindashboard(request):
     users=CustomUser.objects.all().order_by('-date_joined')
@@ -56,3 +61,100 @@ def admindashboard(request):
                }
 
     return render(request,'beta_admin/admin/dashboard.html', context=context)
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password1']
+        
+        usercheck=CustomUser.objects.filter(username=username)
+        
+        if len(usercheck)>0:
+
+
+            user = authenticate(request,username=username,password=password)
+            
+            if user is not None:
+                
+                
+                
+                if user.userfor == 'beta':
+                    
+                    messages.success(request,'Login Successful')
+                    djlogin(request,user)
+                    return redirect('index')
+                    
+                if user.userfor == 'gamma':
+                    
+                    messages.success(request,'Login Successful')
+                    djlogin(request,user)
+                    return redirect('gamma')
+                    
+            else:
+                messages.error(request,'Password is Incorrect ')
+
+                return redirect('login')
+        else:
+            messages.error(request,'Invalid Credentials')
+            return redirect('login')
+
+    return render(request,'beta_admin/userlogin.html')
+def register(request):
+    if request.method == 'POST':
+        username=request.POST['username']
+        email=request.POST['email']
+        password=request.POST['password1']
+        level=request.POST['level']
+        password2=password
+        if not level=='0':
+
+            if password==password2:
+                if CustomUser.objects.filter(username=username).exists():
+                    messages.error(request,'Username already exists')
+                    return redirect('signup')
+                else:
+                    
+                    if level == '1':
+                        user=CustomUser.objects.create_user(username=username,email=email,password=password,userfor='beta')
+                        BetaUser.objects.create(user=user)
+                    if level == '2':
+                        user=CustomUser.objects.create_user(username=username,email=email,password=password,userfor='gamma')
+                        GammaUser.objects.create(user=user)
+                        
+                    messages.success(request,'Account Created Successfully')
+                    return redirect('login')
+            else:
+                messages.error(request,'Passwords do not match')
+                return redirect('signup')
+
+    return render(request,'beta_admin/signup.html')
+
+
+def logout(request):
+    djlogout(request)
+    return redirect('index')
+def viewProfile(request,id):
+    user=CustomUser.objects.get(id=id)
+    betauser=BetaUser.objects.get(user=user)
+    return render (request,'beta_admin/viewprofile.html',{'user':user,'betauser':betauser})
+def editprofile(request):
+    user=request.user
+    betauser=BetaUser.objects.get(user=user)
+    if request.method== 'POST':
+        if request.FILES.get('profilepic'):
+            betauser.profilepic=request.FILES['profilepic']
+            
+        user.first_name=request.POST['first']
+        user.last_name=request.POST['last']
+        user.email=request.POST['email']
+
+        betauser.phone=request.POST['phone']
+        betauser.birthday=request.POST['birthday']
+        betauser.website=request.POST['website']
+        
+        user.save()
+        betauser.save()
+        messages.success(request,'Profile Updated Successfully')
+        return redirect('editprofile')
+    
+    return render(request,'beta_admin/editprofile.html',{'user':user,'betauser':betauser})

@@ -86,9 +86,7 @@
 	<!-- Theme CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
 <style>
-	.hide{
-		display: none;
-	}
+
 	.anim{
 		animation: show 0.5s linear;
 
@@ -160,17 +158,7 @@
 							<h2>Login for your account!</h2>
 							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
 							
-							<div><div class="dropdown">
-								<button class="btn btn-secondary dropdown-toggle col-12 bg-info" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-								  Choose Your Platform
-								</button>
-								<div class="dropdown-menu">
-									<button class="dropdown-item btn btn-secondary" onclick="sclfun()">School</button>
-									<button class="dropdown-item btn btn-secondary" onclick="colgffun()">Graduates</button>
-									<button class="dropdown-item btn btn-secondary" onclick="devfun()" >Developers</button>
-								</div>
-								
-							  </div></div>
+							
 							<!-- Form START -->
 							<form id="school_form" method="post" class="anim" >
 								{% csrf_token %}
@@ -189,72 +177,7 @@
 									<div class="input-group input-group-lg">
 										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
 										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
-										<input type="hidden" name="level" value="0">
-									</div>
-								</div>
-								
-								
-								<!-- Button -->
-								<div class="align-items-center mt-0">
-									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="submit" id="disbtn" disabled>Login</button>
-									</div>
-								</div>
-							</form>
-							<!-- School Form END -->
-							<!-- College Form START -->
-							<form id="college_form" method="post" class="hide">
-								<!-- Email -->
-{% csrf_token %}
-
-<!-- username -->
-<div class="mb-4">
-	<label for="exampleInputEmail1" class="form-label">Username *</label>
-	<div class="input-group input-group-lg">
-		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
-		<input type="username" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
-	</div>
-</div>
-<!-- Password -->
-<div class="mb-4">
-	<label for="inputPassword5" class="form-label">Password *</label>
-	<div class="input-group input-group-lg">
-		<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-		<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
-		<input type="hidden" name="level" value="1">
-	</div>
-</div>
-
-								
-								<!-- Button -->
-								<div class="align-items-center mt-0">
-									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="submit">login</button>
-									</div>
-								</div>
-								
-							</form>
-							<!-- College form END -->
-							<!-- Dev form -->
-							<form id="dev_form" class="hide" method="post">
-								{% csrf_token %}
-								<!-- Email -->
-								
-								<!-- username -->
-								<div class="mb-4">
-									<label for="exampleInputEmail1" class="form-label">Username *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
-										<input type="username" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
-									</div>
-								</div>
-								<!-- Password -->
-								<div class="mb-4">
-									<label for="inputPassword5" class="form-label">Password *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
-										<input type="hidden" name="level" value="2">
+										
 									</div>
 								</div>
 								
@@ -266,7 +189,8 @@
 									</div>
 								</div>
 							</form>
-							<!-- Dev form END -->
+							<!-- School Form END -->
+							
 							
 							<!-- Social buttons -->
 							<div class="row">
@@ -307,38 +231,7 @@
 
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
-<script>
-	let disbtn=document.getElementById('disbtn');
-	let drop=document.querySelector('.dropdown-toggle');
-	let scl_form=document.getElementById('school_form');
-	let clg_form=document.getElementById('college_form');
-	let dev_form=document.getElementById('dev_form');
 
-	const sclfun=()=>{
-		
-		disbtn.disabled=false
-		scl_form.style.display="block";
-		clg_form.style.display="none";
-		dev_form.style.display="none";
-		drop.innerText="School";
-	};
-	const colgffun=()=>{
-		
-		scl_form.style.display="none";
-		clg_form.style.display="block";
-		clg_form.classList.add('anim');
-		dev_form.style.display="none";
-		drop.innerText="Graduate";
-	};
-	const devfun=()=>{
-		
-		scl_form.style.display="none";
-		clg_form.style.display="none";
-		dev_form.style.display="block";
-		dev_form.classList.add('anim');
-		drop.innerText="Developer";
-	};
-</script>
 </body>
 
 </html>
