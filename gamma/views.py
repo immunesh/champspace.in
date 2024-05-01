@@ -7,3 +7,6 @@ def gammaAdmin(request):
 
 def gammaMessages(request):
     return render(request, 'gamma-admin/messages.html')
+
+def gammaChat(request):
+    return render(request, 'gamma-admin/chat.html')
