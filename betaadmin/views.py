@@ -109,8 +109,8 @@ def register(request):
         if not level=='0':
 
             if password==password2:
-                if CustomUser.objects.filter(username=username).exists():
-                    messages.error(request,'Username already exists')
+                if CustomUser.objects.filter(username=username).exists() or CustomUser.objects.filter(email=email).exists():
+                    messages.error(request,'Username or Email already exists')
                     return redirect('signup')
                 else:
                     
@@ -142,7 +142,7 @@ def editprofile(request):
     betauser=BetaUser.objects.get(user=user)
     if request.method== 'POST':
         if request.FILES.get('profilepic'):
-            betauser.profilepic=request.FILES['profilepic']
+            user.profilepic=request.FILES['profilepic']
             
         user.first_name=request.POST['first']
         user.last_name=request.POST['last']
@@ -158,3 +158,6 @@ def editprofile(request):
         return redirect('editprofile')
     
     return render(request,'beta_admin/editprofile.html',{'user':user,'betauser':betauser})
+
+def dashboard(request):
+    return render(request,'beta_admin/dashboard.html')
