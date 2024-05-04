@@ -10,6 +10,11 @@ class CustomUser(AbstractUser):
 
 class BetaUser(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    address=models.CharField(max_length=256,default='')
+    job_status=models.CharField(max_length=20,default='')
+    degree=models.CharField(max_length=30,default='')
+    grad_year=models.CharField(max_length=5,default='')
+    profile_updated=models.BooleanField(default=False)
     website=models.URLField(default='')
     phone=models.CharField(max_length=10,default='')
     birthday=models.CharField(max_length=20,null=True)

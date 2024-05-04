@@ -7,6 +7,9 @@ from django.contrib import messages
 
 # Create your views here.
 def dashboard(request):
+    if request.user.is_authenticated:
+        to=request.user.userfor
+        return redirect(to)
     return render(request,'beta_admin/index.html')
 
 def notfound(request, exception):

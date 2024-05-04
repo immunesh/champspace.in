@@ -10,57 +10,61 @@ from base.models import *
 from django.contrib import messages
 # Create your views here.
 def admindashboard(request):
-    users=CustomUser.objects.all().order_by('-date_joined')
-    
-    month_wise_joined = defaultdict(int)
-    month_wise_active = defaultdict(int)
-    activelist=[]
-    joinedlist=[]
-    monthlist=''
-    for user in users:
-            
-        string1 = user.date_joined
-        month_wise_joined[string1.strftime('%b')] += 1
-        month_wise_active[user.last_login.strftime('%b')] +=1
-    for key,values in month_wise_joined.items():
-        monthlist+=key+","
-        joinedlist.append(values)
-    for key,values in month_wise_active.items():
-        activelist.append(values)
-    recentJoinedusers=users[:5]
-    courses=Course.objects.all().order_by('-course_createdon')
-    purchased=isPurchased.objects.all().order_by('-purchased_on')
-    data=[users.count(),purchased.count()]
-    earnings=defaultdict(int)
-    month=''
-    for purchases in purchased:
-        if month=='' or month == purchases.purchased_on.strftime('%b'):
-            
-            earnings[purchases.purchased_on.strftime('%b')]+=purchases.course.course_price
-            
-            month=purchases.purchased_on.strftime('%b')
+    if request.user.is_superuser:
+        users=CustomUser.objects.all().order_by('-date_joined')
         
-    profit=[]
-    for key,values in earnings.items():
-        profit.append(key)
+        month_wise_joined = defaultdict(int)
+        month_wise_active = defaultdict(int)
+        activelist=[]
+        joinedlist=[]
+        monthlist=''
+        for user in users:
+                
+            string1 = user.date_joined
+            month_wise_joined[string1.strftime('%b')] += 1
+            month_wise_active[user.last_login.strftime('%b')] +=1
+        for key,values in month_wise_joined.items():
+            monthlist+=key+","
+            joinedlist.append(values)
+        for key,values in month_wise_active.items():
+            activelist.append(values)
+        recentJoinedusers=users[:5]
+        courses=Course.objects.all().order_by('-course_createdon')
+        purchased=isPurchased.objects.all().order_by('-purchased_on')
+        data=[users.count(),purchased.count()]
+        earnings=defaultdict(int)
+        month=''
+        for purchases in purchased:
+            if month=='' or month == purchases.purchased_on.strftime('%b'):
+                
+                earnings[purchases.purchased_on.strftime('%b')]+=purchases.course.course_price
+                
+                month=purchases.purchased_on.strftime('%b')
+            
+        profit=[]
+        for key,values in earnings.items():
+            profit.append(key)
+            
+            profit.append(values)
+        totalearnings=0
+        for purchases in purchased:
+            totalearnings+=purchases.course.course_price
         
-        profit.append(values)
-    totalearnings=0
-    for purchases in purchased:
-        totalearnings+=purchases.course.course_price
-    
-    context = {'activedata':activelist,
-               'joineddata':joinedlist,
-               'months':monthlist[:-1],
-               'recentUsers':recentJoinedusers,
-               'courses':courses,
-               'breakchartdata':data,
-               'profit':profit[1],
-               'profitmonth':profit[0],
-               'totalearn':totalearnings
-               }
+        context = {'activedata':activelist,
+                'joineddata':joinedlist,
+                'months':monthlist[:-1],
+                'recentUsers':recentJoinedusers,
+                'courses':courses,
+                'breakchartdata':data,
+                'profit':profit[1],
+                'profitmonth':profit[0],
+                'totalearn':totalearnings
+                }
 
-    return render(request,'beta_admin/admin/dashboard.html', context=context)
+        return render(request,'beta_admin/admin/dashboard.html', context=context)
+    else:
+        to=request.user.userfor
+        return redirect(to)
 
 def login(request):
     if request.method == 'POST':
@@ -82,7 +86,7 @@ def login(request):
                     
                     messages.success(request,'Login Successful')
                     djlogin(request,user)
-                    return redirect('index')
+                    return redirect('beta')
                     
                 if user.userfor == 'gamma':
                     
@@ -159,5 +163,41 @@ def editprofile(request):
     
     return render(request,'beta_admin/editprofile.html',{'user':user,'betauser':betauser})
 
+# def complete_profile(request):
+#     if request.method=='POST':
+#         country=request.POST['country']
+#         state=request.POST['state']
+#         city=request.POST['city']
+#         degree=request.POST['degree']
+#         grad_year=request.POST['gradyear']
+#         status=request.POST['status']
+#         user=BetaUser.objects.get(user=request.user)
+#         user.address=country+' '+state+' '+city
+#         user.job_status=status
+#         user.grad_year=grad_year
+#         user.degree=degree
+#         user.save()
+#         messages.success(request,"Profile Updated")
+#     return render(request,'beta_admin/complete_profile.html')
 def dashboard(request):
-    return render(request,'beta_admin/dashboard.html')
+    beta_user=BetaUser.objects.get(user=request.user)
+    if beta_user.profile_updated:
+        return render(request,'beta_admin/dashboard.html')
+    else:
+        if request.method=='POST':
+            country=request.POST['country']
+            state=request.POST['state']
+            city=request.POST['city']
+            degree=request.POST['degree']
+            grad_year=request.POST['gradyear']
+            status=request.POST['status']
+            user=BetaUser.objects.get(user=request.user)
+            user.address=country+' '+state+' '+city
+            user.job_status=status
+            user.grad_year=grad_year
+            user.degree=degree
+            user.profile_updated=True
+            user.save()
+            messages.success(request,"Profile Updated")
+            return redirect('beta')
+    return render(request,'beta_admin/complete_profile.html')
