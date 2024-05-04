@@ -138,10 +138,14 @@ def logout(request):
     djlogout(request)
     return redirect('index')
 def viewProfile(request,id):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user=CustomUser.objects.get(id=id)
     betauser=BetaUser.objects.get(user=user)
     return render (request,'beta_admin/viewprofile.html',{'user':user,'betauser':betauser})
 def editprofile(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user=request.user
     betauser=BetaUser.objects.get(user=user)
     if request.method== 'POST':
@@ -163,41 +167,31 @@ def editprofile(request):
     
     return render(request,'beta_admin/editprofile.html',{'user':user,'betauser':betauser})
 
-# def complete_profile(request):
-#     if request.method=='POST':
-#         country=request.POST['country']
-#         state=request.POST['state']
-#         city=request.POST['city']
-#         degree=request.POST['degree']
-#         grad_year=request.POST['gradyear']
-#         status=request.POST['status']
-#         user=BetaUser.objects.get(user=request.user)
-#         user.address=country+' '+state+' '+city
-#         user.job_status=status
-#         user.grad_year=grad_year
-#         user.degree=degree
-#         user.save()
-#         messages.success(request,"Profile Updated")
-#     return render(request,'beta_admin/complete_profile.html')
+
 def dashboard(request):
-    beta_user=BetaUser.objects.get(user=request.user)
-    if beta_user.profile_updated:
-        return render(request,'beta_admin/dashboard.html')
+    if request.user.is_authenticated:
+        beta_user=BetaUser.objects.get(user=request.user)
+        if beta_user.profile_updated:
+            return render(request,'beta_admin/dashboard.html')
+        else:
+            if request.method=='POST':
+                country=request.POST['country']
+                state=request.POST['state']
+                city=request.POST['city']
+                degree=request.POST['degree']
+                grad_year=request.POST['gradyear']
+                status=request.POST['status']
+                user=BetaUser.objects.get(user=request.user)
+                user.address=country+' '+state+' '+city
+                user.job_status=status
+                user.grad_year=grad_year
+                user.degree=degree
+                user.profile_updated=True
+                user.save()
+                messages.success(request,"Profile Updated")
+                return redirect('beta')
+        return render(request,'beta_admin/complete_profile.html')
     else:
-        if request.method=='POST':
-            country=request.POST['country']
-            state=request.POST['state']
-            city=request.POST['city']
-            degree=request.POST['degree']
-            grad_year=request.POST['gradyear']
-            status=request.POST['status']
-            user=BetaUser.objects.get(user=request.user)
-            user.address=country+' '+state+' '+city
-            user.job_status=status
-            user.grad_year=grad_year
-            user.degree=degree
-            user.profile_updated=True
-            user.save()
-            messages.success(request,"Profile Updated")
-            return redirect('beta')
-    return render(request,'beta_admin/complete_profile.html')
+        return redirect('index')
+def forget(request):
+    return render(request,'beta_admin/forgot_passwordhelper.html')
