@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'base.apps.BaseConfig',
     'betaadmin.apps.BetaadminConfig',
     'gamma.apps.GammaConfig',
+    'gammaadmin.apps.GammaadminConfig',
 ]
 
 MIDDLEWARE = [
