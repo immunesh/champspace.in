@@ -9,5 +9,6 @@ urlpatterns=[
     path('signup/',register,name='signup'),
     path('editProfile/',editprofile,name='editprofile'),
     path('viewprofile/<str:id>/',viewProfile,name='viewprofile'),
-    path('forget-password/',forget,name='forget')
+    path('forgot-password/',forget,name='forgot'),
+    path('forgot-password/<token>/',forgotreset,name='reset')
 ]

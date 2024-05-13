@@ -9,4 +9,5 @@ urlpatterns = [
     path('gamma-admin/', include('gammaadmin.urls')),
     path('beta/',include('betaadmin.urls')),
     path('djangoadmin/', admin.site.urls),
+    
 ]

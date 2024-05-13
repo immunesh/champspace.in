@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 
-<!-- Mirrored from eduport.webestica.com/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 27 Apr 2024 04:56:27 GMT -->
 <head>
-	<title>Sign Up</title>
-	{% load static %}
+	<title>beta forgot password</title>
+
 	<!-- Meta Tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="author" content="Webestica.com">
-	<meta name="description" content="Eduport- LMS, Education and Course Theme">
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- Dark mode -->
 	<script>
 		const storedTheme = localStorage.getItem('theme')
@@ -82,25 +80,10 @@
 	<!-- Plugins CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
-	
+
 	<!-- Theme CSS -->
 	<link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
-<style>
 
-	.anim{
-		animation: show 0.5s linear;
-
-	}
-	@keyframes show{
-		0%{
-			opacity: 0;	
-		}
-	100%{
-			opacity: 1;
-			
-		}
-	}
-</style>
 </head>
 
 <body>
@@ -111,7 +94,6 @@
 	
 		<div class="container-fluid">
 			<div class="row">
-				
 				<!-- left -->
 				<div class="col-12 col-lg-6 d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
 					<div class="p-3 p-lg-5">
@@ -135,10 +117,11 @@
 						</div>
 					</div>
 				</div>
-
 				<!-- Right -->
-				<div class="col-12 col-lg-6 m-auto">
-					{% if messages %}
+				<div class="col-12 col-lg-6 d-flex justify-content-center">
+					<div class="row my-5">
+						<div class="col-sm-10 col-xl-12 m-auto">
+							{% if messages %}
         <div style="display: flex;justify-content: center;"><div class="message" style="width: 80%;">
             {% for message in messages %}
             
@@ -150,75 +133,14 @@
           
           {% endfor %}</div></div>
             {% endif %}
-					<div class="row my-5">
 
-						<div class="col-sm-10 col-xl-8 m-auto">
-							<!-- Title -->
-							<img src="{% static 'assets/images/element/03.svg' %}" class="h-40px mb-2" alt="">
-							<h2>Login for your account!</h2>
-							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
-							
-							
-							<!-- Form START -->
-							<form id="school_form" method="post" class="anim" >
-								{% csrf_token %}
-								
-								<!-- username -->
-								<div class="mb-4">
-									<label for="exampleInputEmail1" class="form-label">Username *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
-										<input type="text" name="username" class="form-control border-0 bg-light rounded-end ps-1" placeholder="Username" id="exampleInputEmail1">
-									</div>
-								</div>
-								<!-- Password -->
-								<div class="mb-4">
-									<label for="inputPassword5" class="form-label">Password *</label>
-									<div class="input-group input-group-lg">
-										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
-										<input type="password" name="password1" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
-										
-									</div>
-								</div>
-								<div class="text-start mb-4">
-									<span>Forgot Password?<a href="{% url 'forgot' %}"> Click Here </a></span>
-								</div>
-								<!-- Button -->
-								<div class="align-items-center mt-0">
-									<div class="d-grid">
-										<button class="btn btn-primary mb-0" type="submit">Login</button>
-									</div>
-								</div>
-							</form>
-							<!-- School Form END -->
-							
-							
-							<!-- Social buttons -->
-							<div class="row">
-								<!-- Divider with text -->
-								<div class="position-relative my-4">
-									<hr>
-									<p class="small position-absolute top-50 start-50 translate-middle bg-body px-5">Or</p>
-								</div>
-								<!-- Social btn -->
-								<div class="col-xxl-6 d-grid">
-									<a href="#" class="btn bg-google mb-2 mb-xxl-0"><i class="fab fa-fw fa-google text-white me-2"></i>Login with Google</a>
-								</div>
-								<!-- Social btn -->
-								<div class="col-xxl-6 d-grid">
-									<a href="#" class="btn bg-facebook mb-0"><i class="fab fa-fw fa-facebook-f me-2"></i>Login with Facebook</a>
-								</div>
-							</div>
-
-							<!-- Sign up link -->
-							<div class="mt-4 text-center">
-								<span>New Member?<a href="{% url 'signup' %}"> Sign Up here</a></span>
-							</div>
-							
+              <!-- Title --><i class="fa fa-paper-plane"></i>
+			  check your mail
+							<!-- Form END -->
 						</div>
-					</div>
+					</div> <!-- Row END -->
 				</div>
-			</div>
+			</div> <!-- Row END -->
 		</div>
 	</section>
 </main>
@@ -230,10 +152,8 @@
 <!-- Bootstrap JS -->
 <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
-
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
 
 </body>
-
 </html>

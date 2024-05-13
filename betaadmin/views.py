@@ -193,5 +193,43 @@ def dashboard(request):
         return render(request,'beta_admin/complete_profile.html')
     else:
         return redirect('index')
+from .emailsnder import *
+import uuid
 def forget(request):
+    if request.method == 'POST':
+        email=request.POST['email']
+        if CustomUser.objects.filter(email=email).exists():
+            user=CustomUser.objects.get(email=email)
+            token=str(uuid.uuid4())
+            user.token=token
+            user.save()
+            cofirm=send_forgot_mail(email,token)
+            if cofirm:
+                messages.success(request,'Email sent successfully')
+                return render(request,'beta_admin/mailsent.html')
+            else:
+                messages.error(request,'Email not sent')
+                return redirect('forgot')
+        else:
+            messages.error(request,'Username not found')
+            return redirect('forgot')
     return render(request,'beta_admin/forgot_passwordhelper.html')
+def forgotreset(request,token):
+    if request.method == 'POST':
+        password1=request.POST['password1']
+        password2=request.POST['password2']
+        if password1==password2:
+            if CustomUser.objects.filter(token=token).exists():
+
+                user=CustomUser.objects.get(token=token)
+                user.set_password(password1)
+                user.save()
+                messages.success(request,'Password reset successfully')
+                return redirect('login')
+            else:
+                messages.error(request,'Invalid token')
+                return redirect('reset',token)
+        else:
+            messages.error(request,'Passwords do not match')
+            return redirect('reset',token)
+    return render(request,'beta_admin/password reset.html')
