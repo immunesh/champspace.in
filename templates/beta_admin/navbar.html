@@ -100,9 +100,11 @@
                         <hr class="dropdown-divider">
                     </li>
                     <!-- Links -->
+                    <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-grid fa-fw me-2"></i>Dash Board</a></li>
+                    <li><a class="dropdown-item" href="{% url 'viewprofile' request.user.id %}"><i class="bi bi-person fa-fw me-2"></i>View Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'editprofile' %}"><i class="bi bi-gear fa-fw me-2"></i>Edit Profile</a></li>
                     {% if request.user.is_superuser %}
-                    <li><a class="dropdown-item" href="{% url 'admin' %}"><i class="bi bi-person fa-fw me-2"></i>Admin</a></li>{% endif %}
+                    <li><a class="dropdown-item" href="{% url 'admin' %}"><i class="bi bi-person-fill fa-fw me-2"></i>Admin</a></li>{% endif %}
                     <li><a class="dropdown-item bg-danger-soft-hover" href="{% url 'logout' %}"><i class="bi bi-power fa-fw me-2"></i>Log Out</a></li>
                     <li>
                         <hr class="dropdown-divider">

@@ -168,11 +168,11 @@ def editprofile(request):
     return render(request,'beta_admin/editprofile.html',{'user':user,'betauser':betauser})
 
 
-def dashboard(request):
+def home(request):
     if request.user.is_authenticated:
         beta_user=BetaUser.objects.get(user=request.user)
         if beta_user.profile_updated:
-            return render(request,'beta_admin/dashboard.html')
+            return render(request,'beta_admin/index.html')
         else:
             if request.method=='POST':
                 country=request.POST['country']
@@ -233,3 +233,7 @@ def forgotreset(request,token):
             messages.error(request,'Passwords do not match')
             return redirect('reset',token)
     return render(request,'beta_admin/password reset.html')
+def inbox(request):
+    return render(request,'beta_admin/inbox.html')
+def dashboard(request):
+    return render(request,'beta_admin/dashboard.html')
