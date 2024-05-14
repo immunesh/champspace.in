@@ -2,11 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def gammaAdmin(request):
-    return render(request, 'gamma-admin/dashboard.html')
+def gammaUser(request):
+    return render(request, 'gamma-user/dashboard.html')
 
 def gammaMessages(request):
-    return render(request, 'gamma-admin/messages.html')
+    return render(request, 'gamma-user/messages.html')
 
 def gammaChat(request):
-    return render(request, 'gamma-admin/chat.html')
+    return render(request, 'gamma-user/chat.html')
