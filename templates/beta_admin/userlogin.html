@@ -138,8 +138,15 @@
 
 				<!-- Right -->
 				<div class="col-12 col-lg-6 m-auto">
-					{% if messages %}
-        <div style="display: flex;justify-content: center;"><div class="message" style="width: 80%;">
+					
+					<div class="row my-5">
+
+						<div class="col-sm-10 col-xl-8 m-auto">
+							<!-- Title -->
+							<img src="{% static 'assets/images/element/03.svg' %}" class="h-40px mb-2" alt="">
+							<h2>Login for your account!</h2>
+							{% if messages %}
+        <div style="display: flex;justify-content: center;"><div class="message" style="width: 100%;">
             {% for message in messages %}
             
             {% if message.tags == 'error' %}
@@ -150,12 +157,6 @@
           
           {% endfor %}</div></div>
             {% endif %}
-					<div class="row my-5">
-
-						<div class="col-sm-10 col-xl-8 m-auto">
-							<!-- Title -->
-							<img src="{% static 'assets/images/element/03.svg' %}" class="h-40px mb-2" alt="">
-							<h2>Login for your account!</h2>
 							<!-- <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p> -->
 							
 							

@@ -172,7 +172,7 @@ def home(request):
     if request.user.is_authenticated:
         beta_user=BetaUser.objects.get(user=request.user)
         if beta_user.profile_updated:
-            return render(request,'beta_admin/index.html')
+            return redirect('dashboard')
         else:
             if request.method=='POST':
                 country=request.POST['country']
@@ -206,7 +206,7 @@ def forget(request):
             cofirm=send_forgot_mail(email,token)
             if cofirm:
                 messages.success(request,'Email sent successfully')
-                return render(request,'beta_admin/mailsent.html')
+                return redirect('login')
             else:
                 messages.error(request,'Email not sent')
                 return redirect('forgot')

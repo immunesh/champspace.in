@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard</title>
   
-  <link rel="stylesheet" href="{% static 'login/assets/css/styles.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'login/assets/css/styles.min.css' %}" /> 
+   <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
 </head>
 
 <body>
@@ -164,9 +165,17 @@
                   <div class="message-body">
                     <a href="{% url 'viewprofile' request.user.id %}" class="d-flex align-items-center gap-2 dropdown-item">
                       <i class="ti ti-user fs-6"></i>
-                      <p class="mb-0 fs-3">My Profile</p>
+                      <p class="mb-0">My Profile</p>
+                    </a><a href="{% url 'editprofile'  %}" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-edit fs-6"></i>
+                      <p class="mb-0 ">Edit Profile</p>
                     </a>
-                    
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'admin'  %}" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-users fs-6"></i>
+                      <p class="mb-0 ">Admin</p>
+                    </a>
+                    {% endif %}
                     <a href="{% url 'logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
@@ -177,196 +186,368 @@
       </header>
       <!--  Header End -->
       <div class="container-fluid">
-        <!--  Row 1 -->
-        <div class="row">
-          <div class="col-lg-8 d-flex align-items-strech">
-            <div class="card w-100">
-              <div class="card-body">
-                <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
-                  <div class="mb-3 mb-sm-0">
-                    <h5 class="card-title fw-semibold">Users</h5>
-                  </div>
-                  <!-- <div>
-                    <select class="form-select">
-                      <option value="1">March 2023</option>
-                      <option value="2">April 2023</option>
-                      <option value="3">May 2023</option>
-                      <option value="4">June 2023</option>
-                    </select>
-                  </div> -->
-                </div>
-                <div id="chart"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="row">
-              <div class="col-lg-12">
-                <!-- Yearly Breakup -->
-                <div class="card overflow-hidden">
-                  <div class="card-body p-4">
-                    <h5 class="card-title mb-9 fw-semibold">Joined Users / Courses Taken</h5>
-                    <div class="row align-items-center">
-                      <div class="col-8">
-                        <h4 class="fw-semibold mb-3">Rs. {{ totalearn }}</h4>
-                        
-                        <div class="d-flex align-items-center">
-                          <div class="me-4">
-                            <span class="round-8 bg-primary rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Users</span>
+        
+          {% if messages %}
+        <div style="display: flex;justify-content: center;"><div class="message" style="width: 100%;">
+            {% for message in messages %}
+            
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger" >{{ message }}</div>
+            {% else %}
+            <div class="alert alert-success" >{{ message }}</div>
+              {% endif %}
+          
+          {% endfor %}</div></div>
+            {% endif %}
+           
+            <!-- Google Font -->
+            <link rel="preconnect" href="https://fonts.googleapis.com/">
+            <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap">
+          
+            <!-- Plugins CSS -->
+            <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
+            <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
+           
+          
+            <!-- Theme CSS -->
+          
+          
+          </head>
+          
+          <body>
+          
+          <!-- **************** MAIN CONTENT START **************** -->
+          <main>
+            
+          
+          <!-- =======================
+          Page content START -->
+          <section class="pt-0">
+            <div class="container">
+              <div class="row">
+          
+                
+          
+                <!-- Main content START -->
+                <div class="col-xl-12">
+          
+                  <!-- Counter boxes START -->
+                  <div class="row mb-4">
+                    <!-- Counter item -->
+                    <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                      <div class="d-flex justify-content-center align-items-center p-4 bg-orange bg-opacity-15 rounded-3">
+                        <span class="display-6 lh-1 text-orange mb-0"><i class="fas fa-tv fa-fw"></i></span>
+                        <div class="ms-4">
+                          <div class="d-flex">
+                            <h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="9"	data-purecounter-delay="200">0</h5>
                           </div>
-                          <div>
-                            <span class="round-8 bg-warning rounded-circle me-2 d-inline-block"></span>
-                            <span class="fs-2">Courses</span>
-                          </div>
+                          <p class="mb-0 h6 fw-light">Total Courses</p>
                         </div>
                       </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-center">
-                          <div id="breakup"></div>
+                    </div>
+                    <!-- Counter item -->
+                    <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                      <div class="d-flex justify-content-center align-items-center p-4 bg-purple bg-opacity-15 rounded-3">
+                        <span class="display-6 lh-1 text-purple mb-0"><i class="fas fa-clipboard-check fa-fw"></i></span>
+                        <div class="ms-4">
+                          <div class="d-flex">
+                            <h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="52"	data-purecounter-delay="200">0</h5>
+                          </div>
+                          <p class="mb-0 h6 fw-light">Complete lessons</p>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Counter item -->
+                    <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                      <div class="d-flex justify-content-center align-items-center p-4 bg-success bg-opacity-10 rounded-3">
+                        <span class="display-6 lh-1 text-success mb-0"><i class="fas fa-medal fa-fw"></i></span>
+                        <div class="ms-4">
+                          <div class="d-flex">
+                            <h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="8" data-purecounter-delay="300">0</h5>
+                          </div>
+                          <p class="mb-0 h6 fw-light">Achieved Certificates</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-lg-12">
-                <!-- Monthly Earnings -->
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row alig n-items-start">
-                      <div class="col-8">
-                        <h5 class="card-title mb-9 fw-semibold"> {{ profitmonth }} Month Earnings </h5>
-                        <h4 class="fw-semibold mb-3">Rs. {{ profit }}</h4>
-                        <div class="d-flex align-items-center pb-1">
-                          
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="d-flex justify-content-end">
-                          <div
-                            class="text-white bg-secondary rounded-circle p-6 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-currency-dollar fs-6"></i>
-                          </div>
-                        </div>
-                      </div>
+                  <!-- Counter boxes END -->
+          
+                  <div class="card bg-transparent border rounded-3">
+                    <!-- Card header START -->
+                    <div class="card-header bg-transparent border-bottom">
+                      <h3 class="mb-0">My Courses List</h3>
                     </div>
+                    <!-- Card header END -->
+          
+                    <!-- Card body START -->
+                    <div class="card-body">
+          
+                      <!-- Search and select START -->
+                      <div class="row g-3 align-items-center justify-content-between mb-4">
+                        <!-- Content -->
+                        <div class="col-md-8">
+                          <form class="rounded position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                          <i class="fas fa-search fs-6 "></i>
+                        </button>
+                          </form>
+                        </div>
+          
+                        <!-- Select option -->
+                        <div class="col-md-3">
+                          <!-- Short by filter -->
+                          <form>
+                            <select class="form-select js-choice border-0 z-index-9 bg-transparent" aria-label=".form-select-sm">
+                              <option value="">Sort by</option>
+                              <option>Free</option>
+                              <option>Newest</option>
+                              <option>Most popular</option>
+                              <option>Most Viewed</option>
+                            </select>
+                          </form>
+                        </div>
+                      </div>
+                      <!-- Search and select END -->
+          
+                      <!-- Course list table START -->
+                      <div class="table-responsive border-0">
+                        <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                          <!-- Table head -->
+                          <thead>
+                            <tr>
+                              <th scope="col" class="border-0 rounded-start">Course Title</th>
+                              <th scope="col" class="border-0">Total Lectures</th>
+                              <th scope="col" class="border-0">Completed Lecture</th>
+                              <th scope="col" class="border-0 rounded-end">Action</th>
+                            </tr>
+                          </thead>
+          
+                          <!-- Table body START -->
+                          <tbody>
+                            <!-- Table item -->
+                            <tr>
+                              <!-- Table data -->
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <!-- Image -->
+                                  <div class="w-100px">
+                                    <img src="{% static 'assets/images/courses/4by3/08.jpg' %}" class="rounded" alt="">
+                                  </div>
+                                  <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6><a href="#">Building Scalable APIs with GraphQL</a></h6>
+                                    <!-- Info -->
+                                    <div class="overflow-hidden">
+                                      <h6 class="mb-0 text-end">85%</h6>
+                                      <div class="progress progress-sm bg-primary bg-opacity-10">
+                                        <div class="progress-bar bg-primary aos" role="progressbar" data-aos="slide-right" data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+          
+                              <!-- Table data -->
+                              <td>56</td>
+          
+                              <!-- Table data -->
+                              <td>40</td>
+          
+                              <!-- Table data -->
+                              <td>
+                                <a href="#" class="btn btn-sm btn-primary-soft me-1 mb-1 mb-md-0"><i class="bi bi-play-circle me-1"></i>Continue</a>
+                              </td>
+                            </tr>
+          
+                            <!-- Table item -->
+                            <tr>
+                              <!-- Table data -->
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <!-- Image -->
+                                  <div class="w-100px">
+                                    <img src="{% static 'assets/images/courses/4by3/03.jpg' %}" class="rounded" alt="">
+                                  </div>
+                                  <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6><a href="#">Create a Design System in Figma</a></h6>
+                                    <!-- Info -->
+                                    <div class="overflow-hidden">
+                                      <h6 class="mb-0 text-end">100%</h6>
+                                      <div class="progress progress-sm bg-primary bg-opacity-10">
+                                        <div class="progress-bar bg-primary aos" role="progressbar" data-aos="slide-right" data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+          
+                              <!-- Table data -->
+                              <td>42</td>
+          
+                              <!-- Table data -->
+                              <td>42</td>
+          
+                              <!-- Table data -->
+                              <td>
+                                <button class="btn btn-sm btn-success me-1 mb-1 mb-x;-0 disabled"><i class="bi bi-check me-1"></i>Complete</button>
+                                <a href="#" class="btn btn-sm btn-light me-1"><i class="bi bi-arrow-repeat me-1"></i>Restart</a>
+                              </td>
+                            </tr>
+          
+                            <!-- Table item -->
+                            <tr>
+                              <!-- Table data -->
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <!-- Image -->
+                                  <div class="w-100px">
+                                    <img src="{% static 'assets/images/courses/4by3/05.jpg' %}" class="rounded" alt="">
+                                  </div>
+                                  <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6><a href="#">The Complete Web Development in python</a></h6>
+                                    <!-- Info -->
+                                    <div class="overflow-hidden">
+                                      <h6 class="mb-0 text-end">60%</h6>
+                                      <div class="progress progress-sm bg-primary bg-opacity-10">
+                                        <div class="progress-bar bg-primary aos" role="progressbar" data-aos="slide-right" data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+          
+                              <!-- Table data -->
+                              <td>28</td>
+          
+                              <!-- Table data -->
+                              <td>12</td>
+          
+                              <!-- Table data -->
+                              <td>
+                                <a href="#" class="btn btn-sm btn-primary-soft me-1 mb-1 mb-md-0"><i class="bi bi-play-circle me-1"></i>Continue</a>
+                              </td>
+                            </tr>
+          
+                            <!-- Table item -->
+                            <tr>
+                              <!-- Table data -->
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <!-- Image -->
+                                  <div class="w-100px">
+                                    <img src="{% static 'assets/images/courses/4by3/01.jpg' %}" class="rounded" alt="">
+                                  </div>
+                                  <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6><a href="#">Digital Marketing Masterclass</a></h6>
+                                    <!-- Info -->
+                                    <div class="overflow-hidden">
+                                      <h6 class="mb-0 text-end">40%</h6>
+                                      <div class="progress progress-sm bg-primary bg-opacity-10">
+                                        <div class="progress-bar bg-primary aos" role="progressbar" data-aos="slide-right" data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <!-- Table data -->
+                              <td>32</td>
+          
+                              <!-- Table data -->
+                              <td>18</td>
+          
+                              <!-- Table data -->
+                              <td>
+                                <a href="#" class="btn btn-sm btn-primary-soft me-1 mb-1 mb-md-0"><i class="bi bi-play-circle me-1"></i>Continue</a>
+                              </td>
+                            </tr>
+          
+                            <!-- Table item -->
+                            <tr>
+                              <!-- Table data -->
+                              <td>
+                                <div class="d-flex align-items-center">
+                                  <!-- Image -->
+                                  <div class="w-100px">
+                                    <img src="{% static 'assets/images/courses/4by3/02.jpg' %}" class="rounded" alt="">
+                                  </div>
+                                  <div class="mb-0 ms-2">
+                                    <!-- Title -->
+                                    <h6><a href="#">Graphic Design Masterclass</a></h6>
+                                    <!-- Info -->
+                                    <div class="overflow-hidden">
+                                      <h6 class="mb-0 text-end">90%</h6>
+                                      <div class="progress progress-sm bg-primary bg-opacity-10">
+                                        <div class="progress-bar bg-primary aos" role="progressbar" data-aos="slide-right" data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <!-- Table data -->
+                              <td>16</td>
+          
+                              <!-- Table data -->
+                              <td>14</td>
+                              
+                              <!-- Table data -->
+                              <td>
+                                <a href="#" class="btn btn-sm btn-primary-soft me-1 mb-1 mb-md-0"><i class="bi bi-play-circle me-1"></i>Continue</a>
+                              </td>
+                            </tr>
+                          </tbody>
+                          <!-- Table body END -->
+                        </table>
+                      </div>
+                      <!-- Course list table END -->
+          
+                      <!-- Pagination START -->
+                      <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+                        <!-- Content -->
+                        <p class="mb-0 text-center text-sm-start">Showing 1 to 8 of 20 entries</p>
+                        <!-- Pagination -->
+                        <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                          <ul class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+                            <li class="page-item mb-0"><a class="page-link" href="#" tabindex="-1"><i class="fas fa-angle-left"></i></a></li>
+                            <li class="page-item mb-0"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item mb-0 active"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item mb-0"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item mb-0"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
+                          </ul>
+                        </nav>
+                      </div>
+                      <!-- Pagination END -->
+                    </div>
+                    <!-- Card body START -->
                   </div>
-                  <!-- <div id="earning"></div> -->
-                </div>
+                <!-- Main content END -->
+                </div><!-- Row END -->
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4 d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <div class="mb-4">
-                  <h5 class="card-title fw-semibold">Recently Joined Users</h5>
-                </div>
-                <ul class="timeline-widget mb-0 position-relative mb-n5">
-                  {% for user in recentUsers %}
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">{{user.date_joined|time:'f a'}}</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      
-                      <span class="timeline-badge border-2 border border-{% cycle 'primary' 'success' 'danger' %} flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold"> '{{ user }}' Became Member</div>
-                  </li>
-                  {% endfor %}
-                  
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-8 d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <h5 class="card-title fw-semibold mb-4">Recently Added Courses</h5>
-                <div class="table-responsive">
-                  <table class="table text-nowrap mb-0 align-middle">
-                    <thead class="text-dark fs-4">
-                      <tr>
-                        <th class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0">Id</h6>
-                        </th>
-                        <th class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0">Created by</h6>
-                        </th>
-                        <th class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0">Title</h6>
-                        </th>
-                        <th class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0">Level</h6>
-                        </th>
-                        <th class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0">Course Amount</h6>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for course in courses %}
-                      <tr>
-                        <td class="border-bottom-0"><h6 class="fw-semibold mb-0">{{ course.id }}</h6></td>
-                        <td class="border-bottom-0">
-                            <h6 class="fw-semibold mb-1">{{course.course_instructor}}</h6>
-                            <span class="fw-normal">{{course.course_category}}</span>                          
-                        </td>
-                        <td class="border-bottom-0">
-                          <p class="mb-0 fw-normal">{{ course.course_name }}</p>
-                        </td>
-                        <td class="border-bottom-0">
-                          <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary rounded-3 fw-semibold">{{ course.course_level }}</span>
-                          </div>
-                        </td>
-                        <td class="border-bottom-0">
-                          <h6 class="fw-semibold mb-0 fs-4">{{ course.course_price }}</h6>
-                        </td>
-                      </tr> 
-                      {% endfor %}
-                                           
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <h2 class="mb-4">Recent Courses</h2>
-          {% for course in courses %}
-          <div class="col-sm-4 col-xl-4">
-            <div class="card overflow-hidden rounded-2">
-              <div class="position-relative" >
-                <img src="{{course.course_image.url}}" class="card-img-top rounded-0"  alt="...">
-                </div>
-              <div class="card-body pt-3 p-4">
-                <h6 class="fw-semibold fs-4">{{course.course_name}}</h6>
-                <div class="mb-3" >Created by {{ course.course_instructor }}</div>
-                <div class="d-flex align-items-center justify-content-between">
-                  <h6 class="fw-semibold fs-4 mb-0">{{course.course_price}} <span class="ms-2 fw-normal text-muted fs-3"><del>{{ course.course_price|add:40 }}</del></span></h6>
-                  <ul class="list-unstyled d-flex align-items-center mb-0">
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-         
+            </div>	
+          </section>
+          <!-- =======================
+          Page content END -->
+          
+          </main>
+          <!-- **************** MAIN CONTENT END **************** -->
+          
+          
+          
         </div>
         
       </div>
     </div>
   </div>
+  
   <span id="catdata" hidden >{{ months }}</span>
   
   
@@ -376,217 +557,15 @@
   <script src="{% static 'login/assets/js/app.min.js' %}"></script>
   <script src="{% static 'login/assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
   <script src="{% static 'login/assets/libs/simplebar/dist/simplebar.js' %}"></script>
-  <script>
-    const monthsdata=document.getElementById('catdata').innerText;
-    const months=monthsdata.split(',');
-    
-    
-  $(function () {
+  <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
 
+  <script src="{% static 'assets/vendor/purecounterjs/dist/purecounter_vanilla.js' %}"></script>
+  
 
+  <!-- Template Functions -->
+  <script src="{% static 'assets/js/functions.js' %}"></script>
 
-    var chart = {
-      series: [
-        { name: "Register Users this month:", data: {{joineddata}}},
-        { name: "Active Users this month:", data: {{ activedata }} },
-      ],
-  
-      chart: {
-        type: "bar",
-        height: 345,
-        offsetX: -15,
-        toolbar: { show: true },
-        foreColor: "#adb0bb",
-        fontFamily: 'inherit',
-        sparkline: { enabled: false },
-      },
-  
-  
-      colors: ["#5D87FF", "#49BEFF"],
-  
-  
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: "35%",
-          borderRadius: [6],
-          borderRadiusApplication: 'end',
-          borderRadiusWhenStacked: 'all'
-        },
-      },
-      markers: { size: 0 },
-  
-      dataLabels: {
-        enabled: false,
-      },
-  
-  
-      legend: {
-        show: false,
-      },
-  
-  
-      grid: {
-        borderColor: "rgba(0,0,0,0.1)",
-        strokeDashArray: 3,
-        xaxis: {
-          lines: {
-            show: false,
-          },
-        },
-      },
-  
-      xaxis: {
-        type: "category",
-        categories: months,
-        labels: {
-          style: { cssClass: "grey--text lighten-2--text fill-color" },
-        },
-      },
-  
-  
-      yaxis: {
-        show: true,
-        min: 0,
-        max: 70,
-        tickAmount: 4,
-        labels: {
-          style: {
-            cssClass: "grey--text lighten-2--text fill-color",
-          },
-        },
-      },
-      stroke: {
-        show: true,
-        width: 3,
-        lineCap: "butt",
-        colors: ["transparent"],
-      },
-  
-  
-      tooltip: { theme: "light" },
-  
-      responsive: [
-        {
-          breakpoint: 600,
-          options: {
-            plotOptions: {
-              bar: {
-                borderRadius: 3,
-              }
-            },
-          }
-        }
-      ]
-  
-  
-    };
-  
-    var chart = new ApexCharts(document.querySelector("#chart"), chart);
-    chart.render();
-  
-  
  
-    var breakup = {
-      color: "#adb5bd",
-      series: {{ breakchartdata }},
-      labels: ["Users", "Courses"],
-      chart: {
-        width: 180,
-        type: "donut",
-        fontFamily: "Plus Jakarta Sans', sans-serif",
-        foreColor: "#adb0bb",
-      },
-      plotOptions: {
-        pie: {
-          startAngle: 0,
-          endAngle: 360,
-          donut: {
-            size: '75%',
-          },
-        },
-      },
-      stroke: {
-        show: false,
-      },
-  
-      dataLabels: {
-        enabled: false,
-      },
-  
-      legend: {
-        show: false,
-      },
-      colors: ["#5D87FF", "#FFAE1F"],
-  
-      responsive: [
-        {
-          breakpoint: 991,
-          options: {
-            chart: {
-              width: 150,
-            },
-          },
-        },
-      ],
-      tooltip: {
-        theme: "dark",
-        fillSeriesColor: false,
-      },
-    };
-  
-    var chart = new ApexCharts(document.querySelector("#breakup"), breakup);
-    chart.render();
-  
-  
-  
-   
-    var earning = {
-      chart: {
-        id: "sparkline3",
-        type: "area",
-        height: 60,
-        sparkline: {
-          enabled: true,
-        },
-        group: "sparklines",
-        fontFamily: "Plus Jakarta Sans', sans-serif",
-        foreColor: "#adb0bb",
-      },
-      series: [
-        {
-          name: "Earnings",
-          color: "#49BEFF",
-          data: [25, 66, 20, 40, 12, 58, 20],
-        },
-      ],
-      stroke: {
-        curve: "smooth",
-        width: 2,
-      },
-      fill: {
-        colors: ["#f3feff"],
-        type: "solid",
-        opacity: 0.05,
-      },
-  
-      markers: {
-        size: 0,
-      },
-      tooltip: {
-        theme: "dark",
-        fixed: {
-          enabled: true,
-          position: "right",
-        },
-        x: {
-          show: false,
-        },
-      },
-    };
-    new ApexCharts(document.querySelector("#earning"), earning).render();
-  });
-</script>
 </body>
 
 </html>
