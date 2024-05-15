@@ -227,7 +227,7 @@ def forgotreset(request,token):
                 messages.success(request,'Password reset successfully')
                 return redirect('login')
             else:
-                messages.error(request,'Invalid token')
+                messages.error(request,'Invalid URL')
                 return redirect('reset',token)
         else:
             messages.error(request,'Passwords do not match')
