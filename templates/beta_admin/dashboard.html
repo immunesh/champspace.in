@@ -8,6 +8,7 @@
   
   <link rel="stylesheet" href="{% static 'login/assets/css/styles.min.css' %}" /> 
    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-1cK78a1o+ht2JcaW6g8OXYwqpev9+6GqOkz9xmBN9iUUhIndKtxwILGWYOSibOKjLsEdjyjZvYDq/cZwNeak0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -43,48 +44,64 @@
             </li>
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">UI COMPONENTS</span>
+              <span class="hide-menu">Course</span>
             </li>
-            <!-- <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'mycourses' %}" aria-expanded="false">
                 <span>
                   <i class="ti ti-article"></i>
                 </span>
-                <span class="hide-menu">Buttons</span>
+                <span class="hide-menu">My Courses</span>
               </a>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+             <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'subscription' %}" aria-expanded="false">
                 <span>
                   <i class="ti ti-alert-circle"></i>
                 </span>
-                <span class="hide-menu">Alerts</span>
+                <span class="hide-menu">Subscriptions</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'quiz' %}" aria-expanded="false">
                 <span>
                   <i class="ti ti-cards"></i>
                 </span>
-                <span class="hide-menu">Card</span>
+                <span class="hide-menu">Quiz</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'editprofile' %}" aria-expanded="false">
                 <span>
-                  <i class="ti ti-file-description"></i>
+                  <i class="ti ti-edit"></i>
                 </span>
-                <span class="hide-menu">Forms</span>
+                <span class="hide-menu">Edit Profile</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'viewprofile' request.user.id %}" aria-expanded="false">
                 <span>
-                  <i class="ti ti-typography"></i>
+                  <i class="ti ti-user"></i>
                 </span>
-                <span class="hide-menu">Typography</span>
+                <span class="hide-menu">View Profile</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'settings' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-settings"></i>
+                </span>
+                <span class="hide-menu">Settings</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link text-danger bg-danger-soft-hover" href="{% url 'logout' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-logout"></i>
+                </span>
+                <span class="hide-menu">Logout</span>
+              </a>
+            </li><!--
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">AUTH</span>
@@ -207,7 +224,8 @@
           
             <!-- Plugins CSS -->
             <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}">
-            <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}">
+            
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
            
           
             <!-- Theme CSS -->
@@ -555,9 +573,10 @@
   <script src="{% static 'login/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'login/assets/js/sidebarmenu.js' %}"></script>
   <script src="{% static 'login/assets/js/app.min.js' %}"></script>
-  <script src="{% static 'login/assets/libs/apexcharts/dist/apexcharts.min.js' %}"></script>
-  <script src="{% static 'login/assets/libs/simplebar/dist/simplebar.js' %}"></script>
+
+
   <script src="{% static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-A7AYk1fGKX6S2SsHywmPkrnzTZHrgiVT7GcQkLGDe2ev0aWb8zejytzS8wjo7PGEXKqJOrjQ4oORtnimIRZBtw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script src="{% static 'assets/vendor/purecounterjs/dist/purecounter_vanilla.js' %}"></script>
   

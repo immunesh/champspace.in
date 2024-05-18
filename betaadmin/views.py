@@ -227,7 +227,7 @@ def forgotreset(request,token):
                 messages.success(request,'Password reset successfully')
                 return redirect('login')
             else:
-                messages.error(request,'Invalid token')
+                messages.error(request,'Invalid URL')
                 return redirect('reset',token)
         else:
             messages.error(request,'Passwords do not match')
@@ -237,3 +237,11 @@ def inbox(request):
     return render(request,'beta_admin/inbox.html')
 def dashboard(request):
     return render(request,'beta_admin/dashboard.html')
+def mycourses(request):
+    return render(request,'beta_admin/mycourses.html')
+def quiz(request):
+    return render(request,'beta_admin/quiz.html')
+def subscriptions(request):
+    return render(request,'beta_admin/subscription.html')
+def settings(request):
+    return render(request,'beta_admin/settings.html')
