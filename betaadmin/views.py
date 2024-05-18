@@ -149,17 +149,23 @@ def editprofile(request):
     user=request.user
     betauser=BetaUser.objects.get(user=user)
     if request.method== 'POST':
+        print(request.POST)
         if request.FILES.get('profilepic'):
             user.profilepic=request.FILES['profilepic']
             
         user.first_name=request.POST['first']
         user.last_name=request.POST['last']
-        user.email=request.POST['email']
+        
 
         betauser.phone=request.POST['phone']
         betauser.birthday=request.POST['birthday']
         betauser.website=request.POST['website']
-        
+        betauser.state=request.POST['state']
+        betauser.city=request.POST['city']
+        betauser.degree=request.POST['degree']
+        betauser.grad_year=request.POST['grad_year']
+        betauser.job_status=request.POST['status']
+        betauser.profile_updated=True
         user.save()
         betauser.save()
         messages.success(request,'Profile Updated Successfully')
@@ -174,23 +180,8 @@ def home(request):
         if beta_user.profile_updated:
             return redirect('dashboard')
         else:
-            if request.method=='POST':
-                country=request.POST['country']
-                state=request.POST['state']
-                city=request.POST['city']
-                degree=request.POST['degree']
-                grad_year=request.POST['gradyear']
-                status=request.POST['status']
-                user=BetaUser.objects.get(user=request.user)
-                user.address=country+' '+state+' '+city
-                user.job_status=status
-                user.grad_year=grad_year
-                user.degree=degree
-                user.profile_updated=True
-                user.save()
-                messages.success(request,"Profile Updated")
-                return redirect('beta')
-        return render(request,'beta_admin/complete_profile.html')
+            messages.error(request,"Please Update Your Profile")
+            return redirect('editprofile')
     else:
         return redirect('index')
 from .emailsnder import *

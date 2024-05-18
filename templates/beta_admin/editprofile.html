@@ -431,13 +431,13 @@ color:#69707a;
                                     <!-- Form Group (location)-->
                                     <div class="col-md-12">
                                         <label class="small mb-1" for="inputLocation">Website (Optional)</label>
-                                        <input class="form-control" id="inputLocation" type="text" placeholder="Enter your location" name="website" value="{{betauser.website}}">
+                                        <input class="form-control" id="inputLocation" type="text" placeholder="Enter your personal website" name="website" value="{{betauser.website}}">
                                     </div>
                                 </div>
                                 <!-- Form Group (email address)-->
                                 <div class="mb-3">
                                     <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" name="email" value="{{user.email}}">
+                                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" disabled value="{{user.email}}">
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
@@ -452,6 +452,61 @@ color:#69707a;
                                         <input class="form-control" id="inputBirthday" type="date" name="birthday" placeholder="Enter your birthday" value="{{betauser.birthday}}">
                                     </div>
                                 </div>
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form Group state-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputstate">State</label>
+                                        <select class="form-control" id="inputstate" name="state" onchange="loadcity()">
+                                            <option selected value="{{betauser.state}}" > {{betauser.state}}</option></select>
+                                            
+                                    </div>
+                                    <!-- Form Group City-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputcity">City</label>
+                                        <select class="form-control" name="city" id="inputcity">
+                                          <option selected value="{{ betauser.city }}"> {{betauser.city}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row gx-3 mb-3">
+                                  <!-- Form Group state-->
+                                  <div class="col-md-6">
+                                      <label class="small mb-1" for="inputdegree">Degree</label>
+                                      
+                                      <select class="form-control" id="inputdegree" name="degree">
+                                          <option selected value="{{betauser.degree}}" > {{betauser.degree}}</option>
+                                          
+                                          <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                          <option value="Master's Degree">Master's Degree</option>
+                                          <option value="Ph.D">Ph.D</option>
+                                        </select>
+                                        
+                                  </div>
+                                  <!-- Form Group City-->
+                                  <div class="col-md-6">
+                                      <label class="small mb-1" for="inputyear">Graduation Year</label>
+                                      <select class="form-control" id="inputyear" name="grad_year" >
+
+                                        <option value="{{betauser.grad_year}}" selected > {{betauser.grad_year}}</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="row gx-3 mb-3">
+                                <!-- Form Group state-->
+                                <div class="col-md-12">
+                                    <label class="small mb-1" for="inputstatus">Job Status</label>
+                                    
+                                    <select class="form-control" id="inputstatus" name="status">
+                                        <option selected value="{{betauser.job_status}}" > {{betauser.job_status}}</option>
+                                        
+                                        <option value="Employed">Employed</option>
+                                        <option value="Unemployed">Unemployed</option>
+                                        
+                                      </select>
+                                      
+                                </div>
+                                
+                            </div>
                                 <!-- Save changes button-->
                                 <button class="btn btn-primary" type="submit">Save changes</button>
                             
@@ -505,7 +560,42 @@ profilePictureInput.addEventListener('change', (e) => {
 <!-- Template Functions -->
 <script src="{% static 'assets/js/functions.js' %}"></script>
 
+<script>
+  let state=document.getElementById('inputstate');
+  let year=document.getElementById('inputyear')
+  window.onload= function () {
+    fetch('https://api.countrystatecity.in/v1/countries/IN/states/',{method:'GET',headers:{"X-CSCAPI-KEY":'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='}}).then(responce=>responce.json()).then(data=>data.forEach(element => {
+      var opt=document.createElement('option');
+      opt.value=element.iso2;
+      opt.textContent=element.name;
+      state.appendChild(opt);
+      
+    }));
+    for(let i=19;i<29;i++){
+      let opt1=document.createElement('option');
+      opt1.value="20"+i;
+      opt1.textContent='20'+i;
+      year.appendChild(opt1);
+    }
+  }
+let city=document.getElementById('inputcity');
+const loadcity=()=>{
+  let val=state.value;
+  let val1='IN';
+  let child=document.createElement('option');
+  child.textContent="Choose Your City";
+  child.selected=true;
+  city.appendChild(child);
+  fetch(`https://api.countrystatecity.in/v1/countries/${val1}/states/${val}/cities`,{method:'GET',headers:{"X-CSCAPI-KEY":'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='}}).then(responce=>responce.json()).then(data=>data.forEach(element => {
+      var opt=document.createElement('option');
+      opt.value=element.name;
+      opt.textContent=element.name;
+      city.appendChild(opt); 
+    }));
 
+};
+
+</script>
 
 </body>
 

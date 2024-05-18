@@ -382,6 +382,57 @@ color:#69707a;
                                         <input class="form-control" disabled id="inputBirthday" type="date" name="birthday" placeholder="Enter your birthday" value="{{betauser.birthday}}">
                                     </div>
                                 </div>
+                                <div class="row gx-3 mb-3">
+                                  <!-- Form Group state-->
+                                  <div class="col-md-6">
+                                      <label class="small mb-1" for="inputstate">State</label>
+                                      <select class="form-control" id="inputstate" disabled>
+                                          <option selected value="{{betauser.state}}" > {{betauser.state}}</option></select>
+                                          
+                                  </div>
+                                  <!-- Form Group City-->
+                                  <div class="col-md-6">
+                                      <label class="small mb-1" for="inputcity">City</label>
+                                      <select class="form-control" disabled id="inputcity">
+                                        <option selected value="{{ betauser.city }}"> {{betauser.city}}</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="row gx-3 mb-3">
+                                <!-- Form Group state-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputdegree">Degree</label>
+                                    
+                                    <select class="form-control" id="inputdegree" disabled>
+                                        <option selected value="{{betauser.degree}}" > {{betauser.degree}}</option>
+                                        
+                                        
+                                      </select>
+                                      
+                                </div>
+                                <!-- Form Group City-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="inputyear">Graduation Year</label>
+                                    <select class="form-control" id="inputyear" disabled >
+
+                                      <option value="{{betauser.grad_year}}" selected > {{betauser.grad_year}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row gx-3 mb-3">
+                              <!-- Form Group state-->
+                              <div class="col-md-12">
+                                  <label class="small mb-1" for="inputstatus">Job Status</label>
+                                  
+                                  <select class="form-control" id="inputstatus" disabled>
+                                      <option selected value="{{betauser.job_status}}" > {{betauser.job_status}}</option>
+                                      
+                                      <option value="Employed">Employed</option>
+                                      <option value="Unemployed">Unemployed</option>
+                                      
+                                    </select>
+                                    
+                              </div>
                                 
                                
                             
