@@ -6,6 +6,7 @@ urlpatterns=[
     path('inbox/',inbox,name='inbox'),
     path('dashboard/',dashboard,name='dashboard'),
     path('mycourses/',mycourses,name='mycourses'),
+    # path('courses/',courses,name=courses),
     path('mysubscriptions/',subscriptions,name='subscription'),
     path('quiz/',quiz,name='quiz'),
     path('settings/',settings,name='settings'),

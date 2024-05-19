@@ -227,9 +227,21 @@ def forgotreset(request,token):
 def inbox(request):
     return render(request,'beta_admin/inbox.html')
 def dashboard(request):
-    return render(request,'beta_admin/dashboard.html')
+    courses=isPurchased.objects.filter(buyer=request.user)
+    completed=Progress.objects.filter(user=request.user,progress=100)
+    progress=Progress.objects.filter(user=request.user)
+    progress=zip(courses,progress)
+    
+    context={'courses':courses,'completed':completed,'progresses':progress}
+    return render(request,'beta_admin/dashboard.html',context)
 def mycourses(request):
-    return render(request,'beta_admin/mycourses.html')
+    courses=isPurchased.objects.filter(buyer=request.user)
+    completed=Progress.objects.filter(user=request.user,progress=100)
+    progress=Progress.objects.filter(user=request.user)
+    progress=zip(courses,progress)
+    
+    context={'courses':courses,'completed':completed,'progresses':progress}
+    return render(request,'beta_admin/mycourses.html',context)
 def quiz(request):
     return render(request,'beta_admin/quiz.html')
 def subscriptions(request):
