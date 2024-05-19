@@ -30,10 +30,10 @@ class GammaUser(models.Model):
 
 class Course(models.Model):
     COURSE_LEVELS = [
-        ('beginner', 'Beginner'),
-        ('intermediate', 'Intermediate'),
-        ('advanced', 'Advanced'),
-        ('all', 'All level'),
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+        ('All Level', 'All level'),
     ]
     ratingChoices=[
         ('0',0),

@@ -248,3 +248,15 @@ def subscriptions(request):
     return render(request,'beta_admin/subscription.html')
 def settings(request):
     return render(request,'beta_admin/settings.html')
+
+def courses(request):
+    course_details=Course.objects.all()
+    category=[]
+    for i in course_details:
+        if i.course_category in category:
+            continue
+        else:
+
+            category.append(i.course_category)
+
+    return render(request,'beta_admin/courses.html',{'course':course_details,'categories':category})
