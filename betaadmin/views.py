@@ -260,3 +260,22 @@ def courses(request):
             category.append(i.course_category)
 
     return render(request,'beta_admin/courses.html',{'course':course_details,'categories':category})
+def admincourses(request):
+    courses=Course.objects.all()
+    purchases=isPurchased.objects.all()
+    freecourses=courses.filter(course_price=0)
+    return render(request,'beta_admin/admin/courses.html',{'courses':courses,"purchases":purchases,'free':freecourses })
+def admincourseadd(request,pk):
+    if pk!= 'add':
+        course=Course.objects.get(id=pk)
+        purchases=isPurchased.objects.filter(course=course)
+        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases})
+    else:
+        if request.method == 'POST':
+            if request.FILES.get('video') and request.FILES.get('image'):
+                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],)
+                ctreated_course.save()
+                messages.success(request,'Course uploaded')
+                return redirect('admincourses')
+        return render(request,'beta_admin/admin/course-add.html')
+    

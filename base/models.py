@@ -50,11 +50,12 @@ class Course(models.Model):
         default='all',
     )
     course_createdon=models.DateTimeField(auto_now_add=True)
+    video=models.FileField(upload_to='static/course_videos')
     course_category=models.CharField(max_length=200)
     course_name=models.CharField(max_length=200)
     course_instructor=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     course_description=models.TextField()
-    course_rating=models.CharField(choices=ratingChoices ,default=0 ,max_length=3)
+    course_rating=models.CharField(choices=ratingChoices ,default=5 ,max_length=3)
     course_price=models.FloatField(default=0)
     course_duration=models.CharField(max_length=30)
     course_image=models.ImageField(upload_to='static/course_images')
