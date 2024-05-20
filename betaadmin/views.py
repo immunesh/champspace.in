@@ -149,17 +149,23 @@ def editprofile(request):
     user=request.user
     betauser=BetaUser.objects.get(user=user)
     if request.method== 'POST':
+        print(request.POST)
         if request.FILES.get('profilepic'):
             user.profilepic=request.FILES['profilepic']
             
         user.first_name=request.POST['first']
         user.last_name=request.POST['last']
-        user.email=request.POST['email']
+        
 
         betauser.phone=request.POST['phone']
         betauser.birthday=request.POST['birthday']
         betauser.website=request.POST['website']
-        
+        betauser.state=request.POST['state']
+        betauser.city=request.POST['city']
+        betauser.degree=request.POST['degree']
+        betauser.grad_year=request.POST['grad_year']
+        betauser.job_status=request.POST['status']
+        betauser.profile_updated=True
         user.save()
         betauser.save()
         messages.success(request,'Profile Updated Successfully')
@@ -174,23 +180,8 @@ def home(request):
         if beta_user.profile_updated:
             return redirect('dashboard')
         else:
-            if request.method=='POST':
-                country=request.POST['country']
-                state=request.POST['state']
-                city=request.POST['city']
-                degree=request.POST['degree']
-                grad_year=request.POST['gradyear']
-                status=request.POST['status']
-                user=BetaUser.objects.get(user=request.user)
-                user.address=country+' '+state+' '+city
-                user.job_status=status
-                user.grad_year=grad_year
-                user.degree=degree
-                user.profile_updated=True
-                user.save()
-                messages.success(request,"Profile Updated")
-                return redirect('beta')
-        return render(request,'beta_admin/complete_profile.html')
+            messages.error(request,"Please Update Your Profile")
+            return redirect('editprofile')
     else:
         return redirect('index')
 from .emailsnder import *
@@ -236,12 +227,55 @@ def forgotreset(request,token):
 def inbox(request):
     return render(request,'beta_admin/inbox.html')
 def dashboard(request):
-    return render(request,'beta_admin/dashboard.html')
+    courses=isPurchased.objects.filter(buyer=request.user)
+    completed=Progress.objects.filter(user=request.user,progress=100)
+    progress=Progress.objects.filter(user=request.user)
+    progress=zip(courses,progress)
+    
+    context={'courses':courses,'completed':completed,'progresses':progress}
+    return render(request,'beta_admin/dashboard.html',context)
 def mycourses(request):
-    return render(request,'beta_admin/mycourses.html')
+    courses=isPurchased.objects.filter(buyer=request.user)
+    completed=Progress.objects.filter(user=request.user,progress=100)
+    progress=Progress.objects.filter(user=request.user)
+    progress=zip(courses,progress)
+    
+    context={'courses':courses,'completed':completed,'progresses':progress}
+    return render(request,'beta_admin/mycourses.html',context)
 def quiz(request):
     return render(request,'beta_admin/quiz.html')
 def subscriptions(request):
     return render(request,'beta_admin/subscription.html')
 def settings(request):
     return render(request,'beta_admin/settings.html')
+
+def courses(request):
+    course_details=Course.objects.all()
+    category=[]
+    for i in course_details:
+        if i.course_category in category:
+            continue
+        else:
+
+            category.append(i.course_category)
+
+    return render(request,'beta_admin/courses.html',{'course':course_details,'categories':category})
+def admincourses(request):
+    courses=Course.objects.all()
+    purchases=isPurchased.objects.all()
+    freecourses=courses.filter(course_price=0)
+    return render(request,'beta_admin/admin/courses.html',{'courses':courses,"purchases":purchases,'free':freecourses })
+def admincourseadd(request,pk):
+    if pk!= 'add':
+        course=Course.objects.get(id=pk)
+        purchases=isPurchased.objects.filter(course=course)
+        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases})
+    else:
+        if request.method == 'POST':
+            if request.FILES.get('video') and request.FILES.get('image'):
+                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],)
+                ctreated_course.save()
+                messages.success(request,'Course uploaded')
+                return redirect('admincourses')
+        return render(request,'beta_admin/admin/course-add.html')
+    
