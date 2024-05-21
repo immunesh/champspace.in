@@ -338,7 +338,7 @@ Page content START -->
 												<div class="avatar">
 													<img class="avatar-img rounded-circle" src="{% if cour.course_instructor.profilepic != '' %}{{cour.course_instructor.profilepic.url}}{% else %}{% static 'assets/images/avatar/01.png' %}{% endif %}" alt="avatar">
 												</div>
-												<p class="mb-0 ms-2"><a href="#" class="h6 fw-light">{{cour.course_instructor}}</a></p>
+												<p class="mb-0 ms-2"><a href="{% url 'viewprofile' cour.course_instructor.id %}" class="h6 fw-light">{{cour.course_instructor}}</a></p>
 											</div>
 											<!-- Price -->
 											<div class="mt-3 mt-sm-0">

@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beta Admin</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}"> 
+  <link rel="stylesheet" type="text/css" href="{% static 'login/assets/css/styles.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/choices/css/choices.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/aos/aos.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/glightbox/css/glightbox.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/quill/css/quill.snow.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/vendor/stepper/css/bs-stepper.min.css' %}">
+
+  
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="{% url 'admin' %}" class="text-nowrap logo-img">
+            <img src="{% static 'assets/images/icon.png' %}" width="100px" alt="" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Home</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'admin' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-layout-dashboard"></i>
+                </span>
+                <span class="hide-menu">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Actions</span>
+            </li>
+             <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'admincourses' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Courses</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'userslist' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-users"></i>
+                </span>
+                <span class="hide-menu">Users</span>
+              </a>
+            </li><!--
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-alert-circle"></i>
+                </span>
+                <span class="hide-menu">Alerts</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-cards"></i>
+                </span>
+                <span class="hide-menu">Card</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-file-description"></i>
+                </span>
+                <span class="hide-menu">Forms</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-typography"></i>
+                </span>
+                <span class="hide-menu">Typography</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">AUTH</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-login"></i>
+                </span>
+                <span class="hide-menu">Login</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-user-plus"></i>
+                </span>
+                <span class="hide-menu">Register</span>
+              </a>
+            </li>
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">EXTRA</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-mood-happy"></i>
+                </span>
+                <span class="hide-menu">Icons</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
+                <span>
+                  <i class="ti ti-aperture"></i>
+                </span>
+                <span class="hide-menu">Sample Page</span>
+              </a>
+            </li> -->
+          </ul>
+          
+        </nav>
+      
+      
+        <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+      <!--  Header Start -->
+      <header class="app-header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <ul class="navbar-nav">
+            <li class="nav-item d-block d-xl-none">
+              <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                <i class="ti ti-menu-2"></i>
+              </a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                <i class="ti ti-bell-ringing"></i>
+                <div class="notification bg-primary rounded-circle"></div>
+              </a>
+            </li> -->
+          </ul>
+          <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+             
+              <li class="nav-item dropdown">
+                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img src="{% if request.user.profilepic == '' %}{% static 'assets/images/avatar/01.png' %}{% else %}{{ request.user.profilepic.url }}{% endif %}" alt="" width="35" height="35" class="rounded-circle">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                  <div class="message-body">
+                    <a href="{% url 'viewprofile' request.user.id %}" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-user fs-6"></i>
+                      <p class="mb-0 fs-3">My Profile</p>
+                    </a>
+                    
+                    <a href="{% url 'logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!--  Header End -->
+      <div class="container-fluid">
+         <!--  Row 1 -->
+         <div class="row">
+
+            <main>
+	
+                <!-- =======================
+                Page Banner START -->
+                <section class="py-0 bg-blue h-100px align-items-center d-flex h-200px rounded-0" style="background:url('/static/assets/images/pattern/04.png') no-repeat center center; background-size:cover;">
+                    <!-- Main banner background image -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <!-- Title -->
+                                <h1 class="text-white">Edit Course</h1>
+                                </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- =======================
+                Page Banner END -->
+                
+                <!-- =======================
+                Steps START -->
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-8 mx-auto text-center">
+                                <!-- Content -->
+                                <p class="text-center">Use this interface to Edit a new Course to the portal. Once you are done adding the item it will be reviewed for quality. If approved, your course will appear for sale and you will be informed by email that your course has been accepted.</p>
+                            </div>
+                        </div>
+                
+                        <div class="card bg-transparent border rounded-3 mb-5">
+                            <div id="stepper" class="bs-stepper stepper-outline">
+                                <!-- Card header -->
+                                <div class="card-header bg-light border-bottom px-lg-5">
+                                    <!-- Step Buttons START -->
+                                    <div class="bs-stepper-header" role="tablist">
+                                        <!-- Step 1 -->
+                                        <div class="step" data-target="#step-1">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
+                                                    <span class="bs-stepper-circle">1</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Course details</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+                
+                                        <!-- Step 2 -->
+                                        <div class="step" data-target="#step-2">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger2" aria-controls="step-2">
+                                                    <span class="bs-stepper-circle">2</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Course media</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+                
+                                        <!-- Step 3 -->
+                                        <div class="step" data-target="#step-3">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger3" aria-controls="step-3">
+                                                    <span class="bs-stepper-circle">3</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Curriculum</h6>
+                                            </div>
+                                        </div>
+                                        <div class="line"></div>
+                
+                                        <!-- Step 4 -->
+                                        <div class="step" data-target="#step-4">
+                                            <div class="d-grid text-center align-items-center">
+                                                <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger4" aria-controls="step-4">
+                                                    <span class="bs-stepper-circle">4</span>
+                                                </button>
+                                                <h6 class="bs-stepper-label d-none d-md-block">Additional information</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Step Buttons END -->
+                                </div>
+                
+                                <!-- Card body START -->
+                                <div class="card-body">
+                                    <!-- Step content START -->
+                                    <div class="bs-stepper-content">
+                                        <form method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                
+                                            <!-- Step 1 content START -->
+                                            <div id="step-1" role="tabpanel" class="content fade" aria-labelledby="steppertrigger1">
+                                                <!-- Title -->
+                                                <h4>Course details</h4>
+                
+                                                <hr> <!-- Divider -->
+                
+                                                <!-- Basic information START -->
+                                                <div class="row g-4">
+                                                    <!-- Course title -->
+                                                    <div class="col-12">
+                                                        <label class="form-label">Course title</label>
+                                                        <input class="form-control" type="text" placeholder="Enter course title" name="title" value="{{course.course_name}}">
+                                                    </div>
+                
+                                                    <!-- Short description -->
+                                                    <div class="col-12">
+                                                        <label class="form-label">Description</label>
+                                                        <textarea class="form-control" rows="2" placeholder="Enter keywords" id="textareainput" name="description"></textarea>
+                                                    </div>
+                
+                                                    <!-- Course category -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Course category</label>
+                                                        <select class="form-select js-choice border-0 z-index-9 bg-transparent" name="category" aria-label=".form-select-sm" data-search-enabled="true" required >
+                                                            
+                                                          <option selected value="{{course.course_category}}" >{{ course.course_category }}</option>
+                                                            <option value="Software">Software</option>
+                                                            <option value="Designing">Designing</option>
+                                                            <option value="AI">AI</option>
+                                                            
+                                                        </select>
+                                                    </div>
+                
+                                                    <!-- Course level -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Course level</label>
+                                                        <select class="form-select js-choice border-0 z-index-9 bg-transparent" name="level" aria-label=".form-select-sm" data-search-enabled="false" data-remove-item-button="true" required>
+                                                            <option value="{{ course.course_level }}">{{ course.course_level }}</option>
+                                                            <option value="All level">All level</option>
+                                                            <option value="Beginner">Beginner</option>
+                                                            <option value="Intermediate">Intermediate</option>
+                                                            <option value="Advanced">Advanced</option>
+                                                        </select>
+                                                    </div>
+                
+                                                    <!-- Language -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Language</label>
+                                                        <select class="form-select js-choice border-0 z-index-9 bg-transparent" multiple="multiple" aria-label=".form-select-sm" data-max-item-count="3" data-remove-item-button="true">
+                                                            
+                                                            <option selected >English</option>
+                                                            
+                                                        </select>
+                                                    </div>
+                
+                                                    <!-- Switch -->
+                                                    <div class="col-md-6 d-flex align-items-center justify-content-start mt-5">
+                                                        <div class="form-check form-switch form-check-md">
+                                                            <input class="form-check-input" type="checkbox" id="checkPrivacy1">
+                                                            <label class="form-check-label" for="checkPrivacy1">Check this for featured course</label>
+                                                        </div>
+                                                    </div>
+                
+                                                    <!-- Course time -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Course Duration</label>
+                                                        <input class="form-control" type="text" placeholder="Enter course Duration" name="duration" value="{{course.course_duration}}">
+                                                    </div>
+                
+                                                    <!-- Total lecture -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Total lectures</label>
+                                                        <input class="form-control" type="number" placeholder="Enter total lectures" name="lectures" value="{{course.lectures}}">
+                                                    </div>
+                
+                                                    <!-- Course price -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Course price</label>
+                                                        <input type="number" class="form-control" placeholder="Enter course price" name="price" value="{{course.course_price}}">
+                                                    </div>
+                
+                                                    <!-- Course discount -->
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Discount price</label>
+                                                        <input class="form-control" type="text" placeholder="Enter discount" disabled>
+                                                        
+                                                    </div>
+                                                    
+                                                    
+                
+                                                    <!-- Step 1 button -->
+                                                    <div class="d-flex justify-content-end mt-3">
+                                                        <input type="button" class="btn btn-primary next-btn mb-0" value="Next">
+                                                    </div>
+                                                </div>
+                                                <!-- Basic information START -->
+                                            </div>
+                                            <!-- Step 1 content END -->
+                
+                                            <!-- Step 2 content START -->
+                                            <div id="step-2" role="tabpanel" class="content fade" aria-labelledby="steppertrigger2">
+                                                <!-- Title -->
+                                                <h4>Course media</h4>
+                
+                                                <hr> <!-- Divider -->
+                
+                                                <div class="row">
+                                                    <!-- Upload image START -->
+                                                    <div class="col-12">
+                                                        <div class="text-center justify-content-center align-items-center p-4 p-sm-5 border border-2 border-dashed position-relative rounded-3">
+                                                            <!-- Image -->
+                                                            <img src="{% static 'assets/images/element/gallery.svg' %}" class="h-50px" alt="">
+                                                            <div>
+                                                                <h6 class="my-2">Upload course image here, or<a href="#!" class="text-primary"> Browse</a></h6>
+                                                                <label style="cursor:pointer;">
+                                                                    <span> 
+                                                                        <input class="form-control stretched-link" type="file" name="image" id="image" accept="image/gif, image/jpeg, image/png" value="{{course.course_image.url}}"/>
+                                                                    </span>
+                                                                </label>
+                                                                    <p class="small mb-0 mt-2"><b>Note:</b> Only JPG, JPEG and PNG. Our suggested dimensions are 600px * 450px. Larger image will be cropped to 4:3 to fit our thumbnails/previews.</p>
+                                                            </div>	
+                                                        </div>
+                
+                                                        <!-- Button -->
+                                                        <div class="d-sm-flex justify-content-end mt-2">
+                                                            <button type="button" class="btn btn-sm btn-danger-soft mb-3">Remove image</button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Upload image END -->
+                
+                                                    <!-- Upload video START -->
+                                                    <div class="col-12">
+                                                        <h5>Upload video But there is no possibility that you are gonna change the video rn</h5>
+                                                        <!-- Input -->
+                                                        <div class="col-12 mt-4 mb-5">
+                                                            <label class="form-label">Video URL</label>
+                                                            <input class="form-control" type="text" placeholder="Enter video url" disabled>
+                                                        </div>
+                                                        <div class="position-relative my-4">
+                                                            <hr>
+                                                            <p class="small position-absolute top-50 start-50 translate-middle bg-body px-3 mb-0">Or</p>
+                                                        </div>
+                
+                                                        <div class="col-12">
+                                                            <label class="form-label">Upload video</label>
+                                                            <div class="input-group mb-3">
+                                                                <input type="file" class="form-control" id="inputGroupFile01" disabled>
+                                                                <label class="input-group-text">.mp4</label>
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <input type="file" disabled class="form-control" id="inputGroupFile02"  >
+                                                                <label class="input-group-text">.WebM</label>
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <input type="file" disabled class="form-control" id="inputGroupFile03"  >
+                                                                <label class="input-group-text">.OGG</label>
+                                                            </div>
+                                                        </div>
+                
+                                                    </div>
+                                                    <!-- Upload video END -->
+                
+                                                    <!-- Step 2 button -->
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <input class="btn btn-secondary prev-btn mb-0" type="button" value="Prev">
+                                                        <input type="button" class="btn btn-primary next-btn mb-0" value="Next">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Step 2 content END -->
+                
+                                            <!-- Step 3 content START -->
+                                            <div id="step-3" role="tabpanel" class="content fade" aria-labelledby="steppertrigger3">
+                                                <!-- Title -->
+                                                <h4>Curriculum</h4>
+                
+                                                <hr> <!-- Divider -->
+                
+                                                <div class="row">
+                                                    
+                                                        <!-- Item END -->
+                            
+                                                   
+                                                    <!-- Edit lecture END -->
+                
+                                                    <!-- Step 3 button -->
+                                                    <div class="d-flex justify-content-between">
+                                                        <input type="button" class="btn btn-secondary prev-btn mb-0" value="Prev">
+                                                        <input type="button" class="btn btn-primary next-btn mb-0" value="Next">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Step 3 content END -->
+                
+                                            <!-- Step 4 content START -->
+                                            <div id="step-4" role="tabpanel" class="content fade" aria-labelledby="steppertrigger4">
+                                                <!-- Title -->
+                                                <h4>Additional information</h4>
+                
+                                                <hr> <!-- Divider -->
+                
+                                                <div class="row g-4">
+                                                    
+                                                    
+                                                    <!-- Step 4 button -->
+                                                    <div class="d-md-flex justify-content-between align-items-start mt-4">
+                                                        <input type="button" class="btn btn-secondary prev-btn mb-2 mb-md-0" value="Prev">
+                                                        
+                                                        <div class="text-md-end">
+                                                            <button class="btn btn-success mb-2 mb-sm-0" value="submit">Update Course</button>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <!-- Step 4 content END -->
+                
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Card body END -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- =======================
+                Steps END -->
+                
+                </main>
+                <!-- **************** MAIN CONTENT END **************** -->
+                
+                
+                
+                
+
+
+
+            
+         </div>
+        </div>
+              <script src="{% static 'login/assets/libs/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'login/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'login/assets/js/sidebarmenu.js' %}"></script>
+    <script src="{% static 'login/assets/js/app.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'assets/vendor/glightbox/js/glightbox.js' %}"></script>
+<script src="{% static 'assets/vendor/quill/js/quill.min.js' %}"></script>
+<script src="{% static 'assets/vendor/stepper/js/bs-stepper.min.js' %}"></script>
+    
+  
+  <!-- Vendors -->
+  <script src="{% static 'assets/vendor/choices/js/choices.min.js' %}"></script>
+  <script src="{% static 'assets/js/functions.js' %}"></script>
+  </body>
+  </html>

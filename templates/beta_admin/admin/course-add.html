@@ -60,7 +60,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'userslist' %}" aria-expanded="false">
                 <span>
                   <i class="ti ti-users"></i>
                 </span>
@@ -394,7 +394,7 @@
                                                     <div class="col-12">
                                                         <div class="text-center justify-content-center align-items-center p-4 p-sm-5 border border-2 border-dashed position-relative rounded-3">
                                                             <!-- Image -->
-                                                            <img src="assets/images/element/gallery.svg" class="h-50px" alt="">
+                                                            <img src="{% static 'assets/images/element/gallery.svg' %}" class="h-50px" alt="">
                                                             <div>
                                                                 <h6 class="my-2">Upload course image here, or<a href="#!" class="text-primary"> Browse</a></h6>
                                                                 <label style="cursor:pointer;">

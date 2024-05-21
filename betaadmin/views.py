@@ -273,9 +273,41 @@ def admincourseadd(request,pk):
     else:
         if request.method == 'POST':
             if request.FILES.get('video') and request.FILES.get('image'):
-                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],)
+                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],course_category=request.POST['category'])
                 ctreated_course.save()
                 messages.success(request,'Course uploaded')
                 return redirect('admincourses')
         return render(request,'beta_admin/admin/course-add.html')
+def courseedit(request,pk):
+    course=Course.objects.get(id=pk)
+    if request.method=='POST':
+        course.course_category=request.POST['category']
+        course.course_description=request.POST['description']
+        course.course_price=request.POST['price']
+        course.course_duration=request.POST['duration']
+        course.course_level=request.POST['level']
+        course.course_name=request.POST['title']
+        course.lectures=request.POST['lectures']
+        course.save()
+        return redirect('admincourses')
+    return render(request,'beta_admin/admin/course-edit.html',{'course':course})
+def delcourse(request,pk):
+    course=Course.objects.get(id=pk)
+    course.delete()
+    return redirect(request.META['HTTP_REFERER'])
+def userlist(request):
+    customusers=CustomUser.objects.all()
+    betusers=BetaUser.objects.all()
+    purchased=[]
+    for i in customusers:
+        if isPurchased.objects.filter(buyer=i).exists():
+            purchased.append(True)
+        else:
+            purchased.append(False)
+    users=zip(customusers,betusers,purchased)
     
+    return render(request,'beta_admin/admin/users.html',{'users':users})
+def deluser(request,pk):
+    user=CustomUser.objects.get(id=pk)
+    user.delete()
+    return redirect(request.META['HTTP_REFERER'])
