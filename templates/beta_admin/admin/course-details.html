@@ -55,7 +55,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'userslist' %}" aria-expanded="false">
                 <span>
                   <i class="ti ti-users"></i>
                 </span>
@@ -176,7 +176,10 @@
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
                     </a>
-                    
+                    <a href="{% url 'beta' %}" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-layout-dashboard fs-6"></i>
+                      <p class="mb-0 fs-3">UserBoard</p>
+                    </a>
                     <a href="{% url 'logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
                 </div>
@@ -198,14 +201,14 @@
                 <div class="row mb-3">
                     <div class="col-12 d-sm-flex justify-content-between align-items-center">
                         <h1 class="h3 mb-2 mb-sm-0">Course Details</h1>
-                        <a href="admin-edit-course-detail.html" class="btn btn-sm btn-primary mb-0">Edit Course</a>
+                        <a href="{%url 'editcourse' course.id %}" class="btn btn-sm btn-primary mb-0">Edit Course</a>
                     </div>
                 </div>
                         
                 <div class="row g-4">
         
                     <!-- Course information START -->
-                    <div class="col-xxl-6">
+                    <div class="col-12">
                         <div class="card bg-transparent border rounded-3 h-100">
         
                             <!-- Catd header -->
@@ -219,11 +222,11 @@
                                 <!-- Course image and info START -->
                                 <div class="row g-4">
                                     <!-- Course image -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <img src="{{course.course_image.url}}" class="rounded" alt="">
                                     </div>
                                     <!-- Course info and avatar -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         <!-- Info -->
                                         <p class="mb-3">{{course.course_description}}</p>
         
@@ -336,7 +339,7 @@
                                         <!-- Table body START -->
                                         <tbody>{% if purchases %}
 
-                                            {% for purchase in purchases %}
+                                            {% for purchase,progress in purchases %}
                                             <!-- Table row -->
                                             <tr>
                                                 <!-- Table data -->
@@ -360,7 +363,7 @@
                 
                                                 <!-- Table data -->
                                                 <td class="text-center text-sm-start" >
-                                                    <h6 class="mb-0">0</h6>
+                                                    <h6 class="mb-0">{{progress.completed_lectures}}</h6>
                                                     
                                                 </td>
                 

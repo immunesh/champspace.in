@@ -22,7 +22,10 @@ def admindashboard(request):
                 
             string1 = user.date_joined
             month_wise_joined[string1.strftime('%b')] += 1
-            month_wise_active[user.last_login.strftime('%b')] +=1
+            if not user.last_login:
+                pass
+            else:
+                month_wise_active[user.last_login.strftime('%b')] +=1
         for key,values in month_wise_joined.items():
             monthlist+=key+","
             joinedlist.append(values)
@@ -269,13 +272,65 @@ def admincourseadd(request,pk):
     if pk!= 'add':
         course=Course.objects.get(id=pk)
         purchases=isPurchased.objects.filter(course=course)
-        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases})
+        progress=[]
+        for i in purchases:
+            progress.append(Progress.objects.get(user=i.buyer,course=course))
+        purchases1=zip(purchases,progress)
+        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases1})
     else:
         if request.method == 'POST':
             if request.FILES.get('video') and request.FILES.get('image'):
-                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],)
+                ctreated_course=Course.objects.create(course_level=request.POST['level'],video=request.FILES['video'],course_image=request.FILES['image'],course_name=request.POST['title'],course_instructor=request.user,course_duration=request.POST['duration'],course_description=request.POST['description'],course_price=request.POST['price'],lectures=request.POST['lectures'],course_category=request.POST['category'])
                 ctreated_course.save()
                 messages.success(request,'Course uploaded')
                 return redirect('admincourses')
         return render(request,'beta_admin/admin/course-add.html')
+def courseedit(request,pk):
+    course=Course.objects.get(id=pk)
+    if request.method=='POST':
+        course.course_category=request.POST['category']
+        course.course_description=request.POST['description']
+        course.course_price=request.POST['price']
+        course.course_duration=request.POST['duration']
+        course.course_level=request.POST['level']
+        course.course_name=request.POST['title']
+        course.lectures=request.POST['lectures']
+        course.save()
+        return redirect('admincourses')
+    return render(request,'beta_admin/admin/course-edit.html',{'course':course})
+def delcourse(request,pk):
+    course=Course.objects.get(id=pk)
+    course.delete()
+    return redirect(request.META['HTTP_REFERER'])
+def userlist(request):
+    customusers=CustomUser.objects.all()
+    betusers=BetaUser.objects.all()
+    purchased=[]
+    for i in customusers:
+        if isPurchased.objects.filter(buyer=i).exists():
+            purchased.append(True)
+        else:
+            purchased.append(False)
+    users=zip(customusers,betusers,purchased)
     
+    return render(request,'beta_admin/admin/users.html',{'users':users})
+def deluser(request,pk):
+    user=CustomUser.objects.get(id=pk)
+    user.delete()
+    return redirect(request.META['HTTP_REFERER'])
+def usercreation(request):
+    if request.method == 'POST':
+        username=request.POST['username']
+        email=request.POST['email']
+        password=request.POST['password1']
+        if CustomUser.objects.filter(username=username).exists() or CustomUser.objects.filter(email=email).exists():
+            messages.error(request,'Username or Email already exists')
+            return redirect('usercreate')
+        else:
+            
+        
+            user=CustomUser.objects.create_user(username=username,email=email,password=password,userfor='beta')
+            BetaUser.objects.create(user=user)
+            messages.success(request,'Account Created Successfully')
+            return redirect('userslist')
+    return render(request,'beta_admin/admin/usercreation.html')
