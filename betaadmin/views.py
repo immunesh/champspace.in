@@ -22,7 +22,10 @@ def admindashboard(request):
                 
             string1 = user.date_joined
             month_wise_joined[string1.strftime('%b')] += 1
-            month_wise_active[user.last_login.strftime('%b')] +=1
+            if not user.last_login:
+                pass
+            else:
+                month_wise_active[user.last_login.strftime('%b')] +=1
         for key,values in month_wise_joined.items():
             monthlist+=key+","
             joinedlist.append(values)
@@ -269,7 +272,11 @@ def admincourseadd(request,pk):
     if pk!= 'add':
         course=Course.objects.get(id=pk)
         purchases=isPurchased.objects.filter(course=course)
-        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases})
+        progress=[]
+        for i in purchases:
+            progress.append(Progress.objects.get(user=i.buyer,course=course))
+        purchases1=zip(purchases,progress)
+        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases1})
     else:
         if request.method == 'POST':
             if request.FILES.get('video') and request.FILES.get('image'):
@@ -311,3 +318,19 @@ def deluser(request,pk):
     user=CustomUser.objects.get(id=pk)
     user.delete()
     return redirect(request.META['HTTP_REFERER'])
+def usercreation(request):
+    if request.method == 'POST':
+        username=request.POST['username']
+        email=request.POST['email']
+        password=request.POST['password1']
+        if CustomUser.objects.filter(username=username).exists() or CustomUser.objects.filter(email=email).exists():
+            messages.error(request,'Username or Email already exists')
+            return redirect('usercreate')
+        else:
+            
+        
+            user=CustomUser.objects.create_user(username=username,email=email,password=password,userfor='beta')
+            BetaUser.objects.create(user=user)
+            messages.success(request,'Account Created Successfully')
+            return redirect('userslist')
+    return render(request,'beta_admin/admin/usercreation.html')

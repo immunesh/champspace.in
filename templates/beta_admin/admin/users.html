@@ -178,6 +178,10 @@
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
                     </a>
+                    <a href="{% url 'beta' %}" class="d-flex align-items-center gap-2 dropdown-item">
+                      <i class="ti ti-layout-dashboard fs-6"></i>
+                      <p class="mb-0 fs-3">UserBoard</p>
+                    </a>
                     
                     <a href="{% url 'logout' %}" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>
@@ -208,6 +212,18 @@
 
             <!-- Search and select START -->
             <div class="row g-3 align-items-center justify-content-between mb-4">
+              {% if messages %}
+        <div style="display: flex;justify-content: center;"><div class="message" style="width: 100%;">
+            {% for message in messages %}
+            
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger" >{{ message }}</div>
+            {% else %}
+            <div class="alert alert-success" >{{ message }}</div>
+              {% endif %}
+          
+          {% endfor %}</div></div>
+            {% endif %}
                 <!-- Search -->
                 <div class="col-md-10">
                     <form class="rounded position-relative">
@@ -218,7 +234,7 @@
                     </form>
                 </div>
                 <!-- button -->
-                <button  class="btn btn-success-soft col-md-2" >Create User</button>
+                <a  class="btn btn-outline-success col-md-2" href="{% url 'usercreate' %}" role="button" >Create User</a>
 
 
                 

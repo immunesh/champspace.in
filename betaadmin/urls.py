@@ -10,7 +10,7 @@ urlpatterns=[
     path('admin/edit-course/<str:pk>/',courseedit,name='editcourse'),
     path('admin/del-course/<str:pk>/',delcourse,name='deletecourse'),
     path('admin/del-user/<str:pk>/',deluser,name='del-user'),
-    path('admin/users/',userlist,name="userslist"),
+    path('admin/users/',userlist,name="userslist"),path('admin/user/create/',usercreation,name='usercreate'),
     path('mysubscriptions/',subscriptions,name='subscription'),
     path('quiz/',quiz,name='quiz'),
     path('settings/',settings,name='settings'),
