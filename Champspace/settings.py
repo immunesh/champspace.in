@@ -22,7 +22,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin','channels','daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'betaadmin.apps.BetaadminConfig',
     'gamma.apps.GammaConfig',
     'gammaadmin.apps.GammaadminConfig',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -65,8 +67,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Champspace.wsgi.application'
+ASGI_APPLICATION = 'Champspace.asgi.application'
 
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 

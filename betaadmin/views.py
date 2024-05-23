@@ -52,7 +52,9 @@ def admindashboard(request):
         totalearnings=0
         for purchases in purchased:
             totalearnings+=purchases.course.course_price
-        
+        if len(profit)<2:
+            profit.append(0)
+            profit.append('No purchase')
         context = {'activedata':activelist,
                 'joineddata':joinedlist,
                 'months':monthlist[:-1],
@@ -60,7 +62,7 @@ def admindashboard(request):
                 'courses':courses,
                 'breakchartdata':data,
                 'profit':profit[1],
-                'profitmonth':profit[0],
+                'profitmonth':profit[0] ,
                 'totalearn':totalearnings
                 }
 
@@ -276,7 +278,8 @@ def admincourseadd(request,pk):
         for i in purchases:
             progress.append(Progress.objects.get(user=i.buyer,course=course))
         purchases1=zip(purchases,progress)
-        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases1})
+        purch=isPurchased.objects.filter(course=course)
+        return render(request,'beta_admin/admin/course-details.html',{'course':course,'purchases':purchases1,'pr':purch})
     else:
         if request.method == 'POST':
             if request.FILES.get('video') and request.FILES.get('image'):
@@ -334,3 +337,22 @@ def usercreation(request):
             messages.success(request,'Account Created Successfully')
             return redirect('userslist')
     return render(request,'beta_admin/admin/usercreation.html')
+def listmessages(request):
+    user=request.user
+    betauser=BetaUser.objects.get(user=user)
+    chatbox=Chatbox.objects.filter(sender=betauser ) | Chatbox.objects.filter(receiver=betauser)
+    
+    return render(request,'beta_admin/messages-page.html',{'chatbox':chatbox,'betauser':betauser})
+def getmessages(request,pk):
+    user=request.user
+    betauser=BetaUser.objects.get(user=user)
+    chatbox1=Chatbox.objects.filter(sender=betauser ) | Chatbox.objects.filter(receiver=betauser)
+    chat1=Chatbox.objects.get(id=pk)
+    chat=Chat.objects.filter(chatbox=chat1)
+    receiver=0
+    if chat1.sender==betauser:
+        receiver=chat1.receiver.id
+    else:
+        receiver=chat1.sender.id
+
+    return render(request,'beta_admin/getmessages-page.html',{'chatbox':chatbox1,'betauser':betauser,'chats':chat,'chat1':chat1,'receiver':receiver})
