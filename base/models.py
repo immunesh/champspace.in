@@ -82,3 +82,16 @@ class Progress(models.Model):
     certified=models.BooleanField(default=False)
     def __int__(self):
         return self.progress
+
+class Chatbox(models.Model):
+    sender=models.ForeignKey(BetaUser,on_delete=models.CASCADE,related_name='Chatboxsender')
+    receiver=models.ForeignKey(BetaUser,on_delete=models.CASCADE,related_name='Chatboxreceiver')
+    
+
+class Chat(models.Model):
+    data=models.TextField()
+    chatbox=models.ForeignKey(Chatbox,related_name='chatbox',on_delete=models.CASCADE)
+    created_at=models.DateTimeField(auto_now_add=True)
+    sender=models.ForeignKey(BetaUser,related_name='sender',on_delete=models.CASCADE)
+    receiver=models.ForeignKey(BetaUser,related_name='receiver',on_delete=models.CASCADE)
+
