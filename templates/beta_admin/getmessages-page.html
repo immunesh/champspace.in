@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 {% load static %}
 
-<title>chat app - Bootdey.com</title>
+<title>Beta</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
@@ -286,7 +286,7 @@
 <img src="{% static 'assets/images/avatar/01.png' %}" alt="avatar">
 <div class="about">
 <div class="name">{% if chat.sender == betauser %}{{chat.receiver}}{% else %}{{chat.sender}}{% endif %}</div>
-<div class="status"> <i class="fa fa-circle offline"></i> {% if chat.sender == betauser %}{{chat.receiver.user.last_login |timesince }}{% else %}{{chat.sender.user.last_login|timesince}}{% endif %} ago</div>
+<div class="status"> <i class="fa fa-circle offline"></i> {% if chat.sender == betauser %}{{chat.receiver.user.last_login |timesince }}{% else %}{{chat.sender.user.last_login|timesince}}{% endif %}</div>
 </div>
 </li></a>
 {% endfor %}
@@ -313,7 +313,7 @@
         </div>
         </div>
         </div>
-        <div class="chat-history" style="height: 65vh;overflow: auto;">
+        <div class="chat-history" id="chat-history" style="height: 65vh;overflow: auto;">
         <ul class="m-b-0" id="list">
         {% for chat in chats %}
         {% if chat.sender == betauser %}
@@ -337,6 +337,7 @@
         {% endfor %}
        
         </ul>
+        
         </div>
         <div class="chat-message clearfix">
         <div class="input-group mb-0">
@@ -354,8 +355,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 	var messageInput=document.querySelector("#message-input");
+    var chatHistory = document.getElementById('chat-history');
+    chatHistory.scrollTop = chatHistory.scrollHeight;
     var list=document.getElementById('list');
-    const chatSocket = new WebSocket("ws://"+window.location.host + "/beta/getmessages/{{chat1.id}}/");
+    const chatSocket = new WebSocket("wss://"+window.location.host + "/beta/getmessages/{{chat1.id}}/");
     chatSocket.onopen=function(e){
       console.log("the connection was setup successfully");
     };
@@ -418,6 +421,8 @@
             li.appendChild(div1);
             list.appendChild(li);
         }
+        var chatHistory = document.getElementById('chat-history');
+        chatHistory.scrollTop = chatHistory.scrollHeight;
     
     }
 </script>
