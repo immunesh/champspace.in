@@ -358,7 +358,7 @@
     var chatHistory = document.getElementById('chat-history');
     chatHistory.scrollTop = chatHistory.scrollHeight;
     var list=document.getElementById('list');
-    const chatSocket = new WebSocket("ws://"+window.location.host + "/beta/getmessages/{{chat1.id}}/");
+    const chatSocket = new WebSocket("wss://"+window.location.host + "/beta/getmessages/{{chat1.id}}/");
     chatSocket.onopen=function(e){
       console.log("the connection was setup successfully");
     };
