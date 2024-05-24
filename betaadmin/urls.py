@@ -26,5 +26,7 @@ urlpatterns=[
     path('editProfile/',editprofile,name='editprofile'),
     path('viewprofile/<str:id>/',viewProfile,name='viewprofile'),
     path('forgot-password/',forget,name='forgot'),
-    path('forgot-password/<token>/',forgotreset,name='reset')
+    path('forgot-password/<token>/',forgotreset,name='reset'),
+    path('admin/messages/',adminmsgs,name='adminmsgs'),
+    path('admin/messages/<str:pk>/',delmsg,name='admindelmsg')
 ]

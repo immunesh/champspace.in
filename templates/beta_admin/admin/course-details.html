@@ -61,6 +61,14 @@
                 </span>
                 <span class="hide-menu">Users</span>
               </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'adminmsgs' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-messages"></i>
+                </span>
+                <span class="hide-menu">Messages</span>
+              </a>
             </li><!--
             <li class="sidebar-item">
               <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
@@ -351,7 +359,7 @@
                                                         </div>
                                                         <div class="mb-0 ms-2">
                                                             <!-- Title -->
-                                                            <h6 class="mb-0"><a href="#" class="stretched-link">{{purchase.buyer}}</a></h6>
+                                                            <h6 class="mb-0"><a href="{% url 'viewprofile' purchase.buyer.id %}" class="stretched-link">{{purchase.buyer}}</a></h6>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -21,7 +21,7 @@
 <body>
   <!--  Body Wrapper -->
   <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-    data-sidebar-position="fixed" data-header-position="fixed">
+    data-sidebar-position="fixed" data-header-position="fixed" >
     <!-- Sidebar Start -->
     <aside class="left-sidebar">
       <!-- Sidebar scroll-->
@@ -59,6 +59,14 @@
                   <i class="ti ti-bookmark"></i>
                 </span>
                 <span class="hide-menu">My Courses</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'messages' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-messages"></i>
+                </span>
+                <span class="hide-menu">Messages</span>
               </a>
             </li>
             <li class="sidebar-item">

@@ -356,3 +356,10 @@ def getmessages(request,pk):
         receiver=chat1.sender.id
 
     return render(request,'beta_admin/getmessages-page.html',{'chatbox':chatbox1,'betauser':betauser,'chats':chat,'chat1':chat1,'receiver':receiver})
+def adminmsgs(request):
+    msgs=Chat.objects.all().order_by('-created_at')
+    return render(request,'beta_admin/admin/messageslist.html',{'msgs':msgs})
+def delmsg(request,pk):
+    msg=Chat.objects.get(id=pk)
+    msg.delete()
+    return redirect(request.META['HTTP_REFERER'])

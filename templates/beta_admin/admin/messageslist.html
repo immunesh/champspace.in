@@ -207,41 +207,16 @@
     <!-- Title -->
     <div class="row mb-3">
         <div class="col-12 d-sm-flex justify-content-between align-items-center">
-            <h1 class="h1 mb-2 mb-sm-0">Courses</h1>
-            <a href="{% url 'admincourseAM' 'add' %}" class="btn btn-outline-primary mb-0">Create a Course</a>
+            <h1 class="h1 mb-2 mb-sm-0">Messages</h1>
+            <a href="#" class="btn btn-outline-primary mb-0">Send Message</a>
         </div>
     </div>
 
-    <!-- Course boxes START -->
-    <div class="row g-4 mb-4">
-        <!-- Course item -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="text-center p-4 bg-primary border border-primary rounded-3" style="--bs-bg-opacity: 0.1;    padding: 1.6rem !important;">
-                <h6 style="font-size: large;">Total Courses</h6>
-                <h2 class="mb-0 text-primary">{{courses.count}}</h2>
-            </div>
-        </div>
 
-        <!-- Course item -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="text-center p-4 bg-success bg-opacity-10 border border-success rounded-3" style="    --bs-bg-opacity: 0.1;    padding: 1.6rem !important;">
-                <h6 style="font-size: large;">Total Purchases</h6>
-                <h2 class="mb-0 text-success">{{purchases.count}}</h2>
-            </div>
-        </div>
 
-        <!-- Course item -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="text-center p-4  bg-warning bg-opacity-15 border border-warning rounded-3" style="--bs-bg-opacity: 0.1;    padding: 1.6rem !important;">
-                <h6 style="font-size: large;">Free Courses</h6>
-                <h2 class="mb-0 text-warning">{{free.count}}</h2>
-            </div>
-        </div>
-    </div>
-    <!-- Course boxes END -->
 
-    <!-- Card START -->
-    <div class="card bg-transparent border">
+     <!-- Card START -->
+     <div class="card bg-transparent border">
 
         <!-- Card header START -->
         <div class="card-header bg-light border-bottom">
@@ -284,12 +259,11 @@
                     <!-- Table head -->
                     <thead>
                         <tr>
-                            <th scope="col" class="border-0 rounded-start">Course Name</th>
-                            <th scope="col" class="border-0">Instructor</th>
-                            <th scope="col" class="border-0">Added Date</th>
-                            <th scope="col" class="border-0">Type</th>
-                            <th scope="col" class="border-0">Price</th>
-                            <th scope="col" class="border-0">Lectures</th>
+                            <th scope="col" class="border-0 rounded-start">Message</th>
+                            <th scope="col" class="border-0">Sent by</th>
+                            <th scope="col" class="border-0">Received by</th>
+                            <th scope="col" class="border-0">Sent At</th>
+                            
                             <th scope="col" class="border-0 rounded-end">Action</th>
                         </tr>
                     </thead>
@@ -297,55 +271,30 @@
                     <!-- Table body START -->
                     <tbody>
                         
-                        {% for course in courses %}
+                        {% for msg in msgs %}
                         <!-- Table row -->
                         <tr>
                             <!-- Table data -->
-                            <td>
-                                <div class="d-flex align-items-center position-relative">
-                                    <!-- Image -->
-                                    <div class="w-60px">
-                                        <img src='{{ course.course_image.url }}' class="rounded" alt="">
-                                    </div>
-                                    <!-- Title -->
-                                    <h6 class="table-responsive-title mb-0 ms-2">	
-                                        <a href="{% url 'admincourseAM' course.id %}" class="stretched-link">{{course}}</a>
-                                    </h6>
-                                </div>
+                            <td title="{{msg.data}}">
+                                {{msg.data|slice:'0:15'}}...
                             </td>
 
                             <!-- Table data -->
                             <td>
-                                <div class="d-flex align-items-center mb-3">
-                                    <!-- Avatar -->
-                                    <div class="avatar avatar-xs flex-shrink-0">
-                                        <img class="avatar-img rounded-circle" src="{% if course.course_instructor.profilepic == '' %}{% static 'assets/images/avatar/01.png' %}{% else %}{{ course.course_instructor.profilepic.url }}{% endif %}" alt="avatar">
-                                    </div>
-                                    <!-- Info -->
-                                    <div class="ms-2">
-                                        <h6 class="mb-0 fw-light">{{course.course_instructor}}</h6>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <!-- Table data -->
-                            <td>{{course.course_createdon}}</td>
-
-                            <!-- Table data -->
-                            <td> <span class="badge text-bg-purple">{{course.course_level}}</span> </td>
-
-                            <!-- Table data -->
-                            <td>{{ course.course_price }} Rs.</td>
-
-                            <!-- Table data -->
-                            <td>
-                                <span class="badge bg-warning text-warning" style="--bs-bg-opacity: 0.15;">{{ course.lectures }}</span>
+                              <h6><a href="{% url 'viewprofile' msg.sender.id %}">{{msg.sender}}</a>  </h6>
+                              
                             </td>
 
                             <!-- Table data -->
                             <td>
-                                <a href="{% url 'editcourse' course.id %}" class="btn btn-sm btn-success-soft me-1 mb-1 mb-md-0">Edit</a>
-                                <a href="{% url 'deletecourse' course.id %}" class="btn btn-sm btn-danger-soft mb-0">Delete</a>
+                              <h6><a href="{% url 'viewprofile' msg.receiver.id %}">{{msg.receiver}}</a></td>
+</h6>
+                            <!-- Table data -->
+                            <td>{{msg.created_at}} </td>
+
+                            
+                            <td>
+                                <a href="{% url 'admindelmsg' msg.id %}" class="btn btn-danger-soft mb-0">Delete</a>
                             </td>
                         </tr>
                         {% endfor %}
