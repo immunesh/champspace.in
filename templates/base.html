@@ -107,7 +107,12 @@
         </script>
 
         <script src="https://kit.fontawesome.com/5d48644dd5.js" crossorigin="anonymous"></script>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     </head>
 
@@ -120,10 +125,9 @@
                 <div class="container-fluid px-3 px-xl-5">
                     <!-- Logo START -->
                     <a class="navbar-brand" href="index.html">
-                        <img class="light-mode-item navbar-brand-item" src="{% static 'assets/images/logo.svg' %}"
+                        <img class="light-mode-item navbar-brand-item" src="{% static 'assets/images/element/logo.jpg' %}"
                             alt="logo">
-                        <img class="dark-mode-item navbar-brand-item" src="{% static 'assets/images/logo-light.svg' %}"
-                            alt="logo">
+                       
                     </a>
                     <!-- Logo END -->
 
@@ -145,7 +149,7 @@
                         <ul class="navbar-nav navbar-nav-scroll me-auto">
                             <!-- Nav item 1 Demos -->
                             <li class="nav-item dropdown dropdown-menu-shadow-stacked">
-                                <a class="nav-link bg-primary bg-opacity-10 rounded-3 text-primary px-3 py-3 py-xl-0"
+                                <a class="nav-link bg-primary bg-opacity-10 rounded-3 text-white px-3 py-3 py-xl-0"
                                     href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false"><i class="bi bi-ui-radios-grid me-2"></i><span>Category</span></a>
                                 <ul class="dropdown-menu" aria-labelledby="categoryMenu">
@@ -195,7 +199,7 @@
                             <!-- Nav item 5 contact-->
                             <li class="nav-item dropdown dropdown-fullwidth">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">Contact Us Us</a>
+                                    aria-expanded="false">Contact Us</a>
                             </li>
 
                         </ul>
@@ -206,13 +210,10 @@
 
                     <!-- Profile START -->
                     <div class="dropdown ms-1 ms-lg-0">
-                        <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
-                            data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <img class="avatar-img rounded-circle" src="{% static 'assets/images/avatar/01.jpg' %}"
-                                alt="avatar">
-                        </a>
-                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+                        <a class="nav-link bg-primary bg-opacity-10 rounded-3 text-white px-3 py-3 py-xl-0"
+                            href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><span>Login</span></a>
+                        {% comment %} <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
                             aria-labelledby="profileDropdown">
                             <!-- Profile info -->
                             <li class="px-3 mb-3">
@@ -274,9 +275,9 @@
                                 </div>
                             </li>
                             <!-- Dark mode options END-->
-                        </ul>
+                        </ul> {% endcomment %}
                     </div>
-                    <!-- Profile START -->
+                    <!-- Profile End -->
                 </div>
             </nav>
             <!-- Nav END -->
@@ -305,8 +306,8 @@
                     <div class="col-lg-3">
                         <!-- logo -->
                         <a class="me-0" href="index.html">
-                            <img class="light-mode-item h-40px" src="{% static 'assets/images/logo.svg' %}" alt="logo">
-                            <img class="dark-mode-item h-40px" src="{% static 'assets/images/logo-light.svg' %}" alt="logo">
+                            <img class="light-mode-item h-40px" src="{% static 'assets/images/element/logo.jpg' %}" alt="logo">
+                            
                         </a>
                         <p class="my-3">Eduport education theme, built specifically for the education centers which is
                             dedicated to teaching and involve learners.</p>
@@ -448,6 +449,9 @@
 
         <!-- Template Functions -->
         <script src="{% static 'assets/js/functions.js' %}"></script>
+        <script>
+            AOS.init();
+        </script>
 
     </body>
 
