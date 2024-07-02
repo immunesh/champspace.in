@@ -119,8 +119,8 @@
             <nav class="navbar navbar-expand-xl">
                 <div class="container-fluid px-3 px-xl-5">
                     <!-- Logo START -->
-                    <a class="navbar-brand" href="index.html">
-                        <img class="light-mode-item navbar-brand-item" src="{% static 'assets/images/logo.svg' %}"
+                    <a class="navbar-brand" href="{% url "home" %}">
+                        <img class="light-mode-item navbar-brand-item" src="{% static 'assets/images/logo.png' %}"
                             alt="logo">
                         <img class="dark-mode-item navbar-brand-item" src="{% static 'assets/images/logo-light.svg' %}"
                             alt="logo">
@@ -169,9 +169,8 @@
                         <!-- Nav Main menu START -->
                         <ul class="navbar-nav navbar-nav-scroll me-auto">
                             <!-- Nav item 1 Home -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="#" id="demoMenu" data-bs-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">Home</a>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="{% url "home" %}">Home</a>
                             </li>
 
                             <!-- Nav item 2 How it works -->
@@ -187,15 +186,13 @@
                             </li>
 
                             <!-- Nav item 4 about-->
-                            <li class="nav-item dropdown dropdown-fullwidth">
-                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">About Us</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "about" %}">About Us</a>
                             </li>
 
                             <!-- Nav item 5 contact-->
-                            <li class="nav-item dropdown dropdown-fullwidth">
-                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">Contact Us Us</a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "contact" %}">Contact Us</a>
                             </li>
 
                         </ul>
