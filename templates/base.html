@@ -190,13 +190,19 @@
                                     aria-haspopup="true" aria-expanded="false">Courses</a>
                             </li>
 
-                            <!-- Nav item 4 about-->
+                             <!-- Nav item 4 contact-->
+                             <li class="nav-item dropdown dropdown-fullwidth">
+                                <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">Blog</a>
+                            </li>
+
+                            <!-- Nav item 5 about-->
                             <li class="nav-item dropdown dropdown-fullwidth">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">About Us</a>
                             </li>
 
-                            <!-- Nav item 5 contact-->
+                            <!-- Nav item 6 contact-->
                             <li class="nav-item dropdown dropdown-fullwidth">
                                 <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">Contact Us</a>
@@ -210,7 +216,7 @@
 
                     <!-- Profile START -->
                     <div class="dropdown ms-1 ms-lg-0">
-                        <a class="nav-link bg-primary bg-opacity-10 rounded-3 text-white px-3 py-3 py-xl-0"
+                        <a class="btn btn-dark mb-0"
                             href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"><span>Login</span></a>
                         {% comment %} <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
@@ -286,16 +292,66 @@
 
         {% block content %}{% endblock content %}s
         <!--Newsletter-->
-        <section id="newsletter" class="section-p1 section-m1">
-            <div class="newstext">
-                <h4>Sign Up For Newsletters</h4>
-                <p>Get E-mail Updates about our latest <span>courses.</span></p>
-            </div>
-            <div class="form">
-                <input type="text" placeholder="Your email address">
-                <button class="normal">Sign Up</button>
+        <section class="mb-n9 position-relative z-index-9">
+            <div class="container">
+                <div class="row">
+                    <div class="col-11 col-md-10 mx-auto">
+                        <div class="bg-warning rounded-3 shadow p-3 p-sm-4 position-relative overflow-hidden">
+                            <!-- SVG decoration -->
+                            <figure class="position-absolute top-100 start-100 translate-middle mt-n6 ms-n5">
+                                <svg width="211px" height="211px">
+                                    <path class="fill-white opacity-4" d="M210.030,105.011 C210.030,163.014 163.010,210.029 105.012,210.029 C47.013,210.029 -0.005,163.014 -0.005,105.011 C-0.005,47.015 47.013,-0.004 105.012,-0.004 C163.010,-0.004 210.030,47.015 210.030,105.011 Z"></path>
+                                </svg>
+                            </figure>
+                            <!-- SVG decoration -->
+                            <figure class="position-absolute top-100 start-0 translate-middle mt-n6 ms-5">
+                                <svg width="141px" height="141px">
+                                    <path class="fill-white opacity-4" d="M140.520,70.258 C140.520,109.064 109.062,140.519 70.258,140.519 C31.454,140.519 -0.004,109.064 -0.004,70.258 C-0.004,31.455 31.454,-0.003 70.258,-0.003 C109.062,-0.003 140.520,31.455 140.520,70.258 Z"></path>
+                                </svg>
+                            </figure>
+                            <!-- SVG decoration -->
+                            <figure class="position-absolute top-0 start-50 mt-4 ms-n9">
+                                <svg width="41px" height="41px">
+                                    <path class="fill-white opacity-4" d="M40.531,20.265 C40.531,31.458 31.457,40.531 20.265,40.531 C9.072,40.531 -0.001,31.458 -0.001,20.265 C-0.001,9.073 9.072,-0.001 20.265,-0.001 C31.457,-0.001 40.531,9.073 40.531,20.265 Z"></path>
+                                </svg>
+                            </figure>
+        
+                            <!-- Icon logos START -->
+                            <div class="p-2 bg-white shadow rounded-3 rotate-74 position-absolute top-0 start-0 ms-3 mt-5 d-none d-sm-block">
+                                <img src="{% static 'assets/images/client/science.svg' %}" class="h-40px" alt="Icon">
+                            </div>
+                            <div class="p-1 bg-white shadow rounded-3 rotate-74 position-absolute top-0 end-0 mt-5 me-5 d-none d-sm-block">
+                                <img src="{% static 'assets/images/client/angular.svg' %}" class="h-30px" alt="Icon">
+                            </div>
+                            <div class="p-2 bg-white shadow rounded-3 rotate-130 position-absolute bottom-0 start-50 ms-5 mb-2 d-none d-lg-block">
+                                <img src="{% static 'assets/images/client/figma.svg' %}" class="h-20px" alt="Icon">
+                            </div>
+                            <!-- Icon logos END -->
+        
+                            <div class="row">
+                                <div class="col-md-8 mx-auto text-center py-5 position-relative">
+                                    <!-- Title -->
+                                    <h2>Subscribe to our Newsletter for Newest Course Updates</h2>
+                                    <!-- Form -->
+                                    <form class="row align-items-center justify-content-center mt-3">
+                                        <div class="col-lg-8">
+                                            <div class="bg-body shadow rounded-pill p-2">
+                                                <div class="input-group">
+                                                    <input class="form-control border-0 me-1" type="email" placeholder="Enter your email">
+                                                    <button type="button" class="btn btn-blue mb-0 rounded-pill">Subscribe!</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div> <!-- Row END -->
+                        </div>
+                    </div>
+                </div> <!-- Row END -->
             </div>
         </section>
+        <!--End Newsletter-->
+
         <!-- Footer START -->
         <footer class="pt-5">
             <div class="container">
@@ -401,7 +457,7 @@
                         <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
                             <!-- copyright text -->
                             <div class="text-body text-primary-hover"> Copyrights ©2024 Eduport. Build by <a
-                                    href="https://www.webestica.com/" target="_blank" class="text-body">Webestica</a></div>
+                                    href="https://www.webestica.com/" target="_blank" class="text-body">Champspace</a></div>
                             <!-- copyright links-->
                             <div class="justify-content-center mt-3 mt-lg-0">
                                 <ul class="nav list-inline justify-content-center mb-0">

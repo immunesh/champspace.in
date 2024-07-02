@@ -765,7 +765,7 @@ progress {
 }
 
 .blockquote-footer::before {
-    content: "— ";
+    content: "—";
 }
 
 .img-fluid {
@@ -10477,7 +10477,7 @@ fieldset:disabled .btn {
 }
 
 .mb-n9 {
-    margin-bottom: -10rem !important;
+    margin-bottom: 0rem !important;
 }
 
 .ms-n1 {
@@ -10962,6 +10962,7 @@ fieldset:disabled .btn {
 
 .fs-1 {
     font-size: calc(1.40625rem + 1.875vw) !important;
+    
 }
 
 .fs-2 {
@@ -23974,8 +23975,8 @@ html[dir=rtl] .choices__input {
     box-shadow: 0 0 0px 4px #5c5c5c;
     margin: auto 0;
     position: absolute;
-    bottom: 110px;
-    left: -60px;
+    bottom: 75px;
+    left: -30px;
 }
 .process-point-right:before{
     content: "";
@@ -23999,7 +24000,7 @@ html[dir=rtl] .choices__input {
     margin: auto 0;
     position: absolute;
     bottom: 120px;
-    right: -60px;
+    right: -75px;
 }
 
 .process-point-left{
@@ -24011,16 +24012,16 @@ html[dir=rtl] .choices__input {
     box-shadow: 0 0 0px 4px #5c5c5c;
     margin: auto 0;
     position: absolute;
-    bottom: 95px;
-    right: -60px;
+    bottom: 75px;
+    right: -85px;
 }
 .process-point-left:before {
     content: "";
-    height: 170px;
+    height: 200px;
     width: 11px;
     background: #5c5c5c;
     display: inline-grid;
-    transform: rotate(-38deg);
+    transform: rotate(-30deg);
     position: relative;
     left: 50px;
     top: 0px;
