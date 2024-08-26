@@ -38,6 +38,51 @@ Table Of Content
 27 PURECOUNTER
 ====================== */
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the URL specified in the response
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Handle form errors
+                    displayErrors(data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    function displayErrors(errors) {
+        const errorContainer = document.querySelector('#error-container');
+        errorContainer.innerHTML = '';  // Clear previous errors
+
+        for (const [field, messages] of Object.entries(errors)) {
+            messages.forEach(msg => {
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = msg.message || msg;
+                errorContainer.appendChild(errorMessage);
+            });
+        }
+    }
+});
+
 "use strict";
 ! function() {
 
