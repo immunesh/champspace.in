@@ -167,6 +167,7 @@
                                             href="#">View all categories</a></li>
                                 </ul>
                             </li>
+
                         </ul>
                         <!-- Nav category menu END -->
 
@@ -215,10 +216,14 @@
                     <!-- Main navbar END -->
 
                     <!-- Profile START -->
-                    <div class="dropdown ms-1 ms-lg-0">
-                        <a class="btn btn-dark mb-0"
-                            href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"><span>Login</span></a>
+                    <!-- Button -->
+
+                    <div class="align-items-center mt-0">
+                        <div class="d-grid">
+                                <a href="{% url 'sign-in' %}" class="btn btn-primary mb-0">Login</a>
+                        </div>
+                    </div>
+
                         {% comment %} <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
                             aria-labelledby="profileDropdown">
                             <!-- Profile info -->
@@ -282,7 +287,7 @@
                             </li>
                             <!-- Dark mode options END-->
                         </ul> {% endcomment %}
-                    </div>
+                    
                     <!-- Profile End -->
                 </div>
             </nav>
