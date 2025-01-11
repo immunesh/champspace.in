@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+</head>
+<body>
+    <h1>Complete Your Payment</h1>
+    <form action="{% url 'verify_payment' %}" method="POST">
+        {% csrf_token %}
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="{{ razorpay_key }}"
+            data-amount="{{ amount }}"
+            data-currency="INR"
+            data-order_id="{{ razorpay_order_id }}"
+            data-buttontext="Pay Now"
+            data-name="Course Payment"
+            data-description="Payment for {{ course.name }}"
+            data-image=""
+            data-prefill.name="{{ user_name }}"
+            data-prefill.email="{{ user_email }}"
+            data-theme.color="#F37254"
+        ></script>
+        <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
+    </form>
+</body>
+</html>

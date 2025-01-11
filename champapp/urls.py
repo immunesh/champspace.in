@@ -11,6 +11,7 @@ from .views import instructor_dashboard
 from .views import admin_student_list
 from .views import course_list_view
 from champapp.views import course_list_view, delete_course_view, course_detail_adv
+from .views import create_payment, verify_payment
 
 
 urlpatterns = [
@@ -52,6 +53,8 @@ urlpatterns = [
     path('courses/<int:course_id>/continue/', views.continue_course, name='continue_course'),
     path('student/bookmarks/', views.student_bookmark, name='student_bookmarks'),
     path('toggle-favorite/<int:course_id>/', views.toggle_favorite, name='toggle_favorite'),
+    path('courses/<int:course_id>/pay/', create_payment, name='create_payment'),
+    path('verify-payment/', verify_payment, name='verify_payment'),
 
 
 
