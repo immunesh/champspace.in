@@ -149,99 +149,100 @@ def custom_403_view(request, *args, **kwargs):
     return render(request, 'champapp/403.html', status=403)
 
 
-# Check if the user is a superuser
+from django.db.models import Count, Sum, F, Q
+
 @user_passes_test(lambda u: u.is_superuser or u.is_staff, login_url='/403/')
 def admin_dashboard(request):
-    return render(request, 'champapp/admin/admin-dashboard.html')
+    """View for the admin dashboard."""
+    total_courses = Course1.objects.count()
+    total_enrolled_courses = EnrolledCourse.objects.count()
+    courses_in_progress = EnrolledCourse.objects.filter(progress__lt=200).count()
+
+    # Total watch time (adjust based on chosen option)
+    total_watch_time_minutes = (
+        EnrolledCourse.objects.aggregate(
+            total_watch_time=Sum(F('completed_lectures') * 10)  # Example for Option 1
+        )['total_watch_time'] or 0
+    )
+    total_watch_time_hours = total_watch_time_minutes // 60  # Convert to hours
+
+    context = {
+        "total_courses": total_courses,
+        "total_enrolled_courses": total_enrolled_courses,
+        "courses_in_progress": courses_in_progress,
+        "total_watch_time_hours": total_watch_time_hours,
+    }
+
+    return render(request, 'champapp/admin/admin-dashboard.html', context)
+
 
 
 
 
 ############### Student dashboard #####################################################
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Course1
-from django.urls import reverse
-from .models import UserTopicProgress
-
+from django.core.exceptions import ObjectDoesNotExist
+from .models import StudentProfile, UserCourse, EnrolledCourse, Course1, Lecture, Topic
 
 @login_required
 def user_dashboard(request):
     user = request.user
-    
-    # Try to get the user's profile
+
+    # Get or create the user's profile
     try:
         user_profile = StudentProfile.objects.get(user=user)
     except ObjectDoesNotExist:
-        # If the profile does not exist, create one with default values
         user_profile = StudentProfile.objects.create(user=user)
-
-    context = {
-        "profile": user_profile,  # Make sure 'profile' is passed to the template
-    }
 
     # Fetch courses associated with the user
     user_courses = UserCourse.objects.filter(user=user)
-    
-# Fetch courses the user is enrolled in
     enrolled_courses = EnrolledCourse.objects.filter(student=user).select_related('course')
 
-
-    # Prepare course progression data
+    # Prepare enrolled courses with progress data
     courses_with_progress = []
     for enrollment in enrolled_courses:
         course = enrollment.course
-        total_lectures = course.lectures.count()
-        total_topics = 0
-        completed_topics = 0
+        lectures = course.lectures.prefetch_related('topics')
+        total_lectures = lectures.count()
+        completed_lectures = 0
 
-        # Calculate total topics and completed topics
-        for lecture in course.lectures.all():
-            total_topics += lecture.topics.count()
-            completed_topics += UserTopicProgress.objects.filter(
-                user=user,
-                topic__in=lecture.topics.all(),
-                completed=True
-            ).count()
+        for lecture in lectures:
+            if lecture.topics.filter(usertopicprogress__user=user, usertopicprogress__completed=True).count() == lecture.topics.count():
+                completed_lectures += 1
 
-        # Calculate progression
-        progression_percentage = (completed_topics / total_topics) * 100 if total_topics > 0 else 0
+        progress_percentage = enrollment.progress_percentage
 
         courses_with_progress.append({
-            'course': course,
-            'progression': round(progression_percentage, 2),
-            'total_lectures': total_lectures,
-            'total_topics': total_topics,
-            'completed_topics': completed_topics,
+            "course": course,
+            "progress_percentage": progress_percentage,
+            "completed_lectures": completed_lectures,
+            "total_lectures": total_lectures,
         })
 
-
-    # If no courses are enrolled, set default values
-    if not enrolled_courses.exists():
-        completed_lessons = 0
-        achieved_certificates = 0
-        points = 0
-    else:
-        completed_lessons = sum(course.completed_lectures for course in enrolled_courses)
-        achieved_certificates = user_profile.achieved_certificates
-        points = user_profile.points    
-        enrolled_courses = EnrolledCourse.objects.filter(
-        student=request.user
-    ).select_related('course')
+    # Prepare modal data (for all courses or dynamically on demand)
+    modal_course_data = {}
+    for course in Course1.objects.all():  # Adjust based on your logic
+        lectures = Lecture.objects.filter(course=course).prefetch_related('topics')
+        modal_course_data[course.id] = {
+            'lectures': lectures,
+            'progress_percentage': 0,  # Optional logic for user-specific progress
+        }
 
     context = {
         "user": user,
         "profile": user_profile,
         "courses": user_courses,
         "total_courses": enrolled_courses.count(),
-        "completed_lessons": completed_lessons,
-        "achieved_certificates": achieved_certificates,
-        "points": points,
-        "enrolled_courses": enrolled_courses,  # Add enrolled courses to context
-        "courses_with_progress": courses_with_progress,  # List of courses with progress data
-
+        "enrolled_courses": courses_with_progress,
+        "modal_course_data": modal_course_data,  # Include modal data
+        "lectures": Lecture.objects.all(),
+        "progress_percentage": 0,
     }
     return render(request, "champapp/student_dashboard/student-dashboard.html", context)
+
+
+
 
 ################ student edit profile ###############################################################################
 @login_required
@@ -336,12 +337,35 @@ def edit_instructor_profile(request):
 
 
 
+#------------ course category -------------#
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from .models import Course1, CourseCategory
+from django.db.models import Count
+
 
 def admin_course_category(request):
-    # Fetch all course categories to display in the template
-    categories = CourseCategory.objects.all()
+    courses = Course1.objects.select_related('creator')
+    
+    # Get creator_id from query parameters (if provided)
+    creator_id = request.GET.get('creator_id')
+    status = request.GET.get('status')
 
-    return render(request, 'champapp/admin/admin-course-category.html', {'categories': categories})
+    if creator_id:
+        courses = courses.filter(creator_id=creator_id)
+    if status:
+        courses = courses.filter(status=status)
+        
+
+    # Pagination logic: Show 10 courses per page
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'champapp/admin/admin-course-category.html', {
+        'courses': page_obj,
+    })
+
 
 
 ########################testtttttttttttttttttt##################
@@ -499,29 +523,39 @@ def instructor_dashboard(request):
             )
             .order_by('-total_enrollments')
         )
+        # Debugging step: Print the course ids
+        for course in most_selling_courses:
+            print(f"Course ID: {course.id}, Course Name: {course.name}")
 
         # Prepare course data for the template
         course_data = []
         for course in most_selling_courses:
+            total_progress = 0
+            total_enrollments = 0
+            enrollment = None
             for enrollment in EnrolledCourse.objects.filter(course=course):
                 # Calculate progress for each enrollment
                 if course.total_lecture > 0:
                     progress = (enrollment.completed_lectures / course.total_lecture) * 100
-                else:
-                    progress = 0  # Prevent division by zero
+                    total_progress += progress
+                    total_enrollments += 1
+            average_progress = total_progress / total_enrollments if total_enrollments > 0 else 0
+    
                 
-                course_data.append({
-                    "course_name": course.name,
-                    "progress": progress,
-                    "course_id": course.id,
-                    "enrollment": enrollment,
-                    "name": course.name,
-                    "image": course.image.url if course.image else None,
-                    "total_enrollments": course.total_enrollments or 0,
-                    "total_revenue": course.total_revenue or 0,
-                    "duration": timesince(course.created_at) if course.created_at else "N/A",
+               
+            course_data.append({
+                "course_name": course.name,
+                "progress": average_progress,
+                "course_id": course.id,
+                "enrollment": enrollment,
+                "name": course.name,
+                "image": course.image.url if course.image else None,
+                "total_enrollments": course.total_enrollments or 0,
+                "total_revenue": course.total_revenue or 0,
+                "duration": timesince(course.created_at) if course.created_at else "N/A",
 
-                })
+
+            })
 
     # Try to get the user's profile (assuming it's a StudentProfile)
     try:
@@ -551,6 +585,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from .models import StudentProfile  # Import your StudentProfile model if applicable
 from django.contrib.auth.models import User  # Import the User model if needed
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from champapp.models import StudentProfile, EnrolledCourse, UserTopicProgress
 
 # Decorator to check if the user is a superuser
 def superuser_required(view_func):
@@ -558,24 +596,18 @@ def superuser_required(view_func):
 
 @superuser_required
 def admin_student_list(request):
-    # Fetch only non-staff users (students)
-    students = User.objects.filter(is_staff=False)  # This filters out staff (instructors)
-    
-    # If you are using StudentProfile, you can also join it like this:
-    # students = StudentProfile.objects.filter(user__is_staff=False)
-
-    context = {'students': students}
-    return render(request, 'champapp/admin/admin-student-list.html', context)
+    # Fetch non-staff users' profiles
+    students_list = StudentProfile.objects.filter(user__is_staff=False).select_related('user')
 
 
-from django.core.paginator import Paginator
-
-def admin_student_list(request):
-    students_list = StudentProfile.objects.all()
-    paginator = Paginator(students_list, 6)  # 6 students per page
+    # Paginate the student list (6 profiles per page)
+    paginator = Paginator(students_list, 6)
     page_number = request.GET.get('page')
     students = paginator.get_page(page_number)
-    context = {'students': students}
+
+    context = {
+        'students': students,
+    }
     return render(request, 'champapp/admin/admin-student-list.html', context)
 
 
@@ -665,7 +697,7 @@ def create_course_step3(request, course_id):
             return redirect('step_3', course_id=course.id)
         
         elif 'add_topic' in request.POST:
-            topic_form = TopicForm(request.POST)
+            topic_form = TopicForm(request.POST, request.FILES)
             if topic_form.is_valid():
                 topic = topic_form.save(commit=False)
                 topic.lecture_id = request.POST['lecture_id']
@@ -675,7 +707,7 @@ def create_course_step3(request, course_id):
         elif 'edit_topic' in request.POST:
             topic_id = request.POST.get('topic_id')
             topic = Topic.objects.get(id=topic_id)
-            topic_form = TopicForm(request.POST, instance=topic)
+            topic_form = TopicForm(request.POST, request.FILES, instance=topic)
             if topic_form.is_valid():
                 topic_form.save()
                 return redirect('step_3', course_id=course.id)
@@ -684,6 +716,7 @@ def create_course_step3(request, course_id):
             topic_id = request.POST.get('topic_id')
             Topic.objects.filter(id=topic_id).delete()
             return redirect('step_3', course_id=course.id)
+    
 
 
     return render(request, 'champapp/step3.html', {
@@ -774,22 +807,20 @@ from django.db.models import Count
 def course_list_view(request):
     # Fetch all courses with their creators
     courses = Course1.objects.select_related('creator')
-    # Get the counts for each category
-    live_courses_count = Course1.objects.filter(status=Course1.LIVE).count()
-    pending_courses_count = Course1.objects.filter(status=Course1.PENDING).count()
-    rejected_courses_count = Course1.objects.filter(status=Course1.REJECTED).count()
-    # Debug: Log or print to check courses
-    print(courses)  # Or use logging.debug if preferred
     
     # Get creator_id from query parameters (if provided)
     creator_id = request.GET.get('creator_id')
     status = request.GET.get('status')
+    course_name = request.GET.get('course_name')
 
     if creator_id:
         courses = courses.filter(creator_id=creator_id)
     if status:
         courses = courses.filter(status=status)
-        
+    # Apply course_name filter if provided
+    if course_name:
+        courses = courses.filter(name__icontains=course_name) 
+
 
     # Pagination logic: Show 10 courses per page
     paginator = Paginator(courses, 10)
@@ -799,15 +830,13 @@ def course_list_view(request):
     # Render the course list template with paginated courses
     return render(request, 'champapp/course_list.html', {
         'courses': page_obj,
-        'live_courses_count': live_courses_count,
-        'pending_courses_count': pending_courses_count,
-        'rejected_courses_count': rejected_courses_count,
     })
 
 
 #########coursedelete###########
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from .models import Course1
 
 @login_required
 @user_passes_test(superuser_or_staff_required)
@@ -815,13 +844,13 @@ def delete_course_view(request, course_id):
     course = get_object_or_404(Course1, id=course_id)
     if request.method == 'POST':
         course.delete()
-        return redirect('course_list')
-    return render(request, 'champapp/course_list.html', {'course': course})
+        return redirect('admin_instructor_request')
+    return render(request, 'champapp/admin/admin-instructor-request.html', {'course': course})
 
 
 ############aprove_reject################
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Course1  # Change to import Course1 instead of Course
+from .models import Course1  
 
 def approve_course(request, course_id):
     course = get_object_or_404(Course1, id=course_id)
@@ -829,20 +858,20 @@ def approve_course(request, course_id):
     if course.status in [Course1.PENDING, Course1.REJECTED]:
         course.status = Course1.LIVE  # Set status to 'Live'
         course.save()
-    return redirect('course_list')  # Redirect back to the course list
+    return redirect('admin_instructor_request')  # Redirect back to the course list
 
 def reject_course(request, course_id):
     course = get_object_or_404(Course1, id=course_id)  # Correct model reference here
     course.status = Course1.REJECTED  # Set status to 'Rejected'
     course.save()
-    return redirect('course_list')  # Redirect to the course list view or wherever you need
+    return redirect('admin_instructor_request')  # Redirect to the course list view or wherever you need
 
 # View to unlive (set Pending)
 def unlive_course(request, course_id):
     course = get_object_or_404(Course1, id=course_id)
     course.status = Course1.PENDING  # Set status back to 'Pending'
     course.save()
-    return redirect('course_list')  # Redirect to the course list view or wherever you need
+    return redirect('admin_instructor_request')  # Redirect to the course list view or wherever you need
 
 
 #######student enrollment############
@@ -986,12 +1015,14 @@ def student_bookmark(request):
     student_profile = request.user.studentprofile  # Assumes a OneToOneField relationship between User and StudentProfile
 
     # Fetch all favorite courses
-    favorite_courses = student_profile.favorites.all()
+    favorite_courses = FavoriteCourse.objects.filter(user=request.user).select_related('course')
+
 
     # Pass favorite courses to the template
     context = {
         'page_title': 'Student Bookmarks',
-        'favorite_courses': favorite_courses,
+        'favorites': favorite_courses, 
+        'profile': student_profile,
     }
     return render(request, 'champapp/student_dashboard/student-bookmark.html', context)
 
@@ -1016,3 +1047,462 @@ def toggle_favorite(request, course_id):
 def student_bookmarks(request):
     favorites = FavoriteCourse.objects.filter(user=request.user).select_related('course')
     return render(request, 'student/student-bookmark.html', {'favorites': favorites})
+
+
+#--------------student-dashboard-mycourses------------------#
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import EnrolledCourse, StudentProfile, UserCourse
+from django.core.exceptions import ObjectDoesNotExist
+
+@login_required
+def student_mycourses(request):
+    user = request.user
+
+    # Try to get the user's profile
+    try:
+        user_profile = StudentProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        # If the profile does not exist, create one with default values
+        user_profile = StudentProfile.objects.create(user=user)
+
+    # Fetch courses the user is enrolled in
+    enrolled_courses = EnrolledCourse.objects.filter(student=user).select_related('course')
+
+    # If no courses are enrolled, set default values
+    if not enrolled_courses.exists():
+        completed_lessons = 0
+        achieved_certificates = 0
+        points = 0
+    else:
+        completed_lessons = sum(course.completed_lectures for course in enrolled_courses)
+        achieved_certificates = user_profile.achieved_certificates
+        points = user_profile.points
+
+    context = {
+        "user": user,
+        "profile": user_profile,
+        "enrolled_courses": enrolled_courses,  # Only show enrolled courses
+        "total_courses": enrolled_courses.count(),
+        "completed_lessons": completed_lessons,
+        "achieved_certificates": achieved_certificates,
+        "points": points,
+    }
+    return render(request, "champapp/student_dashboard/student-mycourses.html", context)
+
+
+#-----student-delete-profile-------------#
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+@login_required
+def student_delete_account(request):
+    if request.method == "POST":
+        # Ensure the checkbox value is confirmed
+        if 'confirm' in request.POST:
+            user = request.user
+            user.delete()
+            messages.success(request, "Your account has been deleted successfully.")
+            return redirect('index')  # Redirect to the homepage or goodbye page
+        else:
+            messages.error(request, "You must confirm account deletion.")
+
+    return render(request, 'champapp/student_dashboard/student-delete-account.html')
+
+#--------instructor-manage-course--------#
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.http import HttpResponseForbidden
+from champapp.models import Course1, EnrolledCourse  # Import EnrolledCourse to get the enrollments
+
+@login_required
+def instructor_manage_course(request):
+    # Check if the user is an instructor (staff)
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    
+    # Fetch instructor's courses (assuming 'creator' field represents the instructor)
+    instructor_courses = Course1.objects.filter(creator=request.user)  # Filter courses by creator
+
+    # Prepare course data for the template
+    course_data = []
+    for course in instructor_courses:
+        # Get the number of enrolled students
+        enrolled_students_count = EnrolledCourse.objects.filter(course=course).count()
+
+        # Get the course status (e.g., LIVE, PENDING, REJECTED)
+        status = course.get_status_display()  # If using a `status` choice field
+
+        # Assuming the price is stored in `price` field of the course model
+        price = course.price
+
+        # Prepare the course data
+        course_data.append({
+            "course_name": course.name,
+            "enrolled_students_count": enrolled_students_count,
+            "status": status,
+            "price": price,
+            "course_id": course.id,
+        })
+
+    context = {
+        'course_data': course_data,  # Pass the prepared course data to the template
+        'page_title': 'Manage Courses',
+    }
+
+    return render(request, 'champapp/instructor/instructor-manage-course.html', context)
+
+#----------instructor-quiz------------#
+
+# champapp/views.py
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.contrib import messages  # Import messages framework
+from .models import Quiz
+from .forms import QuizForm
+
+@login_required
+def instructor_quiz(request):
+    # Check if the user is an instructor (staff)
+    quizzes = Quiz.objects.all()
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    
+    if request.method == "POST":
+        form = QuizForm(request.POST)
+        if form.is_valid():
+            quiz = form.save(commit=False)
+            quiz.created_by = request.user
+            quiz.save()
+            messages.success(request, "Quiz added successfully!")  # Add success message
+            return redirect('instructor_quiz')  # Redirect to the same page after quiz is added
+        else:
+            messages.error(request, "There was an error in the form. Please try again.")  # Error message
+    
+    else:
+        form = QuizForm()
+
+    quizzes = Quiz.objects.filter(created_by=request.user)
+
+    context = {
+        'page_title': 'Instructor Quiz',
+        'form': form,
+        'quizzes': quizzes,
+    }
+
+    return render(request, 'champapp/instructor/instructor-quiz.html', context)
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import Quiz
+from .forms import QuizForm
+
+def edit_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    if request.method == "POST":
+        form = QuizForm(request.POST, instance=quiz)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Quiz updated successfully!")
+            return redirect('instructor_quiz')  # Update with your actual view name
+    else:
+        form = QuizForm(instance=quiz)
+    return render(request, 'champapp/instructor/edit_quiz.html', {'form': form, 'quiz': quiz})
+
+#--------course grid----------#
+from django.shortcuts import render
+from django.db.models import Count, Q
+from .models import Course1
+from django.core.paginator import Paginator
+
+
+def course_grid(request):
+    # Get selected filters from request
+    selected_category = request.GET.get('category', 'All')  # Default to 'All'
+    selected_language = request.GET.get('language', 'All')  # Default to 'All'
+    selected_level = request.GET.get('level', 'All')  # Default to 'All'
+    search_query = request.GET.get('search', '')  # Get the search query
+
+
+    # Start with all courses
+    courses = Course1.objects.all()
+
+    # Apply category filter
+    if selected_category != 'All':
+        courses = courses.filter(category=selected_category)
+
+    # Apply language filter
+    if selected_language != 'All':
+        courses = courses.filter(languages=selected_language)
+
+    # Apply level filter
+    if selected_level != 'All':
+        courses = courses.filter(level=selected_level)
+
+    # Apply search filter
+    if search_query:
+        courses = courses.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
+    
+    # Pagination: 9 courses per page (3 rows with 3 courses each)
+    paginator = Paginator(courses, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+
+    # Fetch categories and their course counts
+    categories = (
+        Course1.objects.values('category')
+        .annotate(count=Count('id'))
+        .order_by('category')
+    )
+
+    # Fetch languages and their course counts
+    languages = (
+        Course1.objects.values('languages')
+        .annotate(count=Count('id'))
+        .order_by('languages')
+    )
+
+    # Fetch levels and their course counts
+    levels = (
+        Course1.objects.values('level')
+        .annotate(count=Count('id'))
+        .order_by('level')
+    )
+
+    # Convert choice fields to dictionaries for display
+    category_labels = dict(Course1.COURSE_CATEGORY_CHOICES)
+    language_labels = dict(Course1.LANGUAGE_CHOICES)
+    level_labels = dict(Course1.COURSE_LEVEL_CHOICES)
+
+    # Add labels to categories
+    for category in categories:
+        category['label'] = category_labels.get(category['category'], category['category'])
+
+    # Add labels to languages
+    for language in languages:
+        language['label'] = language_labels.get(language['languages'], language['languages'])
+
+    # Add labels to levels
+    for level in levels:
+        level['label'] = level_labels.get(level['level'], level['level'])
+
+    # Calculate total courses for "All" options
+    total_courses = Course1.objects.count()
+    categories = [{'category': 'All', 'label': 'All', 'count': total_courses}] + list(categories)
+    languages = [{'languages': 'All', 'label': 'All languages', 'count': total_courses}] + list(languages)
+    levels = [{'level': 'All', 'label': 'All levels', 'count': total_courses}] + list(levels)
+
+    context = {
+        'page_obj': page_obj,
+        'courses': courses,
+        'categories': categories,
+        'languages': languages,
+        'levels': levels,
+        'selected_category': selected_category,
+        'selected_language': selected_language,
+        'selected_level': selected_level,
+        'search_query': search_query,
+    }
+    return render(request, 'champapp/course-grid.html', context)
+
+#--------instructor requests-------------#
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def admin_instructor_request(request):
+    courses = Course1.objects.select_related('creator')
+    # Get the counts for each category
+    live_courses_count = Course1.objects.filter(status=Course1.LIVE).count()
+    pending_courses_count = Course1.objects.filter(status=Course1.PENDING).count()
+    rejected_courses_count = Course1.objects.filter(status=Course1.REJECTED).count()
+    # Debug: Log or print to check courses
+    print(courses)  # Or use logging.debug if preferred
+    
+    # Get creator_id from query parameters (if provided)
+    creator_id = request.GET.get('creator_id')
+    status = request.GET.get('status')
+
+    if creator_id:
+        courses = courses.filter(creator_id=creator_id)
+    if status:
+        courses = courses.filter(status=status)
+        
+
+    # Pagination logic: Show 10 courses per page
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'champapp/admin/admin-instructor-request.html', {
+        'courses': page_obj,
+        'live_courses_count': live_courses_count,
+        'pending_courses_count': pending_courses_count,
+        'rejected_courses_count': rejected_courses_count,
+    })
+    
+
+#--------admin instructor list------------!
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
+from champapp.models import StudentProfile, Course1, EnrolledCourse  # Import necessary models
+
+# Check if the user is a staff/admin
+def is_admin(user):
+    return user.is_staff
+
+@user_passes_test(is_admin)
+def admin_instructor_list(request):
+    # Fetch staff users (is_staff=True) from StudentProfile
+    staff_profiles = StudentProfile.objects.filter(user__is_staff=True).select_related('user')
+
+    # For each instructor, calculate total courses and enrolled students
+    for profile in staff_profiles:
+        # Fetch the courses created by the instructor
+        instructor_courses = Course1.objects.filter(creator=profile.user)
+        profile.total_courses = instructor_courses.count()  # Total number of courses
+
+        # Count the total number of enrolled students in the instructor's courses
+        profile.total_students = EnrolledCourse.objects.filter(course__in=instructor_courses).count()
+
+    # Paginate the staff profiles (6 profiles per page)
+    paginator = Paginator(staff_profiles, 6)
+    page_number = request.GET.get('page')
+    instructors = paginator.get_page(page_number)
+
+    # Pass the instructors (staff users) to the template
+    context = {
+        'instructors': instructors,
+    }
+    return render(request, 'champapp/admin/admin-instructor-list.html', context)
+
+#---------course complete ---------------#
+from django.shortcuts import render, get_object_or_404
+from .models import Course1, Lecture, Topic
+
+def course_complete(request, course_id):
+    """
+    View to display the course page with lectures and topics dynamically.
+    """
+    # Get the course details
+    course = get_object_or_404(Course1, id=course_id)
+
+    # Fetch lectures and topics related to the course
+    lectures = Lecture.objects.filter(course=course).prefetch_related('topics')
+
+    # Calculate course progress (optional: implement logic for actual progress tracking)
+    total_lectures = lectures.count()
+    completed_lectures = 0  # Replace with logic to fetch user's completed lectures
+    progress_percentage = int((completed_lectures / total_lectures) * 100) if total_lectures > 0 else 0
+
+    context = {
+        'course': course,
+        'lectures': lectures,
+        'progress_percentage': progress_percentage,
+    }
+
+    return render(request, 'champapp/course_complete.html', context)
+
+#-------- instructor student list --------------#
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import ObjectDoesNotExist
+from .models import EnrolledCourse, StudentProfile
+
+# Check if the user is staff (instructor) or superuser
+def superuser_or_staff_required(user):
+    return user.is_superuser or user.is_staff
+
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_student_list(request):
+    """View to display the student list for an instructor."""
+    user = request.user
+
+    # Get courses created by the instructor
+    instructor_courses = EnrolledCourse.objects.filter(course__creator=user)
+
+    # Prepare data for enrolled students
+    enrolled_students = []
+    for enrollment in instructor_courses:
+        student = enrollment.student  # Assuming `student` is a User object in `EnrolledCourse`
+        
+        # Get or create the student's profile
+        try:
+            student_profile = StudentProfile.objects.get(user=student)
+        except ObjectDoesNotExist:
+            student_profile = StudentProfile.objects.create(user=student)
+
+        # Calculate progress for the student's enrollment
+        course = enrollment.course
+        lectures = course.lectures.prefetch_related('topics')  # Fetch all related topics
+        total_lectures = lectures.count()
+        completed_lectures = 0
+
+        # Check completed lectures
+        for lecture in lectures:
+            # If all topics in a lecture are completed by the student
+            if lecture.topics.filter(usertopicprogress__user=student, usertopicprogress__completed=True).count() == lecture.topics.count():
+                completed_lectures += 1
+
+        progress_percentage = enrollment.progress_percentage
+
+        # Prepare student data
+        enrolled_students.append({
+            "student_name": student.get_full_name(),
+            "email": student.email,
+            "location": getattr(student_profile, 'location', "N/A"),
+            "progress_percentage": progress_percentage,
+            "completed_lectures": completed_lectures,
+            "total_lectures": total_lectures,
+            "enrollment_date": enrollment.date_enrolled,
+            "image": getattr(student_profile, 'profile_picture', None),
+        })
+
+    context = {
+        "enrolled_students": enrolled_students,
+    }
+
+    return render(request, 'champapp/instructor/instructor-studentlist.html', context)
+
+from django.http import JsonResponse
+
+@login_required
+def course_details(request, course_id):
+    """
+    AJAX view to fetch course details for a specific course.
+    """
+    course = get_object_or_404(Course1, id=course_id)
+    lectures = Lecture.objects.filter(course=course).prefetch_related('topics')
+
+    total_lectures = lectures.count()
+    completed_lectures = 0  # Replace with logic to fetch user's completed lectures
+    progress_percentage = int((completed_lectures / total_lectures) * 100) if total_lectures > 0 else 0
+
+    # Serialize data for the modal
+    course_data = {
+        "name": course.name,
+        "level": course.level,
+        "languages": course.languages,
+        "total_lectures": total_lectures,
+        "course_time": course.course_time,
+        "description": course.description,
+        "progress_percentage": progress_percentage,
+        "lectures": [
+            {
+                "id": lecture.id,
+                "title": lecture.title,
+                "topics": [{"name": topic.name, "url": topic.url} for topic in lecture.topics.all()],
+            }
+            for lecture in lectures
+        ],
+    }
+    return JsonResponse(course_data)

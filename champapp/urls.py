@@ -11,6 +11,7 @@ from .views import instructor_dashboard
 from .views import admin_student_list
 from .views import course_list_view
 from champapp.views import course_list_view, delete_course_view, course_detail_adv
+from champapp.views import edit_quiz, instructor_quiz
 
 
 urlpatterns = [
@@ -52,6 +53,20 @@ urlpatterns = [
     path('courses/<int:course_id>/continue/', views.continue_course, name='continue_course'),
     path('student/bookmarks/', views.student_bookmark, name='student_bookmarks'),
     path('toggle-favorite/<int:course_id>/', views.toggle_favorite, name='toggle_favorite'),
+    path("student/mycourses/", views.student_mycourses, name="student_mycourses"),
+    path('student/delete-account/', views.student_delete_account, name='student_delete_account'),
+    path('instructor/manage-course/', views.instructor_manage_course, name='instructor_manage_course'),
+    path('instructor/quiz/', views.instructor_quiz, name='instructor_quiz'),
+    path('quiz/edit/<int:quiz_id>/', views.edit_quiz, name='edit_quiz'),
+    path('course-grid/', views.course_grid, name='course_grid'),
+    path('dashboard/admin-instructor-requests/', views.admin_instructor_request, name='admin_instructor_request'),
+    path('management/instructor-list/', views.admin_instructor_list, name='admin_instructor_list'),
+    path('course/<int:course_id>/', views.course_complete, name='course_complete'),
+    path('instructor/student-list/', views.instructor_student_list, name='instructor-student-list'),
+    path('course-details/<int:course_id>/', views.course_details, name='course_details'),
+
+
+
 
 
 
