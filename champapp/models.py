@@ -112,7 +112,11 @@ class Profile(models.Model):
     profile_image = models.ImageField(upload_to="profile_images/", default="profile_images/default.jpg", blank=True)
     points = models.IntegerField(default=0)
     achieved_certificates = models.IntegerField(default=0)
-    favorites = models.ManyToManyField(Course, related_name='favorited_by')
+    favorites = models.ManyToManyField(
+        'Course',
+        related_name='profile_favorites',  # Unique reverse accessor
+        blank=True
+    )
 
     def __str__(self):
         return self.user.username
@@ -179,6 +183,11 @@ class StudentProfile(models.Model):
     education = models.CharField(max_length=255, blank=True)
     points = models.IntegerField(default=0)
     email = models.EmailField(max_length=255, blank=True, null=True)
+    favorites = models.ManyToManyField(
+        'Course',
+        related_name='studentprofile_favorites',  # Unique reverse accessor
+        blank=True
+    )
 
 
     def __str__(self):
@@ -360,20 +369,21 @@ class Topic(models.Model):
     lecture = models.ForeignKey(Lecture, related_name='topics', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     url = models.URLField(null=True, blank=True)
+    video_file = models.FileField(upload_to='videos/', null=True, blank=True)
     description = models.TextField()
     is_free = models.BooleanField(default=True)
     premium = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)  # Add this field
     duration = models.PositiveIntegerField(null=True, blank=True)  # Duration in seconds
-    def save(self, *args, **kwargs):
-        # Automatically calculate duration for video URLs (if local video)
-        if self.url and self.url.endswith('.mp4'):
-            video = VideoFileClip(self.url)
-            self.duration = int(video.duration)
-        super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+        # Calculate duration only for uploaded videos
+        if self.video_file and not self.duration:
+            video_path = self.video_file.path
+            video = VideoFileClip(video_path)
+            self.duration = int(video.duration)
+
+        super().save(*args, **kwargs)
 
     def get_duration(self):
         if self.duration:
@@ -419,10 +429,12 @@ class EnrolledCourse(models.Model):
     completed_lectures = models.IntegerField(default=0)
     completed_topics = models.IntegerField(default=0)  # New field for completed topics
     date_enrolled = models.DateTimeField(auto_now_add=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Or use course.price if price is inherited
-    status = models.CharField(max_length=20, choices=[
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed')
+    watch_time = models.PositiveIntegerField(default=0)  # Time in minutes
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+  # Or use course.price if price is inherited
+    status = models.CharField(max_length=20, choices=[ 
+        ('in_progress', 'In Progress'), 
+        ('completed', 'Completed') 
     ], default='in_progress')
 
     class Meta:
@@ -458,6 +470,7 @@ class EnrolledCourse(models.Model):
         if lecture in self.course.lectures.all() and self.completed_lectures < self.course.lectures.count():
             self.completed_lectures += 1
             self.save()
+            self.update_progress()  # Update progress after marking the lecture as completed
 
     def complete_topic(self, topic):
         """
@@ -466,6 +479,8 @@ class EnrolledCourse(models.Model):
         if topic in self.course.topics.all() and self.completed_topics < sum(lecture.topics.count() for lecture in self.course.lectures.all()):
             self.completed_topics += 1
             self.save()
+            self.update_progress()  # Update progress after marking the topic as completed
+
 
 
 # Assuming your models.py
@@ -489,3 +504,25 @@ class FavoriteCourse(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.name}"
 
+#------------instructor-quiz---------------#
+# champapp/models.py
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class Quiz(models.Model):
+    question = models.CharField(max_length=255)
+    option_1 = models.CharField(max_length=255)
+    option_2 = models.CharField(max_length=255)
+    option_3 = models.CharField(max_length=255)
+    option_4 = models.CharField(max_length=255)
+    correct_option = models.CharField(max_length=1, choices=[
+        ('A', 'Option 1'),
+        ('B', 'Option 2'),
+        ('C', 'Option 3'),
+        ('D', 'Option 4'),
+    ])
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.question
