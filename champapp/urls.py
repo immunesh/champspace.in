@@ -12,6 +12,8 @@ from .views import admin_student_list
 from .views import course_list_view
 from champapp.views import course_list_view, delete_course_view, course_detail_adv
 from champapp.views import edit_quiz, instructor_quiz
+from .views import create_payment, verify_payment
+
 
 
 urlpatterns = [
@@ -50,7 +52,6 @@ urlpatterns = [
     path('dashboard/', views.user_dashboard, name='student-dashboard'),
     path('courses/<int:course_id>/buy/', views.buy_now, name='buy_now'),
     path('courses/<int:course_id>/add-to-cart/', views.add_to_cart, name='add_to_cart'),
-    path('courses/<int:course_id>/continue/', views.continue_course, name='continue_course'),
     path('student/bookmarks/', views.student_bookmark, name='student_bookmarks'),
     path('toggle-favorite/<int:course_id>/', views.toggle_favorite, name='toggle_favorite'),
     path("student/mycourses/", views.student_mycourses, name="student_mycourses"),
@@ -65,11 +66,8 @@ urlpatterns = [
     path('instructor/student-list/', views.instructor_student_list, name='instructor-student-list'),
     path('course-details/<int:course_id>/', views.course_details, name='course_details'),
 
-
-
-
-
-
+    path('courses/<int:course_id>/pay/', create_payment, name='create_payment'),
+    path('verify-payment/', verify_payment, name='verify_payment'),
 
 
 ] 

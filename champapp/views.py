@@ -12,9 +12,74 @@ from .forms import StudentEditProfileForm  # Create this form in forms.py
 from .models import StudentProfile, UserCourse
 from champapp.models import Profile, UserCourse
 from .models import CourseCategory
+import razorpay
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Course1, Payment
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET_KEY))
 
+def create_payment(request, course_id):
+    course = get_object_or_404(Course1, id=course_id)
+    amount = int(course.price * 100)  # Convert to paise
 
+    # Create Razorpay order
+    razorpay_order = razorpay_client.order.create({
+        'amount': amount,
+        'currency': 'INR',
+        'payment_capture': '1'
+    })
+
+    # Save payment details in the database
+    payment = Payment.objects.create(
+        user=request.user,
+        course=course,
+        amount=course.price,
+        razorpay_order_id=razorpay_order['id'],
+        status="Pending"
+    )
+
+    context = {
+        'course': course,
+        'razorpay_order_id': razorpay_order['id'],
+        'razorpay_key': settings.RAZORPAY_KEY_ID,
+        'amount': amount,
+        'user_email': request.user.email,
+        'user_name': request.user.username
+    }
+    return render(request, 'payments/payment_page.html', context)
+
+@csrf_exempt
+def verify_payment(request):
+    if request.method == "POST":
+        data = request.POST
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_signature = data.get('razorpay_signature')
+
+        # Verify signature
+        try:
+            razorpay_client.utility.verify_payment_signature({
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': razorpay_payment_id,
+                'razorpay_signature': razorpay_signature
+            })
+
+            # Update payment status
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+            payment.razorpay_payment_id = razorpay_payment_id
+            payment.razorpay_signature = razorpay_signature
+            payment.status = "Success"
+            payment.save()
+
+            # Enroll the user in the course or any other success action
+            return JsonResponse({'status': 'success'})
+
+        except razorpay.errors.SignatureVerificationError:
+            return JsonResponse({'status': 'failed', 'message': 'Signature verification failed.'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
 
 def home(request):
     # Fetch all courses and organize them by category
