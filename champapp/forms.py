@@ -192,3 +192,13 @@ class FAQForm(forms.ModelForm):
 
 
 
+#------------------instructor-quiz---------#
+# champapp/forms.py
+
+from django import forms
+from .models import Quiz
+
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['question', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_option']

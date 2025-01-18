@@ -85,33 +85,6 @@
 
     <!-- Theme CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'admin_static/course-detail-adv/css/style.css' %}">
-    
-
-    <style>
-        .description-preview {
-            display: -webkit-box;
-            -webkit-line-clamp: 8;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    
-        .description-full {
-            display: block;
-        }
-        
-    </style>
-    <style>
-        <style>
-            [data-sticky] {
-                position: -webkit-sticky;
-                position: sticky;
-                top: 50px; /* Adjust this value based on your desired offset */
-                z-index: 1020; /* Ensure it appears above other elements if overlapping occurs */
-            }
-        </style>
-    </style>
-    
 
 </head>
 
@@ -123,7 +96,7 @@
         <nav class="navbar navbar-expand-xl">
             <div class="container">
                 <!-- Logo START -->
-                <a class="navbar-brand" href="{% url 'index' %}">
+                <a class="navbar-brand" href="index.html">
 				<img class="light-mode-item navbar-brand-item" src="{% static 'admin_static/course-detail-adv/images/logo.svg' %}" alt="logo">
 				<img class="dark-mode-item navbar-brand-item" src="{% static 'admin_static/course-detail-adv/images/logo-light.svg' %}" alt="logo">
 			</a>
@@ -147,7 +120,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
                             <ul class="dropdown-menu" aria-labelledby="demoMenu">
-                                <li> <a class="dropdown-item" href="{% url 'index' %}">Home Default</a></li>
+                                <li> <a class="dropdown-item" href="index.html">Home Default</a></li>
                                 <li> <a class="dropdown-item" href="index-2.html">Home Education</a></li>
                                 <li> <a class="dropdown-item" href="index-3.html">Home Academy</a></li>
                                 <li> <a class="dropdown-item" href="index-4.html">Home Course</a></li>
@@ -520,9 +493,7 @@ Page content START -->
                                             Your browser does not support the video tag.
                                         </video>
                                     {% else %}
-                                        <p>No video uploaded.</p>
-                                    
-                                        <!-- Placeholder for no video -->
+                                        <p><strong>No video uploaded. Here's a default video:</strong></p>
                                         <video controls crossorigin="anonymous" playsinline poster="{% static 'admin_static/course-detail-adv/images/videos/poster.jpg' %}">
                                             <source src="{% static 'admin_static/course-detail-adv/images/videos/360p.mp4' %}" type="video/mp4" size="360">
                                             <source src="{% static 'admin_static/course-detail-adv/images/videos/720p.mp4' %}" type="video/mp4" size="720">
@@ -546,27 +517,17 @@ Page content START -->
 
                                     <!-- Card body START -->
                                     <div class="card-body">
-                                        <p><strong>Description:</strong></p>
-                                    
-                                        <!-- The visible part of the description (up to 8 lines) -->
-                                        <div class="description-preview" id="descriptionPreview">
-                                            <p>{{ class_course.description }}</p>
+                                        <p>{{ class_course.description }}</p>
+                                        <!-- Collapse body -->
+                                        <div class="collapse" id="collapseContent">
                                         </div>
-                                    
-                                        <!-- Full description hidden initially -->
-                                        <div class="description-full" id="descriptionFull" style="display: none;">
-                                            <p>{{ class_course.description }}</p>
-                                        </div>
-                                    
                                         <!-- Collapse button -->
-                                        <a class="p-0 mb-0 mt-2 btn-more d-flex align-items-center" role="button" id="toggleText" style="display: none;">
-                                        See <span class="see-more ms-1">more</span><span class="see-less ms-1" style="display: none;">less</span><i class="fas fa-angle-down ms-2"></i>
-                                    </a>
-                                  
+                                        <a class="p-0 mb-0 mt-2 btn-more d-flex align-items-center" data-bs-toggle="collapse" href="#collapseContent" role="button" aria-expanded="false" aria-controls="collapseContent">
+									See <span class="see-more ms-1">more</span><span class="see-less ms-1">less</span><i class="fas fa-angle-down ms-2"></i>
+								</a>
 
+                                        <!-- List content -->
                                         
-                                        <p class="mb-0">As it so contrasted oh estimating instrument. Size like body some one had. Are conduct viewing boy minutes warrant the expense? Tolerably behavior may admit daughters offending her ask own. Praise effect wishes
-                                            change way and any wanted. Lively use looked latter regard had. Do he it part more last in. </p>
                                     </div>
                                     <!-- Card body START -->
                                 </div>
@@ -586,49 +547,41 @@ Page content START -->
                                     <div class="card-body">
                                         <div class="row g-5">
                                             <!-- Lecture item START -->
-                                            {% for lecture in course.lectures.all %}
-                                                <h5 class="mb-4">{{ lecture.title }} ({{ lecture.topics.count }} lectures)</h5>
-                                                {% for topic in lecture.topics.all %}
-                                                    <div class="d-sm-flex justify-content-sm-between align-items-center">
-                                                        <div class="d-flex">
-                                                            <a href="#" class="btn btn-danger-soft btn-round mb-0 flex-shrink-0" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-url="{{ topic.url }}">
-                                                                <i class="fas fa-play"></i>
-                                                            </a>
-                                                            <div class="ms-2 ms-sm-3 mt-1 mt-sm-0">
-                                                                <h6 class="mb-0">{{ topic.name }}</h6>
-                                                                <p class="mb-2 mb-sm-0 small">{{ topic.get_duration }}</p>  <!-- Add your own method to calculate time if needed -->
-                                                            </div>
-                                                        </div>
-                                                        <a href="{{ topic.url }}" class="btn btn-sm btn-success mb-0">Play</a>
+                                            {% if course.lectures.exists %}
+                                                {% for lecture in course.lectures.all %}
+                                                    <div class="lecture-container">
+                                                        <h5 class="mb-4">{{ lecture.title }} ({{ lecture.topics.count }} topics)</h5>
+                                                        {% if lecture.topics.exists %}
+                                                            {% for topic in lecture.topics.all %}
+                                                                <div class="row align-items-center mb-3">
+                                                                    <div class="col-md-8 d-flex">
+                                                                        <!-- Play Button -->
+                                                                        <a href="javascript:void(0)" class="btn btn-danger-soft btn-round flex-shrink-0" 
+                                                                           data-bs-toggle="modal" data-bs-target="#videoModal" 
+                                                                           data-video-url="{{ topic.url }}" 
+                                                                           aria-label="Play {{ topic.name }}">
+                                                                            <i class="fas fa-play"></i>
+                                                                        </a>
+                                                                        <!-- Topic Details -->
+                                                                        <div class="ms-2 ms-sm-3">
+                                                                            <h6 class="mb-1">{{ topic.name }}</h6>
+                                                                            <p class="mb-0 small">{{ topic.get_duration }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- Play Link -->
+                                                                    <div class="col-md-4 text-end">
+                                                                        <a href="{{ topic.url }}" class="btn btn-sm btn-success">Play</a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <p class="text-muted">No topics available for this lecture.</p>
+                                                        {% endif %}
                                                     </div>
                                                 {% endfor %}
-                                            {% endfor %}
-
-                                            <!-- Modal for video player -->
-                                            <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="videoModalLabel">Play Video</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div id="videoContainer">
-                                                                <!-- Video will be dynamically inserted here -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                <!-- Divider -->
-                                            </div>
-                                            <!-- Collapse body END -->
-
-                                            <!-- Collapse button -->
-                                            <a class="mb-0 mt-4 btn-more d-flex align-items-center justify-content-center" data-bs-toggle="collapse" href="#collapseCourse" role="button" aria-expanded="false" aria-controls="collapseCourse">
-										See <span class="see-more mx-1">more</span><span class="see-less mx-1">less</span> video<i class="fas fa-angle-down ms-2"></i>
-									</a>
-
+                                            {% else %}
+                                                <p class="text-muted">No lectures available.</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <!-- Card body START -->
@@ -668,129 +621,118 @@ Page content START -->
                     <!-- Main content END -->
 
                     <!-- Right sidebar START -->
-                    <div class="container">
-                        <div class="row">
-                            <!-- Main content START -->
-                            <div class="col-xl-8">
-                                <!-- Add your main content here -->
-                            </div>
-                            <!-- Main content END -->
-                    
-                            <!-- Right sidebar START -->
-                            <div class="col-xl-4">
-                                <div data-sticky data-margin-top="50" data-sticky-for="768">
-                                    <div class="row g-4">
-                                        <div class="col-md-6 col-xl-12">
-                                            <!-- Course info START -->
-                                            <div class="card card-body border p-4">
-                                                <!-- Price and share button -->
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <!-- Price -->
-                                                    <h3 class="fw-bold mb-0 me-2">${{ course.price }}</h3>
-                                                    <!-- Share button with dropdown -->
-                                                    <div class="dropdown">
-                                                        <a href="#" class="btn btn-sm btn-light rounded mb-0 small" role="button" id="dropdownShare" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fas fa-fw fa-share-alt"></i>
-                                                        </a>
-                                                        <!-- dropdown button -->
-                                                        <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded" aria-labelledby="dropdownShare">
-                                                            <li><a class="dropdown-item" href="#"><i class="fab fa-twitter-square me-2"></i>Twitter</a></li>
-                                                            <li><a class="dropdown-item" href="#"><i class="fab fa-facebook-square me-2"></i>Facebook</a></li>
-                                                            <li><a class="dropdown-item" href="#"><i class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
-                                                            <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Copy link</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                    
-                                                <!-- Buttons -->
-                                                <div class="mt-3 d-grid">
-                                                    <a href="{% url 'add_to_cart' course.id %}" class="btn btn-outline-primary">Add to cart</a>
-                                                    <a href="{% url 'buy_now' course.id %}" class="btn btn-success">Buy now</a>
-                                                </div>
-                                                <!-- Divider -->
-                                                <hr>
-                    
-                                                <!-- Title -->
-                                                <h5 class="mb-3">This course includes</h5>
-                                                <ul class="list-group list-group-borderless border-0">
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-book-open text-primary"></i>Lectures</span>
-                                                        <span>{{ course.total_lecture }}</span>
-                                                    </li>
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-clock text-primary"></i>Duration</span>
-                                                        <span>{{ course.course_time }}</span>
-                                                    </li>
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-signal text-primary"></i>Skills</span>
-                                                        <span>{{ course.level }}</span>
-                                                    </li>
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-globe text-primary"></i>Language</span>
-                                                        <span>{{ course.languages }}</span>
-                                                    </li>
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-user-clock text-primary"></i>Deadline</span>
-                                                        <span>Nill</span>
-                                                    </li>
-                                                    <li class="list-group-item px-0 d-flex justify-content-between">
-                                                        <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-medal text-primary"></i>Certificate</span>
-                                                        <span>Yes</span>
-                                                    </li>
-                                                </ul>
-                                                <!-- Divider -->
-                                                <hr>
-                    
-                                                <!-- Instructor info -->
-                                                <div class="d-sm-flex align-items-center">
-                                                    <!-- Avatar -->
-                                                    <div class="avatar avatar-xl">
-                                                        <img src="{% if user.studentprofile.profile_image %}{{ user.studentprofile.profile_image.url }}{% else %}{% static 'admin_static/course-detail-adv/images/avatar/01.jpg' %}{% endif %}" 
-                                                             alt="Profile Image" class="rounded-circle me-2" width="150" height="150">
-                                                    </div>
-                                                    <div class="ms-sm-3 mt-2 mt-sm-0">
-                                                        <h5 class="mb-0"><a class="h6" href="#">{{ user.studentprofile.full_name|default:user.email }}</a></h5>
-                                                        <p class="mb-0 small">{{ user.email }}</p>
-                                                    </div>
-                                                </div>
-                    
-                                                <!-- Rating and follow -->
-                                                <div class="d-sm-flex justify-content-sm-between align-items-center mt-0 mt-sm-2">
-                                                    <!-- Rating star -->
-                                                    <ul class="list-inline mb-0">
-                                                        <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                        <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                        <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                        <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                        <li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-                                                        <li class="list-inline-item ms-2 h6 fw-light mb-0">4.5/5.0</li>
-                                                    </ul>
-                    
-                                                    <!-- button -->
-                                                    <button class="btn btn-sm btn-primary mb-0 mt-2 mt-sm-0">Follow</button>
-                                                </div>
-                                            </div>
-                                            <!-- Course info END -->
-                                        </div>
-                    
-                                        <!-- Tags START -->
-                                        <div class="col-md-6 col-xl-12">
-                                            <div class="card card-body border p-4">
-                                                <h4 class="mb-3">Popular Tags</h4>
-                                                <ul class="list-inline mb-0">
-                                                    <li class="list-inline-item"> <a class="btn btn-outline-light btn-sm" href="#">{{ course.tags }}</a> </li>
+                    <div class="col-xl-4">
+                        <div data-sticky data-margin-top="80" data-sticky-for="768">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-xl-12">
+                                    <!-- Course info START -->
+                                    <div class="card card-body border p-4">
+                                        <!-- Price and share button -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <!-- Price -->
+                                            <h3 class="fw-bold mb-0 me-2">${{ course.price }}</h3>
+                                            <!-- Share button with dropdown -->
+                                            <div class="dropdown">
+                                                <a href="#" class="btn btn-sm btn-light rounded mb-0 small" role="button" id="dropdownShare" data-bs-toggle="dropdown" aria-expanded="false">
+											<i class="fas fa-fw fa-share-alt"></i>
+										</a>
+                                                <!-- dropdown button -->
+                                                <ul class="dropdown-menu dropdown-w-sm dropdown-menu-end min-w-auto shadow rounded" aria-labelledby="dropdownShare">
+                                                    <li><a class="dropdown-item" href="#"><i class="fab fa-twitter-square me-2"></i>Twitter</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fab fa-facebook-square me-2"></i>Facebook</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fab fa-linkedin me-2"></i>LinkedIn</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Copy link</a></li>
                                                 </ul>
                                             </div>
                                         </div>
-                                        <!-- Tags END -->
+
+                                        <!-- Buttons -->
+                                        <div class="mt-3 d-grid">
+                                            <a href="#" class="btn btn-outline-primary">Add to cart</a>
+                                            <a href="#" class="btn btn-success">Buy now</a>
+                                        </div>
+                                        <!-- Divider -->
+                                        <hr>
+
+                                        <!-- Title -->
+                                        <h5 class="mb-3">This course includes</h5>
+                                        <ul class="list-group list-group-borderless border-0">
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-book-open text-primary"></i>Lectures</span>
+                                                <span>{{ course.total_lecture }}</span>
+                                            </li>
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-clock text-primary"></i>Duration</span>
+                                                <span>{{ course.course_time }}</span>
+                                            </li>
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-signal text-primary"></i>Skills</span>
+                                                <span>{{ course.level }}</span>
+                                            </li>
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-globe text-primary"></i>Language</span>
+                                                <span>{{ course.languages }}</span>
+                                            </li>
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-user-clock text-primary"></i>Deadline</span>
+                                                <span>Nill</span>
+                                            </li>
+                                            <li class="list-group-item px-0 d-flex justify-content-between">
+                                                <span class="h6 fw-light mb-0"><i class="fas fa-fw fa-medal text-primary"></i>Certificate</span>
+                                                <span>Yes</span>
+                                            </li>
+                                        </ul>
+                                        <!-- Divider -->
+                                        <hr>
+
+                                        <!-- Instructor info -->
+                                        <div class="d-sm-flex align-items-center">
+                                            <!-- Avatar -->
+                                            <div class="avatar avatar-xl">
+                                                <img src="{% if user.studentprofile.profile_image %}{{ user.studentprofile.profile_image.url }}{% else %}{% static 'admin_static/course-detail-adv/images/avatar/01.jpg' %}{% endif %}" 
+                                                     alt="Profile Image" class="rounded-circle me-2" width="150" height="150">
+                                            </div>
+                                            <div class="ms-sm-3 mt-2 mt-sm-0">
+                                                <h5 class="mb-0"><a class="h6" href="#">{{ user.studentprofile.full_name|default:user.email }}</a></h5>
+                                                <p class="mb-0 small">{{ user.email }}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Rating and follow -->
+                                        <div class="d-sm-flex justify-content-sm-between align-items-center mt-0 mt-sm-2">
+                                            <!-- Rating star -->
+                                            <ul class="list-inline mb-0">
+                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
+                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
+                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
+                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
+                                                <li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
+                                                <li class="list-inline-item ms-2 h6 fw-light mb-0">4.5/5.0</li>
+                                            </ul>
+
+                                            <!-- button -->
+                                            <button class="btn btn-sm btn-primary mb-0 mt-2 mt-sm-0">Follow</button>
+                                        </div>
                                     </div>
-                                    <!-- Row End -->
+                                    <!-- Course info END -->
                                 </div>
+
+                                <!-- Tags START -->
+                                <div class="col-md-6 col-xl-12">
+                                    <div class="card card-body border p-4">
+                                        <h4 class="mb-3">Popular Tags</h4>
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item"> <a class="btn btn-outline-light btn-sm" href="#">{{ course.tags }}</a> </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- Tags END -->
                             </div>
-                            <!-- Right sidebar END -->
+                            <!-- Row End -->
                         </div>
                     </div>
                     <!-- Right sidebar END -->
+
                 </div>
                 <!-- Row END -->
             </div>
@@ -811,7 +753,7 @@ Footer START -->
                 <!-- Widget 1 START -->
                 <div class="col-lg-3">
                     <!-- logo -->
-                    <a class="me-0" href="{% url 'index' %}">
+                    <a class="me-0" href="index.html">
 					<img class="light-mode-item h-40px" src="{% static 'admin_static/course-detail-adv/images/logo.svg' %}" alt="logo">
 					<img class="dark-mode-item h-40px" src="{% static 'admin_static/course-detail-adv/images/logo-light.svg' %}" alt="logo">
 				</a>
@@ -900,7 +842,7 @@ Footer START -->
                 <div class="container px-0">
                     <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
                         <!-- copyright text -->
-                        <div class="text-body text-primary-hover"> Copyrights ©2024 Eduport. Build by <a href="https://www.webestica.com/" target="_blank" class="text-body">Webestica</a></div>
+                        <div class="text-body text-primary-hover"> Copyrights Â©2024 Eduport. Build by <a href="https://www.webestica.com/" target="_blank" class="text-body">Webestica</a></div>
                         <!-- copyright links-->
                         <div class="justify-content-center mt-3 mt-lg-0">
                             <ul class="nav list-inline justify-content-center mb-0">
@@ -941,138 +883,6 @@ Footer END -->
 
     <!-- Template Functions -->
     <script src="{% static 'admin_static/course-detail-adv/js/functions.js' %}"></script>
-
-    <!-- Additional JavaScript -->
-    <!-- See More Description -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const description = "{{ class_course.description }}"; // Get the description text
-            const descriptionPreview = document.getElementById('descriptionPreview'); // Get the description preview
-            const descriptionFull = document.getElementById('descriptionFull'); // Get the full description
-            const toggleButton = document.getElementById('toggleText'); // Get the toggle button
-            const seeMoreText = toggleButton.querySelector('.see-more'); // "See more" text element
-            const seeLessText = toggleButton.querySelector('.see-less'); // "See less" text element
-    
-            // Calculate the number of lines in the description
-            const maxLines = 8;
-            const lines = description.split('\n'); // Split the description by newlines (you can adjust this if needed)
-    
-            // Only show the "See more" button if the description exceeds 8 lines
-            if (lines.length > maxLines) {
-                toggleButton.style.display = 'inline-block'; // Show the button
-            } else {
-                toggleButton.style.display = 'none'; // Hide the button if the description is less than 8 lines
-            }
-    
-            // Event listener for toggling between "See more" and "See less"
-            toggleButton.addEventListener('click', function() {
-                // Check if the full description is currently hidden
-                if (descriptionFull.style.display === 'none') {
-                    descriptionFull.style.display = 'block'; // Show the full description
-                    descriptionPreview.style.display = 'none'; // Hide the preview
-                    seeMoreText.style.display = 'none'; // Hide "See more"
-                    seeLessText.style.display = 'inline'; // Show "See less"
-                } else {
-                    descriptionFull.style.display = 'none'; // Hide the full description
-                    descriptionPreview.style.display = 'block'; // Show the preview
-                    seeMoreText.style.display = 'inline'; // Show "See more"
-                    seeLessText.style.display = 'none'; // Hide "See less"
-                }
-            });
-        });
-    </script>
-    <script>
-        window.addEventListener('load', function () {
-            const sidebar = document.querySelector('[data-sticky]');
-            const offsetTop = 50; // Adjust this value based on where you want it to stick
-            const sidebarTop = sidebar.offsetTop;
-        
-            // Set the sidebar to be fixed right away if the page is loaded and scrolled down
-            if (window.pageYOffset > sidebarTop) {
-                sidebar.style.position = 'fixed';
-                sidebar.style.top = `${offsetTop}px`;
-            } else {
-                sidebar.style.position = 'sticky';  // Set sticky positioning for top from the start
-                sidebar.style.top = `${offsetTop}px`;
-            }
-        });
-        
-        window.addEventListener('scroll', function () {
-            const sidebar = document.querySelector('[data-sticky]');
-            const offsetTop = 50; // Adjust this value
-            const scrollPosition = window.pageYOffset;
-            
-            if (scrollPosition > offsetTop) {
-                sidebar.style.position = 'fixed';
-                sidebar.style.top = `${offsetTop}px`;
-            } else {
-                sidebar.style.position = 'sticky';
-                sidebar.style.top = `${offsetTop}px`;
-            }
-        });
-    </script>
-    <script>
-        // Listen for the play button click and open the modal
-        document.querySelectorAll('.btn-danger-soft').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                var videoUrl = this.getAttribute('data-video-url');
-                var videoContainer = document.getElementById('videoContainer');
-                
-                // Check if the URL is a YouTube link
-                if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-                    var videoId = videoUrl.split('v=')[1].split('&')[0];
-                    videoContainer.innerHTML = `
-                        <iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    `;
-                } else {
-                    // Check if the URL is a direct video file
-                    videoContainer.innerHTML = `
-                        <video width="100%" height="315" controls>
-                            <source src="${videoUrl}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    `;
-                }
-            });
-        });
-    </script>
-    
-    <script>
-        const videoModal = document.getElementById('videoModal');
-        videoModal.addEventListener('show.bs.modal', function (event) {
-            // Get the button that triggered the modal
-            const button = event.relatedTarget;
-            const videoUrl = button.getAttribute('data-video-url');
-            
-            // Check if the URL is a YouTube link
-            const isYouTube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
-            
-            const videoContainer = document.getElementById('videoContainer');
-            
-            // Clear previous video (if any)
-            videoContainer.innerHTML = '';
-            
-            if (isYouTube) {
-                // Embed YouTube video
-                const videoId = videoUrl.split('v=')[1].split('&')[0];
-                videoContainer.innerHTML = `
-                    <iframe width="100%" height="400" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                `;
-            } else {
-                // Embed local video (if applicable)
-                videoContainer.innerHTML = `
-                    <video width="100%" height="400" controls>
-                        <source src="${videoUrl}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                `;
-            }
-        });
-    </script>
-
-
-
 
 </body>
 
