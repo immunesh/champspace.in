@@ -118,24 +118,24 @@
                 <div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
 
                     <!-- Sidebar menu START -->
+                    <!-- Sidebar menu START -->
                     <ul class="navbar-nav flex-column" id="navbar-sidebar">
 
                         <!-- Menu item 1 -->
-                        <li class="nav-item"><a href="{% url 'admin-dashboard' %}" class="nav-link"><i class="bi bi-house fa-fw me-2"></i>Dashboard</a></li>
+                        <li class="nav-item"><a href="{% url 'admin-dashboard' %}" class="nav-link active"><i class="bi bi-house fa-fw me-2"></i>Dashboard</a></li>
 
                         <!-- Title -->
                         <li class="nav-item ms-2 my-2">Pages</li>
 
                         <!-- menu item 2 -->
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#collapsepage" role="button" aria-expanded="true" aria-controls="collapsepage">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#collapsepage" role="button" aria-expanded="false" aria-controls="collapsepage">
 						<i class="bi bi-basket fa-fw me-2"></i>Courses
 					</a>
                             <!-- Submenu -->
-                            <ul class="nav collapse flex-column show" id="collapsepage" data-bs-parent="#navbar-sidebar">
-                                <li class="nav-item"> <a class="nav-link" href="{% url 'all-courses' %}">All Courses</a></li>
-                                <li class="nav-item"> <a class="nav-link active" href="{% url 'admin_course_category' %}">Course Category</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="admin-course-detail.html">Course Detail</a></li>
+                            <ul class="nav collapse flex-column" id="collapsepage" data-bs-parent="#navbar-sidebar">
+                                <li class="nav-item"> <a class="nav-link" href="{% url 'course_list' %}">All Courses</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{% url 'admin_course_category' %}">Course Category</a></li>
                             </ul>
                         </li>
 
@@ -149,10 +149,9 @@
 					</a>
                             <!-- Submenu -->
                             <ul class="nav collapse flex-column" id="collapseinstructors" data-bs-parent="#navbar-sidebar">
-                                <li class="nav-item"> <a class="nav-link" href="admin-instructor-list.html">Instructors</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="admin-instructor-detail.html">Instructor Detail</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{% url 'admin_instructor_list' %}">Instructors</a></li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="admin-instructor-request.html">Instructor requests
+                                    <a class="nav-link" href="{% url 'admin_instructor_request' %}">Instructor requests
 								<span class="badge text-bg-success rounded-circle ms-2">2</span>
 							</a>
                                 </li>
@@ -168,29 +167,9 @@
                         <!-- Menu item 7 -->
                         <li class="nav-item"> <a class="nav-link" href="admin-setting.html"><i class="fas fa-user-cog fa-fw me-2"></i>Admin Settings</a></li>
 
-                        <!-- Menu item 8 -->
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
-						<i class="bi bi-lock fa-fw me-2"></i>Authentication
-					</a>
-                            <!-- Submenu -->
-                            <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
-                                <li class="nav-item"> <a class="nav-link" href="sign-up.html">Sign Up</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="sign-in.html">Sign In</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="forgot-password.html">Forgot Password</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="admin-error-404.html">Error 404</a></li>
-                            </ul>
-                        </li>
-
-                        <!-- Title -->
-                        <li class="nav-item ms-2 my-2">Documentation</li>
-
-                        <!-- Menu item 9 -->
-                        <li class="nav-item"> <a class="nav-link" href="docs/index.html"><i class="far fa-clipboard fa-fw me-2"></i>Documentation</a></li>
-
-                        <!-- Menu item 10 -->
-                        <li class="nav-item"> <a class="nav-link" href="docs/changelog.html"><i class="fas fa-sitemap fa-fw me-2"></i>Changelog</a></li>
+                        
                     </ul>
+                    <!-- Sidebar menu end -->
                     <!-- Sidebar menu end -->
 
                     <!-- Sidebar footer START -->
@@ -441,7 +420,7 @@
                 <!-- Title -->
                 <div class="row mb-3">
                     <div class="col-12 d-sm-flex justify-content-between align-items-center">
-                        <h1 class="h3 mb-2 mb-sm-0">Web design <span class="badge bg-orange bg-opacity-10 text-orange">245</span></h1>
+                        <h1 class="h3 mb-2 mb-sm-0">Courses <span class="badge bg-orange bg-opacity-10 text-orange"></span></h1>
                         <a href="instructor-create-course.html" class="btn btn-sm btn-primary mb-0">Create a Course</a>
                     </div>
                 </div>
@@ -493,372 +472,66 @@
                                     <tr>
                                         <th scope="col" class="border-0 rounded-start">Course Name</th>
                                         <th scope="col" class="border-0">Instructor</th>
-                                        <th scope="col" class="border-0">Rating</th>
-                                        <th scope="col" class="border-0">Enrolled</th>
-                                        <th scope="col" class="border-0 rounded-end">Action</th>
+                                        <th scope="col" class="border-0">Action</th>
+                                        
                                     </tr>
                                 </thead>
 
                                 <!-- Table body START -->
                                 <tbody>
-
-                                    <!-- Table row -->
+                                    {% for course in courses %}
                                     <tr>
-                                        <!-- Table data -->
+                                        <!-- Table data: Course Image and Title -->
                                         <td>
                                             <div class="d-flex align-items-center position-relative">
                                                 <!-- Image -->
                                                 <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/08.jpg' %}" class="rounded" alt="">
+                                                    {% if course.image %}
+                                                        <img src="{{ course.image.url }}" class="rounded" alt="{{ course.name }}">
+                                                    {% else %}
+                                                        <img src="{% static 'images/default-course.jpg' %}" class="rounded" alt="Default Image">
+                                                    {% endif %}
                                                 </div>
                                                 <!-- Title -->
                                                 <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Building Scalable APIs with GraphQL</a>
+                                                    <a href="{% url 'course_detail' course.id %}" class="stretched-link">{{ course.name }}</a>
                                                 </h6>
                                             </div>
                                         </td>
-
-                                        <!-- Table data -->
+                                
+                                        <!-- Table data: Creator Name -->
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/09.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Lori Stevens</h6>
-                                                </div>
-                                            </div>
+                                            {% if course.creator.studentprofile.profile_image %}
+                                                <img src="{{ course.creator.studentprofile.profile_image.url }}" 
+                                                     alt="{{ course.creator.studentprofile.full_name }}" 
+                                                     class="img-thumbnail" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                                            {% else %}
+                                                <img src="{% static 'images/default-profile.jpg' %}" 
+                                                     alt="Default Profile" 
+                                                     class="img-thumbnail" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                                            {% endif %}
+                                            {{ course.creator.studentprofile.full_name|default:course.creator.email }}
                                         </td>
-
-                                        <!-- Table data -->
+                                        
+                                
+                                        <!-- Table data: Actions -->
                                         <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td> 15,567</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
+                                            
+                                            <a href="{% url 'step_1' course.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                            <form action="{% url 'delete_course' course.id %}" method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        onclick="return confirm('Are you sure you want to delete this course?');">
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
-
-                                    <!-- Table row -->
+                                    {% empty %}
                                     <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/10.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Bootstrap 5 From Scratch</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/04.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Billy Vasquez</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>16,584</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
+                                        <td colspan="5" class="text-center">No courses available.</td>
                                     </tr>
-
-                                    <!-- Table row -->
-                                    <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/02.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Graphic Design Masterclass</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/05.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Carolyn Ortiz</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>6,458</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Table row -->
-                                    <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/04.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Learn Invision</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/06.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Frances Guerrero</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>20,158</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Table row -->
-                                    <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/09.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">JavaScript: Full Understanding</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/08.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Samuel Bishop</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star-half-alt text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>5,325</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Table row -->
-                                    <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/11.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Build Responsive Websites with HTML</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/02.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Dennis Barrett</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>8,258</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Table row -->
-                                    <tr>
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center position-relative">
-                                                <!-- Image -->
-                                                <div class="w-60px">
-                                                    <img src="{% static 'admin_static/admin-course-category/images/courses/4by3/12.jpg' %}" class="rounded" alt="">
-                                                </div>
-                                                <!-- Title -->
-                                                <h6 class="table-responsive-title mb-0 ms-2">
-                                                    <a href="#" class="stretched-link">Build Websites with CSS</a>
-                                                </h6>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs flex-shrink-0">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'admin_static/admin-course-category/images/avatar/03.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                <div class="ms-2">
-                                                    <h6 class="mb-0 fw-light">Joan Wallace</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                            </ul>
-                                        </td>
-
-                                        <!-- Table data -->
-                                        <td>17,654</td>
-
-                                        <!-- Table data -->
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">Edit</a>
-                                            <button class="btn btn-sm btn-danger mb-0">Delete</button>
-                                        </td>
-                                    </tr>
-
+                                    {% endfor %}
                                 </tbody>
                                 <!-- Table body END -->
                             </table>

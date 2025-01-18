@@ -206,7 +206,7 @@
                                         <li> <a class="dropdown-item" href="cart.html">Cart</a></li>
                                         <li> <a class="dropdown-item" href="checkout.html">Checkout</a></li>
                                         <li> <a class="dropdown-item" href="empty-cart.html">Empty Cart</a></li>
-                                        <li> <a class="dropdown-item" href="wishlist.html">Wishlist</a></li>
+                                        <li> <a class="dropdown-item" href="{% url 'student_bookmarks' %}">Wishlist</a></li>
                                     </ul>
                                 </li>
 
@@ -277,13 +277,13 @@
                                 <li class="dropdown-submenu dropend">
                                     <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a>
                                     <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                        <li> <a class="dropdown-item" href="student-dashboard.html"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
+                                        <li> <a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
                                         <li> <a class="dropdown-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-1"></i>My Subscriptions</a> </li>
                                         <li> <a class="dropdown-item" href="student-course-list.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
                                         <li> <a class="dropdown-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-1"></i>Course Resume</a> </li>
                                         <li> <a class="dropdown-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz </a> </li>
                                         <li> <a class="dropdown-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front-fill fa-fw me-1"></i>Payment Info</a> </li>
-                                        <li> <a class="dropdown-item" href="student-bookmark.html"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
+                                        <li> <a class="dropdown-item" href="{% url 'student_bookmarks' %}"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
                                     </ul>
                                 </li>
 
@@ -291,7 +291,7 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li> <a class="dropdown-item" href="instructor-edit-profile.html"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a> </li>
+                                <li> <a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a> </li>
                                 <li> <a class="dropdown-item" href="instructor-setting.html"><i class="fas fa-fw fa-cog me-1"></i>Settings</a> </li>
                                 <li> <a class="dropdown-item" href="instructor-delete-account.html"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a> </li>
 
@@ -403,11 +403,12 @@
                             <div class="d-flex align-items-center">
                                 <!-- Avatar -->
                                 <div class="avatar me-3">
-                                    <img class="avatar-img rounded-circle shadow" src="{% static 'student/student-whishlist/images/avatar/01.jpg' %}" alt="avatar">
+                                    <img src="{% if favorite.course.image %}{{ favorite.course.image.url }}{% else %}/path/to/placeholder-image.jpg{% endif %}" class="card-img-top" alt="course image">
+
                                 </div>
                                 <div>
-                                    <a class="h6" href="#">Lori Ferguson</a>
-                                    <p class="small m-0">example@gmail.com</p>
+                                    <a class="h6" href="#">{{ profile.full_name }}</a>
+                                    <p class="small m-0">{{ request.user.email }}</p>
                                 </div>
                             </div>
                         </li>
@@ -415,7 +416,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
@@ -474,25 +475,29 @@ Page Banner START -->
                                 <!-- Avatar -->
                                 <div class="col-auto">
                                     <div class="avatar avatar-xxl position-relative mt-n3">
-                                        <img class="avatar-img rounded-circle border border-white border-3 shadow" src="{% static 'student/student-whishlist/images/avatar/09.jpg' %}" alt="">
+                                        <!-- Profile Image -->
+                                        <img class="avatar-img rounded-circle border border-white border-3 shadow" 
+                                             src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'student/student-edit-profile/images/avatar/07.jpg' %}{% endif %}" 
+                                             alt="Profile Image">
+                                        <!-- Badge (Optional, if you want to show the Pro badge) -->
                                         <span class="badge text-bg-success rounded-pill position-absolute top-50 start-100 translate-middle mt-4 mt-md-5 ms-n3 px-md-3">Pro</span>
                                     </div>
                                 </div>
                                 <!-- Profile info -->
                                 <div class="col d-sm-flex justify-content-between align-items-center">
                                     <div>
-                                        <h1 class="my-1 fs-4">Lori Stevens</h1>
+                                        <h3 class="h6" href="#">{{ profile.full_name }}</h3>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
-                                                <span class="h6">255</span>
+                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ points|default:0 }}" data-purecounter-delay="200">{{ points|default:0 }}</span>
                                                 <span class="text-body fw-light">points</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
-                                                <span class="h6">7</span>
+                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ total_courses|default:0 }}" data-purecounter-delay="200">{{ total_courses|default:0 }}</span>
                                                 <span class="text-body fw-light">Completed courses</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
-                                                <span class="h6">52</span>
+                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ completed_lessons|default:0 }}" data-purecounter-delay="200">{{ completed_lessons|default:0 }}</span>
                                                 <span class="text-body fw-light">Completed lessons</span>
                                             </li>
                                         </ul>
@@ -542,14 +547,14 @@ Page content START -->
                                 <div class="bg-dark border rounded-3 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
-                                        <a class="list-group-item" href="student-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                        <a class="list-group-item" href="{% url 'student-dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
                                         <a class="list-group-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-2"></i>My Subscriptions</a>
                                         <a class="list-group-item" href="student-course-list.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
                                         <a class="list-group-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-2"></i>Course Resume</a>
                                         <a class="list-group-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
                                         <a class="list-group-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front fa-fw me-2"></i>Payment Info</a>
-                                        <a class="list-group-item active" href="student-bookmark.html"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
-                                        <a class="list-group-item" href="instructor-edit-profile.html"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                        <a class="list-group-item active" href="{% url 'student_bookmarks' %}"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
+                                        <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
                                         <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
                                         <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         <a class="list-group-item text-danger bg-danger-soft-hover" href="#"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
@@ -589,8 +594,9 @@ Page content START -->
                                             <div class="d-flex justify-content-between mb-2">
                                                 <a href="#" class="badge bg-success bg-opacity-10 text-success">{{ favorite.course.level }}</a>
                                                 <a href="javascript:void(0);" 
-                                                   class="text-danger favorite-btn" 
-                                                   data-course-id="{{ favorite.course.id }}">
+                                                    class="text-danger favorite-btn" 
+                                                    data-course-id="{{ favorite.course.id }}"
+                                                    id="favorite-btn-{{ favorite.course.id }}">
                                                     <i class="fas fa-heart"></i>
                                                 </a>
                                             </div>
@@ -674,6 +680,36 @@ Footer END -->
 
     <!-- Template Functions -->
     <script src="{% static 'student/student-whishlist/js/functions.js' %}"></script>
+    <script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Handle favorite toggle
+                const favoriteButtons = document.querySelectorAll('.favorite-btn');
+                
+                favoriteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const courseId = this.getAttribute('data-course-id');
+                        const buttonId = this.getAttribute('id');
+                        
+                        // Make AJAX request to toggle favorite
+                        fetch(`/toggle-favorite/${courseId}/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                // If course was added to favorites
+                                if (data.status === 'added') {
+                                    document.getElementById(buttonId).innerHTML = '<i class="fas fa-heart text-danger"></i>';
+                                } else {
+                                    document.getElementById(buttonId).innerHTML = '<i class="far fa-heart text-danger"></i>';
+                                }
+                                // Optionally, refresh the list of favorites on the page
+                                location.reload();  // Refreshes the page to show updated list
+                            });
+                    });
+                });
+            });
+        </script>
+    </script>
+
 
 </body>
 

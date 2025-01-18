@@ -13,6 +13,8 @@ from .views import course_list_view
 from champapp.views import course_list_view, delete_course_view, course_detail_adv
 from champapp.views import edit_quiz, instructor_quiz
 from .views import create_payment, verify_payment
+from .views import get_course_content
+
 
 
 
@@ -65,6 +67,7 @@ urlpatterns = [
     path('course/<int:course_id>/', views.course_complete, name='course_complete'),
     path('instructor/student-list/', views.instructor_student_list, name='instructor-student-list'),
     path('course-details/<int:course_id>/', views.course_details, name='course_details'),
+    path('get-course-content/<int:course_id>/', get_course_content, name='get_course_content'),
 
     path('courses/<int:course_id>/pay/', create_payment, name='create_payment'),
     path('verify-payment/', verify_payment, name='verify_payment'),

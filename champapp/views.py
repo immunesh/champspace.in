@@ -214,6 +214,7 @@ def custom_403_view(request, *args, **kwargs):
     return render(request, 'champapp/403.html', status=403)
 
 
+
 from django.db.models import Count, Sum, F, Q
 
 @user_passes_test(lambda u: u.is_superuser or u.is_staff, login_url='/403/')
@@ -1452,7 +1453,7 @@ def admin_instructor_list(request):
 
 #---------course complete ---------------#
 from django.shortcuts import render, get_object_or_404
-from .models import Course1, Lecture, Topic
+from .models import Course1, Lecture, Topic, Profile
 
 def course_complete(request, course_id):
     """
@@ -1468,11 +1469,15 @@ def course_complete(request, course_id):
     total_lectures = lectures.count()
     completed_lectures = 0  # Replace with logic to fetch user's completed lectures
     progress_percentage = int((completed_lectures / total_lectures) * 100) if total_lectures > 0 else 0
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
 
     context = {
         'course': course,
         'lectures': lectures,
         'progress_percentage': progress_percentage,
+        'profile': profile,
+        'class_course': course,
     }
 
     return render(request, 'champapp/course_complete.html', context)
@@ -1539,35 +1544,57 @@ def instructor_student_list(request):
     return render(request, 'champapp/instructor/instructor-studentlist.html', context)
 
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Course1, Lecture
 
 @login_required
 def course_details(request, course_id):
-    """
-    AJAX view to fetch course details for a specific course.
-    """
+    # Fetch course
     course = get_object_or_404(Course1, id=course_id)
-    lectures = Lecture.objects.filter(course=course).prefetch_related('topics')
 
-    total_lectures = lectures.count()
-    completed_lectures = 0  # Replace with logic to fetch user's completed lectures
-    progress_percentage = int((completed_lectures / total_lectures) * 100) if total_lectures > 0 else 0
+    # Fetch lectures for the course
+    lectures = course.lecture_set.all()  # Adjust related name if needed
 
-    # Serialize data for the modal
-    course_data = {
-        "name": course.name,
-        "level": course.level,
-        "languages": course.languages,
-        "total_lectures": total_lectures,
-        "course_time": course.course_time,
-        "description": course.description,
-        "progress_percentage": progress_percentage,
-        "lectures": [
-            {
-                "id": lecture.id,
-                "title": lecture.title,
-                "topics": [{"name": topic.name, "url": topic.url} for topic in lecture.topics.all()],
-            }
-            for lecture in lectures
-        ],
-    }
-    return JsonResponse(course_data)
+    # Calculate progress (implement this function as needed)
+    progress_percentage = calculate_progress(course, request.user)
+
+    # Render the template with required context
+    return render(request, 'course_complete.html', {
+        'course': course,
+        'lectures': lectures,
+        'progress_percentage': progress_percentage,
+    })
+
+def calculate_progress(course, user):
+    """
+    Calculate the progress percentage for a user in a course.
+    This logic may vary based on your models and requirements.
+    """
+    completed_lectures = user.completed_lectures.filter(course=course).count()  # Adjust field names as needed
+    total_lectures = course.lecture_set.count()  # Adjust related name if needed
+
+    if total_lectures == 0:
+        return 0
+
+    return (completed_lectures / total_lectures) * 100
+
+
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+from .models import Course1, Lecture
+
+@login_required
+def get_course_content(request, course_id):
+    course = get_object_or_404(Course1, id=course_id)
+    lectures = course.lecture_set.all()  # Adjust related name if needed
+    progress_percentage = calculate_progress(course, request.user)
+
+    # Render only the inner content of `course_complete.html` for the modal
+    return render(request, 'course_complete.html', {
+        'course': course,
+        'lectures': lectures,
+        'progress_percentage': progress_percentage,
+    })
+

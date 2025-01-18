@@ -213,7 +213,7 @@
                                         <li> <a class="dropdown-item" href="cart.html">Cart</a></li>
                                         <li> <a class="dropdown-item" href="checkout.html">Checkout</a></li>
                                         <li> <a class="dropdown-item" href="empty-cart.html">Empty Cart</a></li>
-                                        <li> <a class="dropdown-item" href="wishlist.html">Wishlist</a></li>
+                                        <li> <a class="dropdown-item" href="{% url 'student_bookmarks' %}">Wishlist</a></li>
                                     </ul>
                                 </li>
 
@@ -284,13 +284,13 @@
                                 <li class="dropdown-submenu dropend">
                                     <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a>
                                     <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                        <li> <a class="dropdown-item" href="student-dashboard.html"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
+                                        <li> <a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
                                         <li> <a class="dropdown-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-1"></i>My Subscriptions</a> </li>
                                         <li> <a class="dropdown-item" href="student-course-list.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
                                         <li> <a class="dropdown-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-1"></i>Course Resume</a> </li>
                                         <li> <a class="dropdown-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz </a> </li>
                                         <li> <a class="dropdown-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front-fill fa-fw me-1"></i>Payment Info</a> </li>
-                                        <li> <a class="dropdown-item" href="student-bookmark.html"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
+                                        <li> <a class="dropdown-item" href="{% url 'student_bookmarks' %}"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
                                     </ul>
                                 </li>
 
@@ -586,31 +586,35 @@ Page content START -->
                             </div>
                             <!-- Offcanvas body -->
                             <div class="offcanvas-body p-3 p-xl-0">
-                                <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
+                                <div class="bg-dark border rounded-3 p-3 w-100">
                                     <!-- Dashboard menu -->
-                                    <div class="list-group list-group-dark list-group-borderless">
-                                        {% if user.is_staff %}
-                                            <!-- If user is staff, link to instructor dashboard -->
-                                            <a class="list-group-item" href="{% url 'instructor_dashboard' %}">
-                                                <i class="bi bi-ui-checks-grid fa-fw me-2"></i>Instructor Dashboard
-                                            </a>
+                                    <div class="list-group list-group-dark list-group-borderless collapse-list">
+                                        {% if not request.user.is_staff %}
+                                            <a class="list-group-item active" href="{% url 'student-dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-2"></i>My Subscriptions</a>
+                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-2"></i>Course Resume</a>
+                                            <a class="list-group-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
+                                            <a class="list-group-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front fa-fw me-2"></i>Payment Info</a>
+                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
+                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% else %}
-                                            <!-- If user is not staff (normal user), link to student dashboard -->
-                                            <a class="list-group-item" href="{% url 'student-dashboard' %}">
-                                                <i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard
-                                            </a>
+                                            <!-- Sidebar for Staff (Instructor) -->
+                                            <a class="list-group-item active" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
+                                            <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                            <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                            <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                            <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% endif %}
-                                        <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                        <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                        <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                        <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                        <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                        <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                        <a class="list-group-item active" href="instructor-edit-profile.html"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                        <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                        <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                        <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
-                                        <li>
+                                                                                <li>
                                             <form method="POST" action="{% url 'logout' %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
@@ -618,6 +622,15 @@ Page content START -->
                                                 </button>
                                             </form>
                                             </li>
+                                        <!-- Collapse menu -->
+                                        <a class="list-group-item" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
+							        		<i class="bi bi-lock fa-fw me-2"></i>Dropdown level
+								        </a>
+                                        <!-- Submenu -->
+                                        <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
+                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
+                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
