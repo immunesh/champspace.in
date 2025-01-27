@@ -14,11 +14,16 @@ from champapp.views import course_list_view, delete_course_view, course_detail_a
 from champapp.views import edit_quiz, instructor_quiz
 from .views import create_payment, verify_payment
 from .views import get_course_content
+from .views import add_to_cart, cart_detail, create_payment_from_cart, verify_payment
 
 
 
 
 urlpatterns = [
+    path('cart/', cart_detail, name='cart_detail'),
+    path('cart/add/<int:course_id>/', add_to_cart, name='add_to_cart'),
+    path('cart/checkout/', create_payment_from_cart, name='create_payment_from_cart'),
+    path('verify-payment/', verify_payment, name='verify_payment'),
     path('', views.home, name='index'),
     path('403/', views.custom_403_view, name='403'),
     path('sign-up/', views.sign_up, name='sign-up'),

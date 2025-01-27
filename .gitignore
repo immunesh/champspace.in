@@ -5,3 +5,7 @@ __pycache__
 __pycache__/
 *.pyc
 champ_project/__pycache__/
+champ_project/__pycache__/__init__.cpython-312.pyc
+champ_project/__pycache__/settings.cpython-312.pyc
+champ_project/__pycache__/urls.cpython-312.pyc
+champ_project/__pycache__/wsgi.cpython-312.pyc

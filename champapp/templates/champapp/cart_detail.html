@@ -1,0 +1,11 @@
+<h1>Your Cart</h1>
+<ul>
+    {% for item in cart.items.all %}
+    <li>{{ item.course.name }} - ₹{{ item.total_price }}</li>
+    {% endfor %}
+</ul>
+<p>Total: ₹{{ total_price }}</p>
+<form action="{% url 'create_payment_from_cart' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Checkout</button>
+</form>

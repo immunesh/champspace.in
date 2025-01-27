@@ -18,8 +18,57 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Course1, Payment
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .models import Cart, CartItem, Course1, EnrolledCourse
+
 
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET_KEY))
+
+@login_required
+def create_payment_from_cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    total_amount = sum(item.total_price for item in cart.items.all()) * 100  # Convert to paise
+
+    razorpay_order = razorpay_client.order.create({
+        'amount': total_amount,
+        'currency': 'INR',
+        'payment_capture': '1'
+    })
+
+    payment = Payment.objects.create(
+        user=request.user,
+        amount=total_amount / 100,  # Convert back to INR
+        razorpay_order_id=razorpay_order['id'],
+        status="Pending"
+    )
+
+    return render(request, 'champapp/payment_page.html', {
+        'razorpay_order_id': razorpay_order['id'],
+        'razorpay_key': settings.RAZORPAY_KEY_ID,
+        'amount': total_amount,
+        'user_email': request.user.email,
+        'user_name': request.user.username
+    })
+@login_required
+def add_to_cart(request, course_id):
+    course = get_object_or_404(Course1, id=course_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, course=course)
+
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('cart_detail')  # Redirect to the cart page
+@login_required
+def cart_detail(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    total_price = sum(item.total_price for item in cart.items.all())
+    return render(request, 'champapp/cart_detail.html', {
+        'cart': cart,
+        'total_price': total_price,
+    })
+
+
 
 def create_payment(request, course_id):
     course = get_object_or_404(Course1, id=course_id)
@@ -75,6 +124,20 @@ def verify_payment(request):
             payment.save()
 
             # Enroll the user in the course or any other success action
+            
+            cart = Cart.objects.get(user=payment.user)
+            for item in cart.items.all():
+                EnrolledCourse.objects.create(
+                    student=payment.user,
+                    course=item.course,
+                    price=item.course.price,
+                    status="in_progress"
+                )
+
+            # Clear the cart after successful enrollment
+            cart.items.all().delete()
+
+            
             return JsonResponse({'status': 'success'})
 
         except razorpay.errors.SignatureVerificationError:
