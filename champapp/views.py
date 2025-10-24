@@ -585,14 +585,21 @@ def class_course_preview(request):
         'profile': profile,  # Pass the profile to the template (may be None if no profile)
     })
 
-########## Course-detail-adv#################
+# Course Detail Advanced View
 def course_detail_adv(request, pk):
-    class_course = get_object_or_404(InstructorClassCourse, pk=pk)
-    return render(request, 'champapp/admin/course-detail-adv.html', {'class_course': class_course})
-
+    """View to show course details for admin review or general viewing"""
+    class_course = get_object_or_404(Course1, pk=pk)
+    profile = None
+    if request.user.is_authenticated:
+        profile, created = Profile.objects.get_or_create(user=request.user)
+    
+    return render(
+        request, 
+        'champapp/admin/course-detail-adv.html', 
+        {'class_course': class_course, 'profile': profile, 'course': class_course}
+    )
 
 ########## instructor dashboard #################
-from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from .models import Course1, StudentProfile, EnrolledCourse
 from django.core.exceptions import ObjectDoesNotExist
@@ -603,10 +610,6 @@ from django.db.models import Count, Sum
 from django.utils.timesince import timesince
 from django.db.models import Count, F
 
-
-# Check if user is superuser or staff
-def superuser_or_staff_required(user):
-    return user.is_superuser or user.is_staff
 
 @user_passes_test(superuser_or_staff_required, login_url='/403/')
 def instructor_dashboard(request):
@@ -750,9 +753,6 @@ import logging
 logger = logging.getLogger(__name__)  # Configure logging
 
 # Decorator to check if the user is a superuser or staff
-def superuser_or_staff_required(user):
-    return user.is_active and (user.is_superuser or user.is_staff)
-
 @user_passes_test(superuser_or_staff_required)
 def create_course_step1(request, course_id=None):
     # Fetch the course if course_id is provided, otherwise it's a new course
@@ -892,25 +892,7 @@ def create_course_step4(request, course_id):
         'faq_form': faq_form,
     })
 
-
-from .models import Profile  # Adjust the import to match your Profile model
-
-def course_detail_adv(request, pk):
-    class_course = get_object_or_404(Course1, pk=pk)
-    profile, created = Profile.objects.get_or_create(user=request.user)  # Assuming one-to-one relation with the User model
-    course = get_object_or_404(Course1, pk=pk)
-    return render(
-        request, 
-        'champapp/admin/course-detail-adv.html', 
-        {'class_course': class_course, 'profile': profile, 'course': course}
-    )
-
-
-
-############base.htmlfor header###########
-from django.shortcuts import render
-
-# View for the base page (base.html)
+# Base view for header
 def base_view(request):
     return render(request, 'champapp/base.html')
 
@@ -925,14 +907,7 @@ def course_list(request):
     page_obj = paginator.get_page(page_number)
     return render(request, 'course_list.html', {'page_obj': page_obj})
 
-#########courselist#######
-from django.shortcuts import render
-from django.core.paginator import Paginator
-from .models import Course1
-from django.db.models import Count
-
-
-
+# Course list view with filters
 def course_list_view(request):
     # Fetch all courses with their creators
     courses = Course1.objects.select_related('creator')
@@ -1550,10 +1525,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from .models import EnrolledCourse, StudentProfile
-
-# Check if the user is staff (instructor) or superuser
-def superuser_or_staff_required(user):
-    return user.is_superuser or user.is_staff
 
 @user_passes_test(superuser_or_staff_required, login_url='/403/')
 def instructor_student_list(request):

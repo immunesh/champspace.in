@@ -1,10 +1,7 @@
 from django import forms
-from .models import StudentProfile, InstructorProfile
-from .models import StudentProfile, InstructorProfile, Course, InstructorClassCourse
-############## student edit profile ############
-from django import forms
-from .models import StudentProfile
+from .models import StudentProfile, InstructorProfile, Course, InstructorClassCourse, FAQ, Tag, Course1, Lecture, Topic, Quiz
 
+# Student Edit Profile Form
 class StudentEditProfileForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
@@ -38,10 +35,7 @@ class StudentEditProfileForm(forms.ModelForm):
         }
 
 
-############### instructor edit profile #############
-from django import forms
-from .models import InstructorProfile
-
+# Instructor Profile Form
 class InstructorProfileForm(forms.ModelForm):
     class Meta:
         model = InstructorProfile
@@ -82,9 +76,7 @@ class InstructorProfileForm(forms.ModelForm):
         }
 
 
-from django import forms
-from .models import Course, FAQ, Tag  # Assuming there's a Tag model for tags
-
+# Course Step One Form
 class CourseStepOneForm(forms.ModelForm):
     class Meta:
         model = Course
@@ -115,11 +107,7 @@ class CourseStepFourForm(forms.ModelForm):
         model = Course
         fields = []  # These fields are managed manually (tags and reviewer_message)
 
-##### testing ######
-from django import forms
-from .models import InstructorClassCourse
-
-
+# Instructor Class Course Form
 class InstructorClassCourseForm(forms.ModelForm):
     class Meta:
         model = InstructorClassCourse

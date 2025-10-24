@@ -3,10 +3,24 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
+from moviepy import VideoFileClip
 
-from django.db import models
-from django.contrib.auth.models import User
+# Tag Model
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
+# CourseCategory Model
+class CourseCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+# Cart Model
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -14,6 +28,7 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart for {self.user.username}"
 
+# CartItem Model
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     course = models.ForeignKey('Course1', on_delete=models.CASCADE)
@@ -26,6 +41,7 @@ class CartItem(models.Model):
     def total_price(self):
         return self.course.price * self.quantity
 
+# Payment Model
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey('Course1', on_delete=models.CASCADE)
@@ -39,29 +55,7 @@ class Payment(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.name} - {self.status}"
 
-# CourseCategory Model
-class CourseCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.core.exceptions import ObjectDoesNotExist
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CourseCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
+# Course Model
 class Course(models.Model):
     LEVEL_CHOICES = [
         ('Beginner', 'Beginner'),
@@ -132,29 +126,6 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    razorpay_order_id = models.CharField(max_length=100, unique=True)
-    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
-    razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=50, default="Pending")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.course.name} - {self.status}"
-
-# CourseCategory Model
-
-
-    def __str__(self):
-        return self.name
-
-
-
-
-
 # UserCourse Model
 class UserCourse(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_courses')
@@ -171,9 +142,7 @@ class UserCourse(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.title}"
 
-from django.db import models
-from django.contrib.auth.models import User
-
+# Profile Model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_image = models.ImageField(upload_to="profile_images/", default="profile_images/default.jpg", blank=True)
@@ -228,12 +197,7 @@ def save_user_profile(sender, instance, **kwargs):
         # If profile doesn't exist, create it
         UserProfile.objects.create(user=instance)
 
-########## student edit profile #############
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
+# StudentProfile Model
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Linking to the User model
     full_name = models.CharField(max_length=100, blank=True)  # Combining first_name and last_name into full_name
@@ -260,13 +224,7 @@ class StudentProfile(models.Model):
     def __str__(self):
         return self.user.email  # Display user email in the profile representation
     
-########### instructor edit profile ################
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.core.exceptions import ObjectDoesNotExist
-
+# InstructorProfile Model
 class InstructorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Linking to the User model
     full_name = models.CharField(max_length=100, blank=True)
@@ -311,12 +269,9 @@ def save_user_profile(sender, instance, **kwargs):
             instructor_profile, _ = InstructorProfile.objects.get_or_create(user=instance)
             instructor_profile.save()
     except ObjectDoesNotExist:
-        pass  # Fallback for unexpected edge cases#
-    
+        pass  # Fallback for unexpected edge cases
 
-###################---instructor-course-create-----##############
-from django.db import models
-
+# InstructorClassCourse Model
 class InstructorClassCourse(models.Model):
     COURSE_CATEGORY_CHOICES = [
         ('Engineer', 'Engineer'),
@@ -359,10 +314,7 @@ class InstructorClassCourse(models.Model):
     def __str__(self):
         return self.course_title
     
-###########course1############
-from django.db import models
-from moviepy import VideoFileClip
-
+# Course1 Model (Main Course Model)
 class Course1(models.Model):  # Renamed to Course1
     COURSE_CATEGORY_CHOICES = [
         ('Engineer', 'Engineer'),
@@ -486,9 +438,7 @@ def create_or_save_user_profile(sender, instance, created, **kwargs):
         if instance.is_staff:
             instance.instructorprofile.save()  # Save instructor profile if staff
 
-############student enrollment and progress###############
-from django.db import models
-
+# EnrolledCourse Model
 class EnrolledCourse(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course1, on_delete=models.CASCADE)
@@ -549,8 +499,7 @@ class EnrolledCourse(models.Model):
             self.update_progress()  # Update progress after marking the topic as completed
 
 
-
-# Assuming your models.py
+# UserTopicProgress Model
 class UserTopicProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
@@ -559,10 +508,7 @@ class UserTopicProgress(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.topic.name} - {'Completed' if self.completed else 'Incomplete'}"
 
-
-from django.db import models
-from django.contrib.auth.models import User
-
+# FavoriteCourse Model
 class FavoriteCourse(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="favorite_courses")
     course = models.ForeignKey(Course1, on_delete=models.CASCADE, related_name="favorited_by")
@@ -571,12 +517,7 @@ class FavoriteCourse(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.name}"
 
-#------------instructor-quiz---------------#
-# champapp/models.py
-
-from django.db import models
-from django.contrib.auth.models import User
-
+# Quiz Model
 class Quiz(models.Model):
     question = models.CharField(max_length=255)
     option_1 = models.CharField(max_length=255)
