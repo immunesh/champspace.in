@@ -3,13 +3,13 @@
 <html lang="en">
 
 <head>
-    <title>Eduport - LMS, Education and Course Theme</title>
+    <title>My Earnings - Learn & Earn | ChampSpace</title>
 
     <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Webestica.com">
-    <meta name="description" content="Eduport- LMS, Education and Course Theme">
+    <meta name="author" content="ChampSpace">
+    <meta name="description" content="Student Dashboard - Track your courses, earnings, and certificates on ChampSpace">
 
     <!-- Dark mode -->
     <script>
@@ -92,6 +92,62 @@
 
    <!--Bootstrap Icons library-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">  
+
+    <style>
+        .modal-fullscreen {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .modal-body {
+            overflow-y: auto; /* Enable scrolling if content overflows */
+        }
+        /* Red close button styles */
+        .btn-close-red {
+            background-color: red;
+            border: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            position: relative;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-close-red::before, .btn-close-red::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 2px;
+            background-color: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-close-red::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        /* Hover and active effects */
+        .btn-close-red:hover {
+            background-color: darkred;
+            transform: scale(1.1);
+        }
+
+        .btn-close-red:hover::before, .btn-close-red:hover::after {
+            background-color: lightgray;
+        }
+
+        .btn-close-red:active {
+            transform: scale(0.9);
+        }
+
+        
+    </style>
 
 
 </head>
@@ -264,22 +320,27 @@ Page Banner START -->
                                         <h1 class="my-1 fs-4">{{ profile.full_name }}</h1>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
-                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ points|default:0 }}" data-purecounter-delay="200">{{ points|default:0 }}</span>
-                                                <span class="text-body fw-light">points</span>
+                                                <i class="bi bi-cash-stack text-success me-1"></i>
+                                                <span class="h6 text-success fw-bold">$0.00</span>
+                                                <span class="text-body fw-light">Total Earned</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
+                                                <i class="bi bi-check-circle text-primary me-1"></i>
                                                 <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ total_courses|default:0 }}" data-purecounter-delay="200">{{ total_courses|default:0 }}</span>
-                                                <span class="text-body fw-light">Completed courses</span>
+                                                <span class="text-body fw-light">Courses Completed</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
-                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="{{ completed_lessons|default:0 }}" data-purecounter-delay="200">{{ completed_lessons|default:0 }}</span>
-                                                <span class="text-body fw-light">Completed lessons</span>
+                                                <i class="bi bi-trophy text-warning me-1"></i>
+                                                <span class="h6 purecounter" data-purecounter-start="0" data-purecounter-end="0" data-purecounter-delay="200">0</span>
+                                                <span class="text-body fw-light">Certificates</span>
                                             </li>
                                         </ul>
                                     </div>
                                     <!-- Button -->
                                     <div class="d-flex align-items-center mt-2 mt-md-0">
-                                            <a href="{% url 'student-dashboard' %}" class="btn btn-outline-primary mb-0">View my courses</a>
+                                            <a href="{% url 'course_grid' %}" class="btn btn-success mb-0">
+                                                <i class="bi bi-plus-circle me-2"></i>Browse Courses
+                                            </a>
                                     </div>
                                 </div>
                             </div>
@@ -323,19 +384,19 @@ Page content START -->
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
                                         {% if not request.user.is_staff %}
-                                            <a class="list-group-item active" href="{% url 'student-dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                            <a class="list-group-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-2"></i>My Subscriptions</a>
-                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                            <a class="list-group-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-2"></i>Course Resume</a>
-                                            <a class="list-group-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                            <a class="list-group-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front fa-fw me-2"></i>Payment Info</a>
-                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
-                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                            <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                            <a class="list-group-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-play-circle fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item active" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
+                                            <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
+                                            <a class="list-group-item" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
+                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
+                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% else %}
                                             <!-- Sidebar for Staff (Instructor) -->
-                                            <a class="list-group-item active" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item active" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
                                             <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
                                             <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
                                             <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
@@ -345,7 +406,7 @@ Page content START -->
                                             <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
                                             <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
                                             <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                            <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% endif %}
                                                                                 <li>
                                             <form method="POST" action="{% url 'logout' %}">
@@ -355,15 +416,6 @@ Page content START -->
                                                 </button>
                                             </form>
                                             </li>
-                                        <!-- Collapse menu -->
-                                        <a class="list-group-item" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
-							        		<i class="bi bi-lock fa-fw me-2"></i>Dropdown level
-								        </a>
-                                        <!-- Submenu -->
-                                        <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -374,13 +426,129 @@ Page content START -->
 
                     <!-- Main content START -->
                     <div class="col-xl-9">
+                        
+                        <!-- Earnings Alert Banner -->
+                        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="bi bi-cash-coin fs-2"></i>
+                                </div>
+                                <div>
+                                    <h6 class="alert-heading mb-1">💰 Start Earning Today!</h6>
+                                    <p class="mb-0">Complete courses and earn <strong>90% of ad revenue</strong>. The more you learn, the more you earn!</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
                         <!-- Counter boxes START -->
                         <div class="row mb-4">
+                            <!-- Total Earnings - Featured -->
+                            <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                                <div class="d-flex justify-content-center align-items-center p-4 bg-success bg-opacity-15 rounded-3 border border-success">
+                                    <span class="display-6 lh-1 text-success mb-0"><i class="bi bi-cash-stack"></i></span>
+                                    <div class="ms-4">
+                                        <div class="d-flex">
+                                            <h5 class="mb-0 fw-bold text-success">$0.00</h5>
+                                        </div>
+                                        <span class="mb-0 h6 fw-light">Total Earnings</span>
+                                        <small class="d-block text-muted">(90% Revenue)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Completed Courses -->
+                            <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                                <div class="d-flex justify-content-center align-items-center p-4 bg-primary bg-opacity-10 rounded-3">
+                                    <span class="display-6 lh-1 text-primary mb-0"><i class="bi bi-check-circle-fill"></i></span>
+                                    <div class="ms-4">
+                                        <div class="d-flex">
+                                            <h5 class="purecounter mb-0 fw-bold" 
+                                                data-purecounter-start="0" 
+                                                data-purecounter-end="0" 
+                                                data-purecounter-delay="200">
+                                                0
+                                            </h5>
+                                        </div>
+                                        <span class="mb-0 h6 fw-light">Completed Courses</span>
+                                        <small class="d-block text-muted">Earning unlocked</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Active Courses -->
+                            <div class="col-sm-6 col-lg-4 mb-3 mb-lg-0">
+                                <div class="d-flex justify-content-center align-items-center p-4 bg-orange bg-opacity-15 rounded-3">
+                                    <span class="display-6 lh-1 text-orange mb-0"><i class="bi bi-play-circle-fill"></i></span>
+                                    <div class="ms-4">
+                                        <div class="d-flex">
+                                            <h5 class="purecounter mb-0 fw-bold" 
+                                                data-purecounter-start="0" 
+                                                data-purecounter-end="{{ total_courses }}" 
+                                                data-purecounter-delay="200">
+                                                0
+                                            </h5>
+                                        </div>
+                                        <span class="mb-0 h6 fw-light">Active Courses</span>
+                                        <small class="d-block text-muted">In progress</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings Stats Row -->
+                        <div class="row mb-4">
+                            <div class="col-lg-8">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="card-title mb-0"><i class="bi bi-graph-up-arrow text-success me-2"></i>Earning Potential</h5>
+                                            <span class="badge bg-success bg-opacity-10 text-success">90% Share</span>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3">
+                                                    <h6 class="text-muted mb-1 small">This Month</h6>
+                                                    <h4 class="mb-0 text-success">$0.00</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3">
+                                                    <h6 class="text-muted mb-1 small">Pending Payout</h6>
+                                                    <h4 class="mb-0 text-warning">$0.00</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="p-3 bg-success bg-opacity-10 rounded-3 text-center">
+                                                    <p class="mb-2 small"><i class="bi bi-lightbulb-fill text-warning me-1"></i><strong>Pro Tip:</strong> Complete more courses to maximize your earnings!</p>
+                                                    <a href="{% url 'course_grid' %}" class="btn btn-success btn-sm">Browse Courses</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="card bg-gradient-primary text-white border-0 h-100">
+                                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                                        <i class="bi bi-trophy-fill display-4 mb-3"></i>
+                                        <h5 class="text-white mb-2">Achievements</h5>
+                                        <h2 class="mb-1 text-white">0</h2>
+                                        <p class="mb-3 small opacity-75">Certificates Earned</p>
+                                        <a href="#" class="btn btn-white btn-sm">View All</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Counter boxes END -->
 
                         <div class="card bg-transparent border rounded-3">
                             <!-- Card header START -->
                             <div class="card-header bg-transparent border-bottom">
-                                <h3 class="mb-0">My Courses List</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="mb-0"><i class="bi bi-play-circle text-primary me-2"></i>My Learning Journey</h3>
+                                    <span class="badge bg-success bg-opacity-10 text-success">Earn as you learn!</span>
+                                </div>
                             </div>
                             <!-- Card header END -->
 
@@ -431,53 +599,43 @@ Page content START -->
                                         <tbody>
                                             {% for enrollment in enrolled_courses %}
                                             <tr>
-                                                <!-- Course Title -->
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <!-- Image -->
                                                         <div class="w-100px">
                                                             {% if enrollment.course.image %}
                                                             <img src="{{ enrollment.course.image.url }}" class="rounded" alt="Course Image">
                                                             {% endif %}
                                                         </div>
-                                                        <div class="mb-0 ms-2">
-                                                            <!-- Title -->
-                                                            <h6><a href="{% url 'course_detail_adv' enrollment.course.id %}">{{ enrollment.course.name }}</a></h6>
-                                                            <!-- Progress Info -->
-                                                            <div class="overflow-hidden">
-                                                                <h6 class="mb-0 text-end">{{ enrollment.progress_percentage|floatformat:0 }}%</h6>
-                                                                <div class="progress progress-sm bg-primary bg-opacity-10">
-                                                                    <div class="progress-bar bg-primary aos" role="progressbar" 
-                                                                        data-aos="slide-right" data-aos-delay="200" 
-                                                                        data-aos-duration="1000" data-aos-easing="ease-in-out" 
-                                                                        style="width: {{ enrollment.progress_percentage|floatformat:0 }}%" 
-                                                                        aria-valuenow="{{ enrollment.progress_percentage|floatformat:0 }}" 
-                                                                        aria-valuemin="0" aria-valuemax="100">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ enrollment.total_lectures }}</td>
+                                                <!-- Replace completed_topics with progress bar code -->
+                                                <td>
+                                                    <div class="container">
+                                                        <!-- Progress Bar -->
+                                                        <div class="progress my-3">
+                                                            <div id="progress-bar-{{ course.id }}" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                                                         </div>
                                                     </div>
                                                 </td>
-                                    
-                                                <!-- Total Lectures -->
-                                                <td>{{ enrollment.course.total_lecture }}</td>
-                                    
-                                                <!-- Completed Lectures -->
-                                                <td>{{ enrollment.completed_lectures }}</td>
-                                    
-                                                <!-- Action -->
                                                 <td>
                                                     {% if enrollment.status == 'completed' %}
                                                     <button class="btn btn-sm btn-success me-1 mb-1 disabled">
                                                         <i class="bi bi-check me-1"></i>Complete
                                                     </button>
                                                     {% else %}
-                                                    <a href="{% url 'continue_course' enrollment.course.id %}" 
-                                                       class="btn btn-sm btn-primary-soft me-1 mb-1 mb-md-0">
+                                                    <button 
+                                                        class="btn btn-sm btn-primary-soft me-1 mb-1" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#courseModal" 
+                                                        data-course-id="{{ enrollment.course.id }}">
                                                         <i class="bi bi-play-circle me-1"></i>Continue
-                                                    </a>
+                                                    </button>
                                                     {% endif %}
+                                                    <button class="btn btn-sm btn-danger me-1 mb-1 reset-progress" 
+                                                            data-course-id="{{ enrollment.course.id }}">
+                                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                                    </button>
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -507,6 +665,21 @@ Page content START -->
                             <!-- Card body START -->
                         </div>
                         <!-- Main content END -->
+                    </div>
+                    <div class="modal fade" id="courseModal" tabindex="-1" aria-labelledby="courseModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-fullscreen">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="courseModalLabel">Course Details</h5>
+                                    <button type="button" class="btn-close btn-close-red" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Placeholder for dynamic content -->
+                                    <div id="courseModalContent">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- Row END -->
                 </div>
@@ -583,11 +756,186 @@ Footer END -->
         // Clear the file input
         document.getElementById('uploadfile-1').value = '';
     }
+    
 </script>
 
+<script>
+    // Reset progress button functionality
+    document.querySelectorAll('.reset-progress').forEach(button => {
+        button.addEventListener('click', function () {
+            const courseId = this.getAttribute('data-course-id');
+            if (confirm('Are you sure you want to reset progress for this course?')) {
+                fetch(`/reset_progress/${courseId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Progress reset successfully!');
+                            location.reload();
+                        } else {
+                            alert('Failed to reset progress. Please try again.');
+                        }
+                    });
+            }
+        });
+    });
 
-    
+    // Dynamic modal content loading
+    document.addEventListener("DOMContentLoaded", function () {
+        const courseModal = document.getElementById("courseModal");
+        const courseModalContent = document.getElementById("courseModalContent");
 
+        courseModal.addEventListener("show.bs.modal", function (event) {
+            const button = event.relatedTarget; // Button that triggered the modal
+            const courseId = button.getAttribute("data-course-id"); // Extract course ID
+
+            // Set loading message
+            courseModalContent.innerHTML = "Loading course details...";
+
+            // Fetch the content from the server
+            fetch(`/course/${courseId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.text(); // Parse response as HTML
+                })
+                .then(html => {
+                    courseModalContent.innerHTML = html; // Insert the HTML into the modal
+
+                    // After inserting content, initialize the course-related scripts
+                    initializeCourseScripts(courseId); // Call the function to initialize course features
+                })
+                .catch(error => {
+                    console.error("Error fetching course details:", error);
+                    courseModalContent.innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> Unable to load course details. Please try again later.
+                        </div>`;
+                });
+        });
+    });
+
+    // Function to reinitialize your course scripts
+    function initializeCourseScripts(courseId) {
+        const totalLectures = document.querySelectorAll('.btn-next').length + 1; // Total lectures including the last
+        const progressBar = document.getElementById(`progress-bar-${courseId}`);
+        let completedLectures = new Set(); // Track completed lectures
+
+        // Load saved progress from local storage
+        const savedProgress = localStorage.getItem(`completedLectures-${courseId}`);
+        if (savedProgress) {
+            completedLectures = new Set(JSON.parse(savedProgress)); // Parse saved progress
+            updateProgressBar(); // Update the progress bar with the saved progress
+        }
+
+        // Handle video click
+        document.querySelectorAll('.video-list li').forEach(video => {
+            video.addEventListener('click', () => {
+                const videoURL = video.getAttribute('data-video');
+                const videoFrame = document.getElementById('video-frame');
+
+                // Extract the video ID from the URL
+                const videoId = extractVideoId(videoURL);
+
+                if (videoId) {
+                    // Set the iframe src to the embed URL
+                    videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+                } else {
+                    alert("Invalid YouTube URL.");
+                }
+
+                video.classList.add('completed');
+            });
+        });
+
+        // Function to extract video ID from the URL
+        function extractVideoId(url) {
+            const regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/))([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Handle "Next Lecture" button
+        document.querySelectorAll('.btn-next').forEach(button => {
+            button.addEventListener('click', () => {
+                const lectureId = button.getAttribute('data-lecture');
+                if (!completedLectures.has(lectureId)) { // Check if the lecture is already completed
+                    completedLectures.add(lectureId);
+                    updateProgressBar();
+                }
+                const nextLectureId = parseInt(lectureId) + 1;
+                const nextLecture = document.querySelector(`#collapse${nextLectureId}`);
+                if (nextLecture) {
+                    nextLecture.classList.add('show'); // Expand the next lecture
+                }
+            });
+        });
+
+        // Handle "Course Completed" button
+        document.querySelector('.btn-complete').addEventListener('click', () => {
+            for (let i = 1; i <= totalLectures; i++) {
+                completedLectures.add(i.toString()); // Add all lectures to the set
+            }
+            updateProgressBar();
+            alert('Congratulations! You have completed the course.');
+        });
+
+        // Handle "Reset" button
+        document.querySelector('.btn-reset').addEventListener('click', () => {
+            // Show the custom modal
+            const resetModal = new bootstrap.Modal(document.getElementById('resetModal'));
+            resetModal.show();
+        });
+
+        // Handle confirmation of reset progress
+        document.getElementById('confirmReset').addEventListener('click', () => {
+            localStorage.removeItem(`completedLectures-${courseId}`);
+            completedLectures.clear(); // Reset progress
+            updateProgressBar(); // Reset the progress bar
+            alert('Progress has been reset. You can start again! ✨');
+            const resetModal = bootstrap.Modal.getInstance(document.getElementById('resetModal'));
+            resetModal.hide(); // Hide the modal after confirmation
+        });
+        
+        // Function to update the progress bar and save progress(course_complete.html referring)
+        function updateProgressBar() {
+            const progress = (completedLectures.size / totalLectures) * 100;
+            const progressPercentage = Math.min(progress, 100);
+            progressBar.style.width = `${progressPercentage}%`;
+            progressBar.textContent = `${Math.round(progressPercentage)}%`;
+            localStorage.setItem(`completedLectures-${courseId}`, JSON.stringify(Array.from(completedLectures))); // Save progress to local storage for the specific course
+
+        }
+    }
+</script>
+
+<script>
+    // Function to initialize and update the progress bar for course completion
+    function updateProgressBarForCourseComplete(courseId) {
+        const progressBar = document.getElementById(`progress-bar-${courseId}`);
+        
+        // Load saved progress from local storage
+        const savedProgress = localStorage.getItem(`completedLectures-${courseId}`);
+        if (savedProgress) {
+            const completedLectures = new Set(JSON.parse(savedProgress));
+            const totalLectures = 5;  // You can update this based on your course structure
+            const progress = (completedLectures.size / totalLectures) * 100;
+            const progressPercentage = Math.min(progress, 100);
+            progressBar.style.width = `${progressPercentage}%`;
+            progressBar.textContent = `${Math.round(progressPercentage)}%`;
+        }
+    }
+
+    // Call this function when the student dashboard is loaded
+    window.onload = function() {
+        const courseId = {{ course.id }};  // Ensure to pass the correct courseId from your template context
+        updateProgressBarForCourseComplete(courseId);
+    };
+</script>
 </body>
 
 </html>

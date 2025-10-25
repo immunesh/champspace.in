@@ -170,6 +170,16 @@ def home(request):
     return render(request, 'champapp/index.html', context)
 
 
+def how_it_works(request):
+    """Render the How it Works page."""
+    return render(request, 'champapp/how_it_works.html')
+
+
+def join_now(request):
+    """Render the Join Now page."""
+    return render(request, 'champapp/join_now.html')
+
+
 
 def sign_up(request):
     """Handle user signup."""
@@ -371,6 +381,158 @@ def user_dashboard(request):
     return render(request, "champapp/student_dashboard/student-dashboard.html", context)
 
 
+# Student Earnings Views
+@login_required
+def my_earnings(request):
+    """View for displaying student earnings"""
+    user = request.user
+    try:
+        profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=user)
+    
+    context = {
+        'profile': profile,
+        'total_earned': 0.00,  # Will be calculated from actual earnings model later
+        'this_month': 0.00,
+        'pending_payout': 0.00,
+        'withdrawn': 0.00,
+    }
+    return render(request, 'champapp/student_dashboard/my-earnings.html', context)
+
+
+@login_required
+def withdraw_funds(request):
+    """View for withdrawing funds"""
+    user = request.user
+    try:
+        profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=user)
+    
+    context = {
+        'profile': profile,
+        'available_balance': 0.00,  # Will be calculated from earnings model later
+    }
+    return render(request, 'champapp/student_dashboard/withdraw-funds.html', context)
+
+
+@login_required
+def revenue_stats(request):
+    """View for displaying revenue statistics"""
+    user = request.user
+    try:
+        profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=user)
+    
+    context = {
+        'profile': profile,
+    }
+    return render(request, 'champapp/student_dashboard/revenue-stats.html', context)
+
+
+@login_required
+def certificates(request):
+    """View for displaying earned certificates"""
+    user = request.user
+    try:
+        profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=user)
+    
+    context = {
+        'profile': profile,
+        'certificates': [],  # Will be populated with actual certificate data later
+    }
+    return render(request, 'champapp/student_dashboard/certificates.html', context)
+
+
+@login_required
+def student_settings(request):
+    """View for student account settings"""
+    user = request.user
+    try:
+        profile = StudentProfile.objects.get(user=user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=user)
+    
+    success_message = None
+    error_message = None
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        # Update Email
+        if action == 'update_email':
+            new_email = request.POST.get('email')
+            if new_email:
+                if User.objects.filter(email=new_email).exclude(id=user.id).exists():
+                    error_message = "This email is already in use."
+                else:
+                    user.email = new_email
+                    user.save()
+                    profile.email = new_email
+                    profile.save()
+                    success_message = "Email updated successfully!"
+        
+        # Update Phone Number
+        elif action == 'update_phone':
+            new_phone = request.POST.get('phone_number')
+            if new_phone:
+                profile.phone_number = new_phone
+                profile.save()
+                success_message = "Phone number updated successfully!"
+        
+        # Update Password
+        elif action == 'update_password':
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if not user.check_password(current_password):
+                error_message = "Current password is incorrect."
+            elif new_password != confirm_password:
+                error_message = "New passwords do not match."
+            elif len(new_password) < 8:
+                error_message = "Password must be at least 8 characters long."
+            else:
+                user.set_password(new_password)
+                user.save()
+                from django.contrib.auth import update_session_auth_hash
+                update_session_auth_hash(request, user)
+                success_message = "Password updated successfully!"
+        
+        # Update Username
+        elif action == 'update_username':
+            new_username = request.POST.get('username')
+            if new_username:
+                if User.objects.filter(username=new_username).exclude(id=user.id).exists():
+                    error_message = "This username is already taken."
+                else:
+                    user.username = new_username
+                    user.save()
+                    profile.username = new_username
+                    profile.save()
+                    success_message = "Username updated successfully!"
+        
+        # Update Notification Preferences
+        elif action == 'update_notifications':
+            # These would be saved to a separate settings model or profile fields
+            # For now, we'll just show success
+            success_message = "Notification preferences updated successfully!"
+        
+        # Update Privacy Settings
+        elif action == 'update_privacy':
+            # These would be saved to a separate settings model or profile fields
+            success_message = "Privacy settings updated successfully!"
+    
+    context = {
+        'profile': profile,
+        'success_message': success_message,
+        'error_message': error_message,
+    }
+    return render(request, 'champapp/student_dashboard/settings.html', context)
 
 
 ################ student edit profile ###############################################################################

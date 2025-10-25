@@ -316,369 +316,35 @@
 
                     <!-- Nav Main menu START -->
                     <ul class="navbar-nav navbar-nav-scroll me-auto">
-                        <!-- Nav item 1 Demos -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
-                            <ul class="dropdown-menu" aria-labelledby="demoMenu">
-                                <li> <a class="dropdown-item active" href="{% url 'index' %}">Home Default</a></li>
-                            </ul>
+                        <!-- Nav item 1 Home -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'index' %}">Home</a>
                         </li>
 
-                        <!-- Nav item 2 Pages -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                                <ul class="dropdown-menu" aria-labelledby="pagesMenu">
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Course</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="course-categories.html">Course Categories</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li> <a class="dropdown-item" href="course-grid.html">Course Grid Classic</a></li>
-                                            <li> <a class="dropdown-item" href="course-grid-2.html">Course Grid Minimal</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li> <a class="dropdown-item" href="course-list.html">Course List Classic</a></li>
-                                            <li> <a class="dropdown-item" href="course-list-2.html">Course List Minimal</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li> <a class="dropdown-item" href="course-detail.html">Course Detail Classic</a></li>
-                                            <li> <a class="dropdown-item" href="course-detail-min.html">Course Detail Minimal</a></li>
-                                            <li> <a class="dropdown-item" href="course-detail-adv.html">Course Detail Advance</a></li>
-                                            <li> <a class="dropdown-item" href="course-detail-module.html">Course Detail Module</a></li>
-                                            <li> <a class="dropdown-item" href="course-video-player.html">Course Full Screen Video</a></li>
-                                        </ul>
-                                    </li>
+                        <!-- Nav item 2 Courses -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
+                        </li>
 
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">About</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="about.html">About Us</a></li>
-                                            <li> <a class="dropdown-item" href="contact-us.html">Contact Us</a></li>
-                                            <li> <a class="dropdown-item" href="blog-grid.html">Blog Grid</a></li>
-                                            <li> <a class="dropdown-item" href="blog-masonry.html">Blog Masonry</a></li>
-                                            <li> <a class="dropdown-item" href="blog-detail.html">Blog Detail</a></li>
-                                            <li> <a class="dropdown-item" href="pricing.html">Pricing</a></li>
-                                        </ul>
-                                    </li>
+                        <!-- Nav item 3 How it Works -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'how_it_works' %}">How it Works</a>
+                        </li>
 
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Hero Banner</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="docs/snippet-hero-12.html">Hero Form</a></li>
-                                            <li> <a class="dropdown-item" href="docs/snippet-hero-13.html">Hero Vector</a></li>
-                                            <li>
-                                                <p class="dropdown-item mb-0">Coming soon....</p>
-                                            </li>
-                                        </ul>
-                                    </li>
-
-                                    <li> <a class="dropdown-item" href="instructor-list.html">Instructor List</a></li>
-                                    <li> <a class="dropdown-item" href="instructor-single.html">Instructor Single</a></li>
-                                    <li> <a class="dropdown-item" href="become-instructor.html">Become an Instructor</a></li>
-                                    <li> <a class="dropdown-item" href="abroad-single.html">Abroad Single</a></li>
-                                    <li> <a class="dropdown-item" href="workshop-detail.html">Workshop Detail</a></li>
-                                    <li> <a class="dropdown-item" href="event-detail.html">Event Detail</a></li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Shop</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="shop.html">Shop grid</a></li>
-                                            <li> <a class="dropdown-item" href="shop-product-detail.html">Product detail</a></li>
-                                            <li> <a class="dropdown-item" href="cart.html">Cart</a></li>
-                                            <li> <a class="dropdown-item" href="checkout.html">Checkout</a></li>
-                                            <li> <a class="dropdown-item" href="empty-cart.html">Empty Cart</a></li>
-                                            <li> <a class="dropdown-item" href="wishlist.html">Wishlist</a></li>
-                                        </ul>
-                                    </li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Help</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="help-center.html">Help Center</a></li>
-                                            <li> <a class="dropdown-item" href="help-center-detail.html">Help Center Single</a></li>
-                                            <li> <a class="dropdown-item" href="faq.html">FAQs</a></li>
-                                        </ul>
-                                    </li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Authentication</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="{% url 'sign-in' %}">Sign In</a></li>
-                                            <li> <a class="dropdown-item" href="{% url 'sign-up' %}">Sign Up</a></li>
-                                            <li> <a class="dropdown-item" href="{% url 'forgot-password' %}">Forgot Password</a></li>
-                                        </ul>
-                                    </li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Form</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="request-demo.html">Request a demo</a></li>
-                                            <li> <a class="dropdown-item" href="book-class.html">Book a Class</a></li>
-                                            <li> <a class="dropdown-item" href="request-access.html">Free Access</a></li>
-                                            <li> <a class="dropdown-item" href="university-admission-form.html">Admission Form</a></li>
-                                        </ul>
-                                    </li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Specialty</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="error-404.html">Error 404</a></li>
-                                            <li> <a class="dropdown-item" href="coming-soon.html">Coming Soon</a></li>
-                                        </ul>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <!-- Nav item 3 Account -->
-                            <li class="nav-item dropdown">
+                        <!-- Nav item 4 Account -->
+                        <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
                                 <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-manage-course.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-create-course.html"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Create Course</a> </li>
-                                            <li> <a class="dropdown-item" href="course-added.html"><i class="bi bi-file-check-fill fa-fw me-1"></i>Course Added</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-earning.html"><i class="fas fa-chart-line fa-fw me-1"></i>Earnings</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-studentlist.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Students</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-order.html"><i class="bi bi-cart-check-fill fa-fw me-1"></i>Orders</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-review.html"><i class="bi bi-star-fill fa-fw me-1"></i>Reviews</a> </li>
-                                            <li> <a class="dropdown-item" href="instructor-payout.html"><i class="fas fa-wallet fa-fw me-1"></i>Payout</a> </li>
-                                        </ul>
-                                    </li>
-
-                                    <!-- Dropdown submenu -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-                                            <li> <a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
-                                            <li> <a class="dropdown-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-1"></i>My Subscriptions</a> </li>
-                                            <li> <a class="dropdown-item" href="student-course-list.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
-                                            <li> <a class="dropdown-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-1"></i>Course Resume</a> </li>
-                                            <li> <a class="dropdown-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz </a> </li>
-                                            <li> <a class="dropdown-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front-fill fa-fw me-1"></i>Payment Info</a> </li>
-                                            <li> <a class="dropdown-item" href="student-bookmark.html"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
-                                        </ul>
-                                    </li>
-
+                                    <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
+                                    <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
                                     <li> <a class="dropdown-item" href="admin-dashboard"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li> <a class="dropdown-item" href="instructor-edit-profile.html"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a> </li>
-                                    <li> <a class="dropdown-item" href="instructor-setting.html"><i class="fas fa-fw fa-cog me-1"></i>Settings</a> </li>
-                                    <li> <a class="dropdown-item" href="instructor-delete-account.html"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a> </li>
-
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <!-- Dropdown Level -->
-                                    <li class="dropdown-submenu dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Dropdown levels</a>
-                                        <ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-
-                                            <!-- dropdown submenu open right -->
-                                            <li class="dropdown-submenu dropend">
-                                                <a class="dropdown-item dropdown-toggle" href="#">Dropdown (end)</a>
-                                                <ul class="dropdown-menu" data-bs-popper="none">
-                                                    <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-                                                    <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-                                                </ul>
-                                            </li>
-                                            <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-
-                                            <!-- dropdown submenu open left -->
-                                            <li class="dropdown-submenu dropstart">
-                                                <a class="dropdown-item dropdown-toggle" href="#">Dropdown (start)</a>
-                                                <ul class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
-                                                    <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-                                                    <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-                                                </ul>
-                                            </li>
-                                            <li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
-                                        </ul>
-                                    </li>
                                 </ul>
                             </li>
 
-                            <!-- Nav item 4 Megamenu-->
-                            <li class="nav-item dropdown dropdown-fullwidth">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Megamenu</a>
-                                <div class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
-                                    <div class="row p-4">
-                                        <!-- Dropdown column item -->
-                                        <div class="col-xl-6 col-xxl-3 mb-3">
-                                            <h6 class="mb-0">Get started</h6>
-                                            <hr>
-                                            <ul class="list-unstyled">
-                                                <li> <a class="dropdown-item" href="#">Market research</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Advertising</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Consumer behavior</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Digital marketing</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Marketing ethics</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Social media marketing</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Public relations</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Advertising</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Decision science</a> </li>
-                                                <li> <a class="dropdown-item" href="#">SEO</a> </li>
-                                                <li> <a class="dropdown-item" href="#">Business marketing</a> </li>
-                                            </ul>
-                                        </div>
-
-                                        <!-- Dropdown column item -->
-                                        <div class="col-xl-6 col-xxl-3 mb-3">
-                                            <h6 class="mb-0">Degree</h6>
-                                            <hr>
-                                            <!-- Dropdown item -->
-                                            <div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
-                                                <a class="stretched-link h6 mb-0" href="#">Contact management</a>
-                                                <p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
-                                            </div>
-                                            <!-- Dropdown item -->
-                                            <div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
-                                                <a class="stretched-link h6 mb-0" href="#">Sales pipeline</a>
-                                                <p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
-                                            </div>
-                                            <!-- Dropdown item -->
-                                            <div class="position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
-                                                <a class="stretched-link h6 mb-0" href="#">Security & Permission</a>
-                                                <p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Dropdown column item -->
-                                        <div class="col-xl-6 col-xxl-3 mb-3">
-                                            <h6 class="mb-0">Certificate</h6>
-                                            <hr>
-                                            <!-- Dropdown item -->
-                                            <div class="d-flex mb-4 position-relative">
-                                                <h2 class="mb-0"><i class="fab fa-fw fa-google text-google-icon"></i></h2>
-                                                <div class="ms-2">
-                                                    <a class="stretched-link h6 mb-0" href="#">Google SEO certificate</a>
-                                                    <p class="mb-0 small">No prerequisites</p>
-                                                </div>
-                                            </div>
-                                            <!-- Dropdown item -->
-                                            <div class="d-flex mb-4 position-relative">
-                                                <h2 class="mb-0"><i class="fab fa-fw fa-linkedin-in text-linkedin"></i></h2>
-                                                <div class="ms-2">
-                                                    <a class="stretched-link h6 mb-0" href="#">Business Development Executive(BDE)</a>
-                                                    <p class="mb-0 small">No prerequisites</p>
-                                                </div>
-                                            </div>
-                                            <!-- Dropdown item -->
-                                            <div class="d-flex mb-4 position-relative">
-                                                <h2 class="mb-0"><i class="fab fa-fw fa-facebook text-facebook"></i></h2>
-                                                <div class="ms-2">
-                                                    <a class="stretched-link h6 mb-0" href="#">Facebook social media marketing</a>
-                                                    <p class="mb-0 small">Expert advice</p>
-                                                </div>
-                                            </div>
-                                            <!-- Dropdown item -->
-                                            <div class="d-flex mb-4 position-relative">
-                                                <h2 class="mb-0"><i class="fas fa-fw fa-basketball-ball text-dribbble"></i></h2>
-                                                <div class="ms-2">
-                                                    <a class="stretched-link h6 mb-0" href="#">Creative graphics design</a>
-                                                    <p class="mb-0 small">No prerequisites</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Dropdown column item -->
-                                        <div class="col-xl-6 col-xxl-3 mb-3">
-                                            <h6 class="mb-0">Download Eduport</h6>
-                                            <hr>
-                                            <!-- Image -->
-                                            <img src="{% static 'index/images/element/14.svg' %}" alt="">
-
-                                            <!-- Download button -->
-                                            <div class="row g-2 justify-content-center mt-3">
-                                                <!-- Google play store button -->
-                                                <div class="col-6 col-sm-4 col-xxl-6">
-                                                    <a href="#"> <img src="{% static 'index/images/client/google-play.svg' %}" class="btn-transition" alt="google-store"> </a>
-                                                </div>
-                                                <!-- App store button -->
-                                                <div class="col-6 col-sm-4 col-xxl-6">
-                                                    <a href="#"> <img src="{% static 'index/images/client/app-store.svg' %}" class="btn-transition" alt="app-store"> </a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Action box -->
-                                        <div class="col-12">
-                                            <div class="alert alert-success alert-dismissible fade show mt-2 mb-0 rounded-3" role="alert">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-xs me-2">
-                                                    <img class="avatar-img rounded-circle" src="{% static 'index/images/avatar/09.jpg' %}" alt="avatar">
-                                                </div>
-                                                <!-- Info -->
-                                                The personality development class starts at 2:00 pm, click to <a href="#" class="alert-link">Join Now</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <!-- Nav item 5 link-->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="#" id="advanceMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="fas fa-ellipsis-h"></i>
-						</a>
-                                <ul class="dropdown-menu dropdown-menu-end min-w-auto" data-bs-popper="none">
-                                    <li>
-                                        <a class="dropdown-item" href="https://support.webestica.com/" target="_blank">
-									<i class="text-warning fa-fw bi bi-life-preserver me-2"></i>Support
-								</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="docs/index.html" target="_blank">
-									<i class="text-danger fa-fw bi bi-card-text me-2"></i>Documentation
-								</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="https://eduport.webestica.com/rtl/" target="_blank">
-									<i class="text-info fa-fw bi bi-toggle-off me-2"></i>RTL demo
-								</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="https://themes.getbootstrap.com/store/webestica/" target="_blank">
-									<i class="text-success fa-fw bi bi-cloud-download-fill me-2"></i>Buy Eduport!
-								</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="docs/alerts.html" target="_blank">
-									<i class="text-orange fa-fw bi bi-puzzle-fill me-2"></i>Components
-								</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="docs/snippets.html">
-									<i class="text-purple fa-fw bi bi-stickies-fill me-2"></i>Snippets
-								</a>
-                                    </li>
-                                </ul>
-                            </li>
+                        <!-- Nav item 5 Join Now -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'join_now' %}">Join Now</a>
+                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -722,8 +388,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -908,13 +573,22 @@ Main Banner START -->
 						<path d="M10.717,4.757 L14.440,-0.001 L14.215,6.023 L20.142,4.757 L16.076,9.228 L21.435,12.046 L15.430,12.873 L17.713,18.457 L12.579,15.252 L10.717,20.988 L8.856,15.252 L3.722,18.457 L6.005,12.873 L-0.000,12.046 L5.359,9.228 L1.292,4.757 L7.220,6.023 L6.995,-0.001 L10.717,4.757 Z" />
 					</svg>
                         </figure>
+                        <!-- Alert Banner -->
+                        <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                            <i class="bi bi-cash-stack fs-4 me-3"></i>
+                            <div>
+                                <strong>Revolutionary Learn-to-Earn Model!</strong><br>
+                                Students earn 90% of ad revenue for every completed course.
+                            </div>
+                        </div>
+
                         <!-- Title -->
-                        <h1 class="mb-0 display-6">Limitless learning at your
-                            <span class="position-relative">fingertips
+                        <h1 class="mb-0 display-6">Learn, Grow & Earn 
+                            <span class="position-relative text-success">Real Money
 						<!-- SVG START -->
 						<span class="position-absolute top-50 start-50 translate-middle ms-3 z-index-n1">
 							<svg width="300px" height="62.1px" enable-background="new 0 0 366 62.1" viewBox="0 0 366 62.1" xmlns="http://www.w3.org/2000/svg">
-								<path class="fill-warning" d="m322.5 25.3c0 1.4 2.9 0.8 3.1 1.6 0.8 1.1-1.1 1.3-0.6 2.4 13.3 0.9 26.9 1.7 40.2 4-2.5 0.7-4.9 1.6-7.3 1.1-4-0.9-8.2-1-12.2-1.2-8.5-0.5-16.9-1.9-25.5-1.7h-3.1c2.6 0.6 4.8 0.4 5.7 2.2-7.3 0.4-14.1-0.8-21.2-1.1-0.2 0.6-0.5 1.2-0.8 1.8 21.3 0.7 42.5 1.6 64.3 4.6-4.2 1.6-7.7 1-10.8 0.8-6.8-0.5-13.5-1.3-20.3-1.9-0.9-0.1-2.3-0.1-2.9 0.2-2.2 1.6-4.3 0.6-7 0.4 1.4-1 2.5 0.5 3.9-0.8-5.6-1-10.7 0.6-15.9 0s-10.5-0.6-16.6-0.8c2 1.6 4.6 1.3 6.2 1.4 4.9 0 9.9 0.8 14.8 0.7 5.3-0.1 10.4 0.5 15.5 0.9 3.2 0.3 6.7-0.1 9.9-0.4 1.1-0.1 0.5 0.3 0.6 0.6 0.5 0.9 2.2 0.8 3.6 0.8 5.1-0.1 10.1 0.6 14.8 1.5 0.8 0.1 1.5 0 1.7 0.7 0 0.7-0.8 0.6-1.5 0.8-3.9 1.2-7.4-0.2-11.1-0.2-2 0-4.3-1.5-6 0.5-0.3 0.4-1.4 0.1-2.2-0.1-4.5-0.8-9.1-0.5-13.8-1.5-2.3-0.5-5.6 0.1-8.4 0.5-4 0.5-8-0.7-12.1-0.9-3.4-0.2-7.1-0.5-10.5-0.7-7.1-0.3-14.2-1.2-22.3-0.4 4.9 1.1 9.4 1.2 13.8 1.2 9.7 0 19.2 2.3 28.9 1.6 7.3 3.2 15.9 1.5 23.8 2.9 4.9 0.8 10.1 0.8 15.2 1.2 0.5 0 0.8 0.3 1.1 0.9-20-2.1-40.2-1.4-60.8-3 4.9 2.1 10.8-0.3 15.3 2.7-8 1.9-15.8-0.9-23.5-0.1 2.8 1.4 7.1 1.1 9.3 3.3 0.5 0.5 0.2 1.1-1.2 1.3 2.3 1 3.4-2.1 5.7-0.4 0.2-0.6 0.2-1 0.3-1.5 0.8-0.3 2 0.8 1.5 1.5-0.2 0.1 0 0.3 0 0.5 18.7 0.4 37.3 1.7 56.2 3.6-1.7 1.1-2.8 1.2-4.2 1.1-7.1-0.5-14.1-0.9-21.2-1.4-3.1-0.2-6.3-0.4-9.4-0.4-7.6-0.2-15-0.7-22.4-1-9-0.4-17.9-0.1-26.9-0.1-1.2 0-2.9-0.4-3.9 1 14.8 0.3 29.7 0.6 44.4 1.1 14.8 0.6 29.9 1.3 44.2 4.2-4.3 1-8.8 0.9-13 0.5-5.3-0.5-10.5-1.1-15.8-1.2-11.4-0.3-22.9-0.9-34.3-1.2-17.6-0.4-35.4-0.3-53.1-0.4-10.8-0.1-21.7-0.2-32.5 0-17.8 0.4-35.7 0.2-53.5 0.5-13.1 0.3-26.3 0.1-39.4 0.5-11.1 0.3-22.4 0.6-33.6 1-13.1 0.6-26.1 0.2-39.3 0.4-3.9 0.1-7.6 0.2-11.8-0.2 0.9-1.2 2.3-1.3 3.9-1.3 8.4 0.2 16.6-0.4 24.9-0.9 3.9-0.2 7.9-0.4 11.9 0.2 2.5 0.4 5.3-0.3 8-0.4 7.3-0.4 14.7-0.7 22-0.9 11.9-0.5 23.7-1.2 35.6-0.8 7.7 0.2 15.3-0.6 22.9-0.1 2.3 0.2 4.3-0.5 6.5-1h-17.6c-9.6 0-19-0.1-28.6 0-8 0.1-16.1 0.3-24 0.8-2.6 0.2-5.4 0.1-8.2 0.1-10.1 0.3-20.1 0.6-30.2 0.5-5.4 0-10.7-0.1-15.9 0.6-2.3 0.3-4-1.3-6.5-0.6 0.2 0.4 0.5 0.9 0.6 1.5-1.9 0-4 0.4-4.9-0.1-4.2-2.2-9.4-1.5-14.1-2.3-1.7-0.3-3.7-0.1-4.3-1.5-0.5-1.3 1.9-1.5 2.6-2.6-4.2-1.4-4.6-5-8.5-7.2-1.5 0.2-0.9 2.8-4.2 1.3 0.3 2.4 4.5 3.9 2.8 6.4-2.3 0.3-3.2-0.8-4.2-1.7-2.5-4-5.1-8.4-5.1-12.7 0.2-6.8 0.2-13.8 3.6-20.4 0.3-0.5 0.3-1 0.8-1.4 0.9-0.9 1.2-2.4 3.6-2.1 2.2 0.2 2.5 1.5 2.6 2.6 0.2 1.4 1.5 1.8 3.2 2.5 0.9-1.4 0.5-2.9 2.6-3.7 0.2-0.1 0.3-0.4 0.3-0.4-3.1-2.2 1.2-2.2 2.3-3.3-3.1-1.8-4-4.3-3.7-7-1.5-0.3-3.1-0.4-4.5 0-1.7 0.6-2.2-0.5-2.9-1 0.6-0.5 0.8-1.1 2.2-1.3 7.6-0.9 15.2-1.7 22.9-2 20-0.7 39.9-0.9 59.9-1 11.9-0.1 23.8 0.4 35.6 1.1 3.6 0.2 7.1-0.9 10.7-0.5 7.9 0.9 15.8 0.3 23.8 0.5 7.3 0.1 14.4-0.6 21.7-0.1 12.2 0.9 24.4 0.3 36.7 0.6 9.4 0.3 18.9 0.4 28.2 1 11.9 0.7 23.8 1.3 35.6 2 11.1 0.6 22.4 0.5 33.3 2 7.1 1 14.4 1.1 21.3 2.4 4 0.7 8.2 1.6 12.4 1.9 2.2 0.2 0.9 1 1.5 1.5-4-0.8-8-0.8-12.1-1.4-4.3-0.7-8.5-1-12.8 0.4-2.9 1-6.3 0.2-9.3-0.1-10.2-1.1-20.6-1.6-30.8-2.4-12.1-0.9-24.3-1.4-36.4-2.1-9.9-0.6-20-0.5-29.9-1-11.4-0.6-22.7 0-34.2-0.5-6.3-0.3-12.3-0.3-18.5-0.4-4.2-0.1-8.4 1.3-12.8 0.3 0.6 0.2 1.2 0.7 1.9 0.7 10.5 0 20.9 1.9 31.6 1.7 6.5-0.1 13.1 0.2 19.8 0.8 3.2 0.3 6.3-0.4 9.7-0.1 7.6 0.7 15.5 0.5 23 0.8 12.4 0.5 24.7 0.4 37.1 1.1 13.3 0.7 26.8 2.1 39.9 4.1 6.2 0.9 12.7 1.5 19.2 1.7 0.6 0 1.1 0.1 1.5 0.5-4.6 0.1-9.3 0-13.9-0.5-0.6 1.1 1.4 0.9 1.5 1.9-9.7 1.6-19.6-1.4-29.4-0.1 2.2 1.4 5.1 1 7.4 1 7.3 0.1 14.1 1.3 21.2 1.9 2.8 0.3 5.9 0 8.5 0.8 1.5 0.5 4.6-1.1 4.9 1.3 4-0.7 7.3 1.5 11.1 1.2 4-0.3 7.7 0.6 11.6 1.1 0.8 0.1 2.2 0.3 2.3 1.1 0.2 1-1.1 1.2-2 1.5-3.4 1-6.7-0.4-10.1-0.4-0.9 0-2-0.2-2.9-0.2-9.4 0.1-18.8-1.3-28.3-1.8-6-0.4-12.1-0.9-18.1-1.3 0 0.2 0 0.4-0.2 0.6 6.1 0.5 12.1 1.4 18.3 0.7z"/>
+								<path class="fill-success" d="m322.5 25.3c0 1.4 2.9 0.8 3.1 1.6 0.8 1.1-1.1 1.3-0.6 2.4 13.3 0.9 26.9 1.7 40.2 4-2.5 0.7-4.9 1.6-7.3 1.1-4-0.9-8.2-1-12.2-1.2-8.5-0.5-16.9-1.9-25.5-1.7h-3.1c2.6 0.6 4.8 0.4 5.7 2.2-7.3 0.4-14.1-0.8-21.2-1.1-0.2 0.6-0.5 1.2-0.8 1.8 21.3 0.7 42.5 1.6 64.3 4.6-4.2 1.6-7.7 1-10.8 0.8-6.8-0.5-13.5-1.3-20.3-1.9-0.9-0.1-2.3-0.1-2.9 0.2-2.2 1.6-4.3 0.6-7 0.4 1.4-1 2.5 0.5 3.9-0.8-5.6-1-10.7 0.6-15.9 0s-10.5-0.6-16.6-0.8c2 1.6 4.6 1.3 6.2 1.4 4.9 0 9.9 0.8 14.8 0.7 5.3-0.1 10.4 0.5 15.5 0.9 3.2 0.3 6.7-0.1 9.9-0.4 1.1-0.1 0.5 0.3 0.6 0.6 0.5 0.9 2.2 0.8 3.6 0.8 5.1-0.1 10.1 0.6 14.8 1.5 0.8 0.1 1.5 0 1.7 0.7 0 0.7-0.8 0.6-1.5 0.8-3.9 1.2-7.4-0.2-11.1-0.2-2 0-4.3-1.5-6 0.5-0.3 0.4-1.4 0.1-2.2-0.1-4.5-0.8-9.1-0.5-13.8-1.5-2.3-0.5-5.6 0.1-8.4 0.5-4 0.5-8-0.7-12.1-0.9-3.4-0.2-7.1-0.5-10.5-0.7-7.1-0.3-14.2-1.2-22.3-0.4 4.9 1.1 9.4 1.2 13.8 1.2 9.7 0 19.2 2.3 28.9 1.6 7.3 3.2 15.9 1.5 23.8 2.9 4.9 0.8 10.1 0.8 15.2 1.2 0.5 0 0.8 0.3 1.1 0.9-20-2.1-40.2-1.4-60.8-3 4.9 2.1 10.8-0.3 15.3 2.7-8 1.9-15.8-0.9-23.5-0.1 2.8 1.4 7.1 1.1 9.3 3.3 0.5 0.5 0.2 1.1-1.2 1.3 2.3 1 3.4-2.1 5.7-0.4 0.2-0.6 0.2-1 0.3-1.5 0.8-0.3 2 0.8 1.5 1.5-0.2 0.1 0 0.3 0 0.5 18.7 0.4 37.3 1.7 56.2 3.6-1.7 1.1-2.8 1.2-4.2 1.1-7.1-0.5-14.1-0.9-21.2-1.4-3.1-0.2-6.3-0.4-9.4-0.4-7.6-0.2-15-0.7-22.4-1-9-0.4-17.9-0.1-26.9-0.1-1.2 0-2.9-0.4-3.9 1 14.8 0.3 29.7 0.6 44.4 1.1 14.8 0.6 29.9 1.3 44.2 4.2-4.3 1-8.8 0.9-13 0.5-5.3-0.5-10.5-1.1-15.8-1.2-11.4-0.3-22.9-0.9-34.3-1.2-17.6-0.4-35.4-0.3-53.1-0.4-10.8-0.1-21.7-0.2-32.5 0-17.8 0.4-35.7 0.2-53.5 0.5-13.1 0.3-26.3 0.1-39.4 0.5-11.1 0.3-22.4 0.6-33.6 1-13.1 0.6-26.1 0.2-39.3 0.4-3.9 0.1-7.6 0.2-11.8-0.2 0.9-1.2 2.3-1.3 3.9-1.3 8.4 0.2 16.6-0.4 24.9-0.9 3.9-0.2 7.9-0.4 11.9 0.2 2.5 0.4 5.3-0.3 8-0.4 7.3-0.4 14.7-0.7 22-0.9 11.9-0.5 23.7-1.2 35.6-0.8 7.7 0.2 15.3-0.6 22.9-0.1 2.3 0.2 4.3-0.5 6.5-1h-17.6c-9.6 0-19-0.1-28.6 0-8 0.1-16.1 0.3-24 0.8-2.6 0.2-5.4 0.1-8.2 0.1-10.1 0.3-20.1 0.6-30.2 0.5-5.4 0-10.7-0.1-15.9 0.6-2.3 0.3-4-1.3-6.5-0.6 0.2 0.4 0.5 0.9 0.6 1.5-1.9 0-4 0.4-4.9-0.1-4.2-2.2-9.4-1.5-14.1-2.3-1.7-0.3-3.7-0.1-4.3-1.5-0.5-1.3 1.9-1.5 2.6-2.6-4.2-1.4-4.6-5-8.5-7.2-1.5 0.2-0.9 2.8-4.2 1.3 0.3 2.4 4.5 3.9 2.8 6.4-2.3 0.3-3.2-0.8-4.2-1.7-2.5-4-5.1-8.4-5.1-12.7 0.2-6.8 0.2-13.8 3.6-20.4 0.3-0.5 0.3-1 0.8-1.4 0.9-0.9 1.2-2.4 3.6-2.1 2.2 0.2 2.5 1.5 2.6 2.6 0.2 1.4 1.5 1.8 3.2 2.5 0.9-1.4 0.5-2.9 2.6-3.7 0.2-0.1 0.3-0.4 0.3-0.4-3.1-2.2 1.2-2.2 2.3-3.3-3.1-1.8-4-4.3-3.7-7-1.5-0.3-3.1-0.4-4.5 0-1.7 0.6-2.2-0.5-2.9-1 0.6-0.5 0.8-1.1 2.2-1.3 7.6-0.9 15.2-1.7 22.9-2 20-0.7 39.9-0.9 59.9-1 11.9-0.1 23.8 0.4 35.6 1.1 3.6 0.2 7.1-0.9 10.7-0.5 7.9 0.9 15.8 0.3 23.8 0.5 7.3 0.1 14.4-0.6 21.7-0.1 12.2 0.9 24.4 0.3 36.7 0.6 9.4 0.3 18.9 0.4 28.2 1 11.9 0.7 23.8 1.3 35.6 2 11.1 0.6 22.4 0.5 33.3 2 7.1 1 14.4 1.1 21.3 2.4 4 0.7 8.2 1.6 12.4 1.9 2.2 0.2 0.9 1 1.5 1.5-4-0.8-8-0.8-12.1-1.4-4.3-0.7-8.5-1-12.8 0.4-2.9 1-6.3 0.2-9.3-0.1-10.2-1.1-20.6-1.6-30.8-2.4-12.1-0.9-24.3-1.4-36.4-2.1-9.9-0.6-20-0.5-29.9-1-11.4-0.6-22.7 0-34.2-0.5-6.3-0.3-12.3-0.3-18.5-0.4-4.2-0.1-8.4 1.3-12.8 0.3 0.6 0.2 1.2 0.7 1.9 0.7 10.5 0 20.9 1.9 31.6 1.7 6.5-0.1 13.1 0.2 19.8 0.8 3.2 0.3 6.3-0.4 9.7-0.1 7.6 0.7 15.5 0.5 23 0.8 12.4 0.5 24.7 0.4 37.1 1.1 13.3 0.7 26.8 2.1 39.9 4.1 6.2 0.9 12.7 1.5 19.2 1.7 0.6 0 1.1 0.1 1.5 0.5-4.6 0.1-9.3 0-13.9-0.5-0.6 1.1 1.4 0.9 1.5 1.9-9.7 1.6-19.6-1.4-29.4-0.1 2.2 1.4 5.1 1 7.4 1 7.3 0.1 14.1 1.3 21.2 1.9 2.8 0.3 5.9 0 8.5 0.8 1.5 0.5 4.6-1.1 4.9 1.3 4-0.7 7.3 1.5 11.1 1.2 4-0.3 7.7 0.6 11.6 1.1 0.8 0.1 2.2 0.3 2.3 1.1 0.2 1-1.1 1.2-2 1.5-3.4 1-6.7-0.4-10.1-0.4-0.9 0-2-0.2-2.9-0.2-9.4 0.1-18.8-1.3-28.3-1.8-6-0.4-12.1-0.9-18.1-1.3 0 0.2 0 0.4-0.2 0.6 6.1 0.5 12.1 1.4 18.3 0.7z"/>
 							</svg>
 						</span>
                             <!-- SVG END -->
@@ -922,18 +596,20 @@ Main Banner START -->
                         </h1>
 
                         <!-- Content -->
-                        <p class="my-4 lead">Online learning and teaching marketplace with 5K+ courses & 10M students. Taught by experts to help you acquire new skills.</p>
+                        <p class="my-4 lead"><strong>Get PAID to Learn!</strong> Complete courses and earn 90% of ad revenue. Join the only platform where your education pays YOU.</p>
 
                         <!-- Info -->
                         <ul class="list-inline position-relative justify-content-center justify-content-lg-start mb-4">
-                            <li class="list-inline-item me-2"> <i class="bi bi-patch-check-fill h6 me-1"></i>Learn with experts</li>
-                            <li class="list-inline-item me-2"> <i class="bi bi-patch-check-fill h6 me-1"></i>Get certificate</li>
-                            <li class="list-inline-item"> <i class="bi bi-patch-check-fill h6 me-1"></i>Get membership</li>
+                            <li class="list-inline-item me-2"> <i class="bi bi-cash-stack text-success h6 me-1"></i>Earn 90% ad revenue</li>
+                            <li class="list-inline-item me-2"> <i class="bi bi-mortarboard-fill h6 me-1"></i>Expert instructors</li>
+                            <li class="list-inline-item"> <i class="bi bi-trophy-fill h6 me-1"></i>Get certified</li>
                         </ul>
 
                         <div class="d-sm-flex align-items-center justify-content-center justify-content-lg-start">
                             <!-- Button -->
-                            <a href="#" class="btn btn-lg btn-danger-soft me-2 mb-4 mb-sm-0">Get Started</a>
+                            <a href="{% url 'join_now' %}" class="btn btn-lg btn-success me-2 mb-4 mb-sm-0">
+                                <i class="bi bi-cash-coin me-2"></i>Start Learning & Earning
+                            </a>
                             <!-- Video button -->
                             <div class="d-flex align-items-center justify-content-center py-2 ms-0 ms-sm-4">
                                 <a data-glightbox data-gallery="office-tour" href="https://www.youtube.com/embed/tXHviS-4ygo" class="btn btn-round btn-primary-shadow mb-0 overflow-visible me-7"> 

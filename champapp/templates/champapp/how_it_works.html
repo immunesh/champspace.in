@@ -1,0 +1,414 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>How it Works - ChampSpace</title>
+
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Webestica.com">
+    <meta name="description" content="Learn how ChampSpace works">
+
+    <!-- Dark mode -->
+    <script>
+        const storedTheme = localStorage.getItem('theme')
+
+        const getPreferredTheme = () => {
+            if (storedTheme) {
+                return storedTheme
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme)
+            }
+        }
+
+        setTheme(getPreferredTheme())
+    </script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'index/images/favicon.ico' %}">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'index/vendor/font-awesome/css/all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'index/vendor/bootstrap-icons/bootstrap-icons.css' %}">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'index/css/style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- Header START -->
+    <header class="navbar-light navbar-sticky header-static">
+        <!-- Nav START -->
+        <nav class="navbar navbar-expand-xl">
+            <div class="container-fluid px-3 px-xl-5">
+                <!-- Logo START -->
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <img class="light-mode-item navbar-brand-item" src="{% static 'index/images/logo.svg' %}" alt="logo">
+                    <img class="dark-mode-item navbar-brand-item" src="{% static 'index/images/logo-light.svg' %}" alt="logo">
+                </a>
+                <!-- Logo END -->
+
+                <!-- Responsive navbar toggler -->
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-animation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+
+                <!-- Main navbar START -->
+                <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                    <!-- Nav Main menu START -->
+                    <ul class="navbar-nav navbar-nav-scroll ms-auto">
+                        <!-- Nav item 1 Home -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        </li>
+
+                        <!-- Nav item 2 Courses -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
+                        </li>
+
+                        <!-- Nav item 3 How it Works -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'how_it_works' %}">How it Works</a>
+                        </li>
+
+                        <!-- Nav item 4 Join Now -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'join_now' %}">Join Now</a>
+                        </li>
+                    </ul>
+                    <!-- Nav Main menu END -->
+                </div>
+                <!-- Main navbar END -->
+            </div>
+        </nav>
+        <!-- Nav END -->
+    </header>
+    <!-- Header END -->
+
+    <!-- **************** MAIN CONTENT START **************** -->
+    <main>
+
+        <!-- =======================
+        Page Banner START -->
+        <section class="py-0 py-xl-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-light p-4 text-center rounded-3">
+                            <h1 class="m-0">How ChampSpace Works</h1>
+                            <!-- Breadcrumb -->
+                            <div class="d-flex justify-content-center">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb breadcrumb-dots mb-0">
+                                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">How it Works</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- =======================
+        Page Banner END -->
+
+        <!-- =======================
+        How it Works Content START -->
+        <section class="pt-5">
+            <div class="container">
+                <!-- Title -->
+                <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <h2>Learn, Grow, and Earn Money with ChampSpace</h2>
+                        <p class="mb-0">The only platform that pays you to learn! Earn real cash by completing courses.</p>
+                        <div class="alert alert-success d-inline-block mt-3">
+                            <i class="bi bi-cash-coin fs-4 me-2"></i>
+                            <strong>Students earn 90% of ad revenue from completed courses!</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Steps -->
+                <div class="row g-4">
+                    <!-- Step 1 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="text-center">
+                            <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3">
+                                <i class="bi bi-person-plus-fill fs-3"></i>
+                            </div>
+                            <h5>1. Create Your Account</h5>
+                            <p class="mb-0">Sign up for free and choose your role - Student or Instructor. It takes less than a minute!</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="text-center">
+                            <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-3">
+                                <i class="bi bi-search fs-3"></i>
+                            </div>
+                            <h5>2. Browse Courses</h5>
+                            <p class="mb-0">Explore our vast library of courses across various categories and find what interests you.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="text-center">
+                            <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-3">
+                                <i class="bi bi-play-circle-fill fs-3"></i>
+                            </div>
+                            <h5>3. Start Learning</h5>
+                            <p class="mb-0">Enroll in courses and start watching video lessons, complete assignments, and track your progress.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="text-center">
+                            <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-3">
+                                <i class="bi bi-cash-stack fs-3"></i>
+                            </div>
+                            <h5>4. Earn Real Money</h5>
+                            <p class="mb-0">Complete courses and earn 90% of the ad revenue generated. Get paid for learning!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================
+        For Students Section -->
+        <section class="pt-5 pb-0">
+            <div class="container">
+                <div class="row g-4 g-lg-5 align-items-center">
+                    <div class="col-lg-6">
+                        <h2>For Students</h2>
+                        <p class="lead">Get PAID to Learn! Earn 90% of Ad Revenue</p>
+                        <div class="bg-success bg-opacity-10 p-3 rounded-3 mb-4">
+                            <h5 class="text-success mb-2"><i class="bi bi-cash-coin me-2"></i>Revolutionary Earning Model</h5>
+                            <p class="mb-0">Complete courses and earn <strong>90% of the advertising revenue</strong> generated from your learning activity. We display ads from Google, Facebook, and other premium networks, and share the earnings with YOU!</p>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-currency-dollar text-success me-2 fs-5"></i>
+                                <strong>Earn Real Money:</strong> Get paid 90% of ad revenue for every course you complete
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Learn at Your Own Pace:</strong> Access courses anytime, anywhere
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Expert Instructors:</strong> Learn from industry professionals
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Track Progress & Earnings:</strong> Monitor your learning journey and cash earnings
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Interactive Content:</strong> Engage with quizzes, assignments, and discussions
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <strong>Certificates + Cash:</strong> Earn recognized certificates AND money upon completion
+                            </li>
+                        </ul>
+                        <a href="{% url 'sign-up' %}" class="btn btn-success btn-lg mb-0">Start Learning & Earning</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="{% static 'index/images/element/07.svg' %}" class="img-fluid" alt="Students">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================
+        For Instructors Section -->
+        <section class="pt-5 pb-5">
+            <div class="container">
+                <div class="row g-4 g-lg-5 align-items-center">
+                    <div class="col-lg-6 order-2 order-lg-1">
+                        <img src="{% static 'index/images/element/04.svg' %}" class="img-fluid" alt="Instructors">
+                    </div>
+                    <div class="col-lg-6 order-1 order-lg-2">
+                        <h2>For Instructors</h2>
+                        <p class="lead">Share your knowledge and build your student base</p>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-3 mb-4">
+                            <h5 class="text-primary mb-2"><i class="bi bi-people-fill me-2"></i>Empower Learners to Earn</h5>
+                            <p class="mb-0">Create courses that not only educate but also help students earn money. When students succeed financially, they're more motivated to complete your courses!</p>
+                        </div>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Create Courses:</strong> Easy-to-use course builder with step-by-step guidance
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Reach Global Audience:</strong> Connect with highly motivated students worldwide
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Higher Completion Rates:</strong> Students are incentivized to finish courses
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Manage Students:</strong> Track enrollments and student progress
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Analytics Dashboard:</strong> Monitor course performance and engagement
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                <strong>Build Your Brand:</strong> Grow your reputation as courses get completed
+                            </li>
+                        </ul>
+                        <a href="{% url 'sign-up' %}" class="btn btn-primary mb-0">Get Started as Instructor</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================
+        How Earnings Work Section -->
+        <section class="py-5 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center text-white">
+                        <h2 class="text-white mb-3">How the Earning Model Works</h2>
+                        <p class="mb-4 text-white-50">Transparent and fair revenue sharing</p>
+                    </div>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card bg-white bg-opacity-10 border-0 text-white text-center h-100 p-4">
+                            <i class="bi bi-badge-ad fs-1 mb-3"></i>
+                            <h4>Premium Ads</h4>
+                            <p class="mb-0">We display high-quality ads from Google AdSense, Facebook Audience Network, and other premium ad networks on course pages.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-white bg-opacity-10 border-0 text-white text-center h-100 p-4">
+                            <i class="bi bi-calculator fs-1 mb-3"></i>
+                            <h4>Revenue Calculation</h4>
+                            <p class="mb-0">When you complete a course, we calculate the total ad revenue generated during your learning journey.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success border-0 text-white text-center h-100 p-4">
+                            <i class="bi bi-cash-coin fs-1 mb-3"></i>
+                            <h4>90% to You!</h4>
+                            <p class="mb-0"><strong>You get 90%</strong> of the ad revenue, and only 10% goes to platform maintenance. Money is transferred to your account!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================
+        CTA Section -->
+        <section class="bg-light py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h2 class="mb-3">Ready to Start Learning & Earning?</h2>
+                        <p class="mb-4">Join thousands of students who are getting paid to learn on ChampSpace!</p>
+                        <a href="{% url 'join_now' %}" class="btn btn-success btn-lg me-2"><i class="bi bi-cash-coin me-2"></i>Join Now & Start Earning</a>
+                        <a href="{% url 'course_grid' %}" class="btn btn-outline-primary btn-lg">Browse Courses</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <!-- **************** MAIN CONTENT END **************** -->
+
+    <!-- =======================
+    Footer START -->
+    <footer class="pt-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Footer Widget -->
+                <div class="col-lg-3">
+                    <a class="me-0" href="{% url 'index' %}">
+                        <img class="light-mode-item h-40px" src="{% static 'index/images/logo.svg' %}" alt="logo">
+                        <img class="dark-mode-item h-40px" src="{% static 'index/images/logo-light.svg' %}" alt="logo">
+                    </a>
+                    <p class="my-3">ChampSpace - Empowering learners worldwide</p>
+                </div>
+
+                <!-- Footer links -->
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-6 col-md-4">
+                            <h5 class="mb-2 mb-md-4">Quick Links</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'course_grid' %}">Courses</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'how_it_works' %}">How it Works</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'join_now' %}">Join Now</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Contact -->
+                <div class="col-lg-3">
+                    <h5 class="mb-2 mb-md-4">Contact</h5>
+                    <p class="mb-2">Email: <a href="mailto:info@champspace.com">info@champspace.com</a></p>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="mt-4 mb-0">
+
+            <!-- Bottom footer -->
+            <div class="py-3">
+                <div class="container px-0">
+                    <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                        <!-- Copyright -->
+                        <div class="text-primary-hover"> Copyrights <a href="#" class="text-body">©2025 ChampSpace</a>. All rights reserved. </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- =======================
+    Footer END -->
+
+    <!-- Back to top -->
+    <div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'index/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Template Functions -->
+    <script src="{% static 'index/js/functions.js' %}"></script>
+
+</body>
+
+</html>
