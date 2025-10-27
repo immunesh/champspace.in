@@ -331,16 +331,6 @@
                             <a class="nav-link" href="{% url 'how_it_works' %}">How it Works</a>
                         </li>
 
-                        <!-- Nav item 4 Account -->
-                        <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                                <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                    <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                    <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                    <li> <a class="dropdown-item" href="admin-dashboard"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                                </ul>
-                            </li>
-
                         <!-- Nav item 5 Join Now -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'join_now' %}">Join Now</a>
@@ -388,7 +378,11 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        {% else %}
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        {% endif %}
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -578,7 +572,7 @@ Main Banner START -->
                             <i class="bi bi-cash-stack fs-4 me-3"></i>
                             <div>
                                 <strong>Revolutionary Learn-to-Earn Model!</strong><br>
-                                Students earn 90% of ad revenue for every completed course.
+                                Students can earn min ₹500 to ₹50k per month for every completed course.
                             </div>
                         </div>
 
@@ -596,12 +590,12 @@ Main Banner START -->
                         </h1>
 
                         <!-- Content -->
-                        <p class="my-4 lead"><strong>Get PAID to Learn!</strong> Complete courses and earn 90% of ad revenue. Join the only platform where your education pays YOU.</p>
+                        <p class="my-4 lead"><strong>Get PAID to Learn!</strong> Complete courses and earn min ₹500 to ₹50k per month. Join the only platform where your education pays YOU.</p>
 
                         <!-- Info -->
                         <ul class="list-inline position-relative justify-content-center justify-content-lg-start mb-4">
-                            <li class="list-inline-item me-2"> <i class="bi bi-cash-stack text-success h6 me-1"></i>Earn 90% ad revenue</li>
-                            <li class="list-inline-item me-2"> <i class="bi bi-mortarboard-fill h6 me-1"></i>Expert instructors</li>
+                            <li class="list-inline-item me-2"> <i class="bi bi-cash-stack text-success h6 me-1"></i>Earn ₹500-50k/month</li>
+                            <li class="list-inline-item me-2"> <i class="bi bi-mortarboard-fill h6 me-1"></i>Expert content</li>
                             <li class="list-inline-item"> <i class="bi bi-trophy-fill h6 me-1"></i>Get certified</li>
                         </ul>
 
@@ -903,8 +897,8 @@ Action box START -->
                                     <div class="row align-items-center">
                                         <!-- Title -->
                                         <div class="col-lg-7">
-                                            <h3 class="text-white">Become an Instructor!</h3>
-                                            <p class="text-white mb-3 mb-lg-0">Speedily say has suitable disposal add boy. On forth doubt miles of child. Exercise joy man children rejoiced. Yet uncommonly his ten who diminution astonished.</p>
+                                            <h3 class="text-white">Join as an Intern!</h3>
+                                            <p class="text-white mb-3 mb-lg-0">Apply for internship opportunities and gain real-world experience. Work on exciting projects while learning from industry professionals and building your career portfolio.</p>
                                         </div>
                                         <!-- Content and input -->
                                         <div class="col-lg-5 text-lg-end">

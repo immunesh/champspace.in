@@ -345,7 +345,7 @@ Page content START -->
                         <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
                             <!-- Offcanvas header -->
                             <div class="offcanvas-header bg-light">
-                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Content Manager</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
                             </div>
                             <!-- Offcanvas body -->
@@ -354,24 +354,23 @@ Page content START -->
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless">
                                         <a class="list-group-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                        <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                        <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                        <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                        <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                        <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                        <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                        <a class="list-group-item active" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                        <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                        <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                        <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_manage_course' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                        <a class="list-group-item" href="{% url 'instructor_earning' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                        <a class="list-group-item" href="{% url 'instructor-student-list' %}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                        <a class="list-group-item" href="{% url 'instructor_orders' %}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                        <a class="list-group-item" href="{% url 'instructor_reviews' %}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                        <a class="list-group-item active" href="{% url 'instructor_edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                        <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                        <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         <li>
                                             <form method="POST" action="{% url 'logout' %}">
                                                 {% csrf_token %}
-                                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
+                                                <button type="submit" class="list-group-item bg-danger-soft-hover" style="border: none; background: transparent; text-align: left; width: 100%;">
                                                     <i class="bi bi-power fa-fw me-2"></i> Sign Out
                                                 </button>
                                             </form>
-                                            </li>
+                                        </li>
                                     </div>
                                 </div>
                             </div>
@@ -382,6 +381,17 @@ Page content START -->
 
                     <!-- Main content START -->
                     <div class="col-xl-9">
+                        
+                        <!-- Display Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
                         <!-- Edit profile START -->
                         <div class="card bg-transparent border rounded-3">
                             <!-- Card header -->
@@ -541,34 +551,43 @@ Page content START -->
                                     </div>
                                     <!-- Card body START -->
                                     <div class="card-body">
-                                        <!-- Facebook username -->
-                                        <div class="mb-3">
-                                            <label class="form-label"><i class="fab fa-facebook text-facebook me-2"></i>Enter facebook username</label>
-                                            <input class="form-control" type="text" value="loristev" placeholder="Enter username">
-                                        </div>
+                                        <form method="POST" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <!-- Facebook username -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fab fa-facebook text-facebook me-2"></i>Enter facebook username</label>
+                                                <input class="form-control" type="text" name="facebook_username" value="{{ form.facebook_username.value|default:profile.facebook_username|default:'' }}" placeholder="Enter username">
+                                            </div>
 
-                                        <!-- Twitter username -->
-                                        <div class="mb-3">
-                                            <label class="form-label"><i class="bi bi-twitter text-twitter me-2"></i>Enter twitter username</label>
-                                            <input class="form-control" type="text" value="loristev" placeholder="Enter username">
-                                        </div>
+                                            <!-- Twitter username -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="bi bi-twitter text-twitter me-2"></i>Enter twitter username</label>
+                                                <input class="form-control" type="text" name="twitter_username" value="{{ form.twitter_username.value|default:profile.twitter_username|default:'' }}" placeholder="Enter username">
+                                            </div>
 
-                                        <!-- Instagram username -->
-                                        <div class="mb-3">
-                                            <label class="form-label"><i class="fab fa-instagram text-instagram-gradient me-2"></i>Enter instagram username</label>
-                                            <input class="form-control" type="text" value="loristev" placeholder="Enter username">
-                                        </div>
+                                            <!-- Instagram username -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fab fa-instagram text-instagram-gradient me-2"></i>Enter instagram username</label>
+                                                <input class="form-control" type="text" name="instagram_username" value="{{ form.instagram_username.value|default:profile.instagram_username|default:'' }}" placeholder="Enter username">
+                                            </div>
 
-                                        <!-- Youtube -->
-                                        <div class="mb-3">
-                                            <label class="form-label"><i class="fab fa-youtube text-youtube me-2"></i>Add your youtube profile URL</label>
-                                            <input class="form-control" type="text" value="https://www.youtube.com/in/Eduport-05620abc" placeholder="Enter username">
-                                        </div>
+                                            <!-- Youtube -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fab fa-youtube text-youtube me-2"></i>Add your youtube profile URL</label>
+                                                <input class="form-control" type="url" name="youtube_url" value="{{ form.youtube_url.value|default:profile.youtube_url|default:'' }}" placeholder="https://www.youtube.com/">
+                                            </div>
 
-                                        <!-- Button -->
-                                        <div class="d-flex justify-content-end mt-4">
-                                            <button type="button" class="btn btn-primary mb-0">Save changes</button>
-                                        </div>
+                                            <!-- Expertise (Instructor specific) -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="bi bi-award me-2"></i>Expertise</label>
+                                                <input class="form-control" type="text" name="expertise" value="{{ form.expertise.value|default:profile.expertise|default:'' }}" placeholder="e.g., Web Development, Data Science">
+                                            </div>
+
+                                            <!-- Button -->
+                                            <div class="d-flex justify-content-end mt-4">
+                                                <button type="submit" class="btn btn-primary mb-0">Save changes</button>
+                                            </div>
+                                        </form>
                                     </div>
                                     <!-- Card body END -->
                                 </div>
@@ -584,14 +603,13 @@ Page content START -->
                                     </div>
                                     <!-- Card body -->
                                     <div class="card-body">
-                                        <p>Your current email address is <span class="text-primary">example@gmail.com</span></p>
+                                        <p>Your current email address is <span class="text-primary">{{ user.email }}</span></p>
                                         <!-- Email -->
-                                        <form>
-                                            <label class="form-label">Enter your new email id</label>
-                                            <input class="form-control" type="email" placeholder="Enter new email">
-                                            <div class="d-flex justify-content-end mt-4">
-                                                <button type="button" class="btn btn-primary mb-0">Update email</button>
-                                            </div>
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <label class="form-label">Your email (read-only)</label>
+                                            <input class="form-control" type="email" name="email" value="{{ user.email }}" readonly>
+                                            <div class="form-text">Contact admin to change your email address</div>
                                         </form>
                                     </div>
                                 </div>

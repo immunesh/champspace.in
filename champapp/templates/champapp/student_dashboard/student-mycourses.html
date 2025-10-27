@@ -3,13 +3,13 @@
 <html lang="en">
 
 <head>
-    <title>Eduport - LMS, Education and Course Theme</title>
+    <title>My Courses - Learn & Earn | ChampSpace</title>
 
     <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Webestica.com">
-    <meta name="description" content="Eduport- LMS, Education and Course Theme">
+    <meta name="author" content="ChampSpace">
+    <meta name="description" content="My Courses - Access and manage all your enrolled courses">
 
     <!-- Dark mode -->
     <script>
@@ -134,15 +134,6 @@
                             <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
                         </li>
 
-                        <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->                    <!-- Nav Search START -->
                     <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
@@ -184,7 +175,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -194,7 +185,7 @@
                                 </button>
                             </form>
                             </li>
-                        
+                        <li>
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Dark mode options START -->
@@ -279,7 +270,9 @@ Page Banner START -->
                                     </div>
                                     <!-- Button -->
                                     <div class="d-flex align-items-center mt-2 mt-md-0">
-                                            <a href="{% url 'student-dashboard' %}" class="btn btn-outline-primary mb-0">View my courses</a>
+                                            <a href="{% url 'course_grid' %}" class="btn btn-success mb-0">
+                                                <i class="bi bi-plus-circle me-2"></i>Browse Courses
+                                            </a>
                                     </div>
                                 </div>
                             </div>
@@ -323,16 +316,16 @@ Page content START -->
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
                                         {% if not request.user.is_staff %}
-                                            <a class="list-group-item active" href="{% url 'student-dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                            <a class="list-group-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-2"></i>My Subscriptions</a>
-                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                            <a class="list-group-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-2"></i>Course Resume</a>
-                                            <a class="list-group-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                            <a class="list-group-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front fa-fw me-2"></i>Payment Info</a>
-                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
-                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                            <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                            <a class="list-group-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item active" href="{% url 'student_mycourses' %}"><i class="bi bi-play-circle fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
+                                            <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
+                                            <a class="list-group-item" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
+                                            <a class="list-group-item" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
+                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% else %}
                                             <!-- Sidebar for Staff (Instructor) -->
                                             <a class="list-group-item active" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
@@ -345,25 +338,16 @@ Page content START -->
                                             <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
                                             <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
                                             <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                            <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                            <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% endif %}
-                                                                                <li>
+                                        <li>
                                             <form method="POST" action="{% url 'logout' %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
                                                     <i class="bi bi-power fa-fw me-2"></i> Sign Out
                                                 </button>
                                             </form>
-                                            </li>
-                                        <!-- Collapse menu -->
-                                        <a class="list-group-item" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
-							        		<i class="bi bi-lock fa-fw me-2"></i>Dropdown level
-								        </a>
-                                        <!-- Submenu -->
-                                        <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                        </ul>
+                                        </li>
                                     </div>
                                 </div>
                             </div>
@@ -374,8 +358,6 @@ Page content START -->
 
                     <!-- Main content START -->
                     <div class="col-xl-9">
-                        <!-- Counter boxes START -->
-                        <div class="row mb-4">
 
                         <div class="card bg-transparent border rounded-3">
                             <!-- Card header START -->

@@ -181,16 +181,6 @@
                             <a class="nav-link" href="{% url 'how_it_works' %}">How it Works</a>
                         </li>
 
-                        <!-- Nav item 4 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
-
                         <!-- Nav item 5 Join Now -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'join_now' %}">Join Now</a>
@@ -236,7 +226,11 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        {% else %}
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        {% endif %}
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
                         <li>

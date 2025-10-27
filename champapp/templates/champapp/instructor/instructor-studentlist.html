@@ -295,7 +295,7 @@ Inner part START -->
                         <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
                             <!-- Offcanvas header -->
                             <div class="offcanvas-header bg-light">
-                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Content Manager</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
                             </div>
                             <!-- Offcanvas body -->
@@ -303,18 +303,24 @@ Inner part START -->
                                 <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless">
-                                        <a class="list-group-item" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                        <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                        <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                        <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                        <a class="list-group-item active" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                        <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                        <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                        <a class="list-group-item" href="instructor-edit-profile.html"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                        <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                        <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                        <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
-                                        <a class="list-group-item text-danger bg-danger-soft-hover" href="sign-in.html"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
+                                        <a class="list-group-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                        <a class="list-group-item" href="{% url 'instructor_manage_course' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                        <a class="list-group-item" href="{% url 'instructor_earning' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                        <a class="list-group-item active" href="{% url 'instructor-student-list' %}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                        <a class="list-group-item" href="{% url 'instructor_orders' %}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                        <a class="list-group-item" href="{% url 'instructor_reviews' %}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                        <a class="list-group-item" href="{% url 'instructor_edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                        <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                        <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                        <li>
+                                            <form method="POST" action="{% url 'logout' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="list-group-item bg-danger-soft-hover" style="border: none; background: transparent; text-align: left; width: 100%;">
+                                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                                </button>
+                                            </form>
+                                        </li>
                                     </div>
                                 </div>
                             </div>

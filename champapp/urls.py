@@ -15,6 +15,11 @@ from champapp.views import edit_quiz, instructor_quiz
 from .views import create_payment, verify_payment
 from .views import get_course_content
 from .views import add_to_cart, cart_detail, create_payment_from_cart, verify_payment
+from .views import instructor_earning
+from .views import instructor_orders
+from .views import instructor_reviews
+from .views import instructor_payout
+from .views import instructor_settings
 
 
 
@@ -42,7 +47,12 @@ urlpatterns = [
     path('course-detail-adv/<int:pk>/', views.course_detail_adv, name='course_detail_adv'),
     path('role-based-redirect/', role_based_redirect, name='role_based_redirect'),
     path('instructor/dashboard/', instructor_dashboard, name='instructor_dashboard'),
-    path('student/edit-profile/', views.edit_instructor_profile, name='edit_profile'),
+    path('instructor/earning/', instructor_earning, name='instructor_earning'),
+    path('instructor/orders/', instructor_orders, name='instructor_orders'),
+    path('instructor/reviews/', instructor_reviews, name='instructor_reviews'),
+    path('instructor/payout/', instructor_payout, name='instructor_payout'),
+    path('instructor/settings/', instructor_settings, name='instructor_settings'),
+    path('instructor/edit-profile/', views.edit_instructor_profile, name='instructor_edit_profile'),
     path('custom-admin/student-list/', admin_student_list, name='admin-student-list'),
     ###############course1#####################
     path('create_course/step1/', views.create_course_step1, name='step_1'),
@@ -63,6 +73,7 @@ urlpatterns = [
     path('dashboard/withdraw-funds/', views.withdraw_funds, name='withdraw_funds'),
     path('dashboard/revenue-stats/', views.revenue_stats, name='revenue_stats'),
     path('dashboard/certificates/', views.certificates, name='certificates'),
+    path('dashboard/saved-courses/', views.saved_courses, name='saved_courses'),
     path('dashboard/settings/', views.student_settings, name='student_settings'),
     path('courses/<int:course_id>/buy/', views.buy_now, name='buy_now'),
     path('courses/<int:course_id>/add-to-cart/', views.add_to_cart, name='add_to_cart'),

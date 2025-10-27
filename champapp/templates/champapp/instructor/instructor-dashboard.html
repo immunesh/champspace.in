@@ -125,27 +125,14 @@
 
                     <!-- Nav Main menu START -->
                     <ul class="navbar-nav navbar-nav-scroll mx-auto">
-                        <!-- Nav item 1 Demos -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Demos</a>
-                            <ul class="dropdown-menu" aria-labelledby="demoMenu">
-                                <li> <a class="dropdown-item" href="{% url 'index' %}">Home Default</a></li>
-                            </ul>
+                        <!-- Nav item 1 Home -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
                         </li>
 
                         <!-- Nav item 2 Courses -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
-                        </li>
-
-                        <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
                         </li>
                     </ul>
                     <!-- Nav Main menu END -->
@@ -192,7 +179,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        <li><a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -311,7 +298,7 @@ Page content START -->
                         <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
                             <!-- Offcanvas header -->
                             <div class="offcanvas-header bg-light">
-                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Content Manager</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
                             </div>
                             <!-- Offcanvas body -->
@@ -319,25 +306,24 @@ Page content START -->
                                 <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless">
-                                        <a class="list-group-item active" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                        <a class="list-group-item active" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
                                         <a class="list-group-item" href="{% url 'instructor_manage_course' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                        <a class="list-group-item" href="{% url 'instructor_quiz'%}"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                        <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                        <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                        <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                        <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                        <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                        <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                        <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                        <a class="list-group-item" href="{% url 'instructor_earning' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                        <a class="list-group-item" href="{% url 'instructor-student-list' %}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                        <a class="list-group-item" href="{% url 'instructor_orders' %}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                        <a class="list-group-item" href="{% url 'instructor_reviews' %}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                        <a class="list-group-item" href="{% url 'instructor_edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                        <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
                                         <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         <li>
                                             <form method="POST" action="{% url 'logout' %}">
                                                 {% csrf_token %}
-                                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
+                                                <button type="submit" class="list-group-item bg-danger-soft-hover" style="border: none; background: transparent; text-align: left; width: 100%;">
                                                     <i class="bi bi-power fa-fw me-2"></i> Sign Out
                                                 </button>
                                             </form>
-                                            </li>
+                                        </li>
                                     </div>
                                 </div>
                             </div>
@@ -364,6 +350,33 @@ Page content START -->
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Counter item - Live Courses -->
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="d-flex justify-content-center align-items-center p-4 bg-success bg-opacity-15 rounded-3">
+                                    <span class="display-6 text-success mb-0"><i class="fas fa-check-circle fa-fw"></i></span>
+                                    <div class="ms-4">
+                                        <div class="d-flex">
+                                            <h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ live_courses_count }}" data-purecounter-delay="200">{{ live_courses_count }}</h5>
+                                        </div>
+                                        <span class="mb-0 h6 fw-light">Live Courses</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Counter item - Pending Courses -->
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="d-flex justify-content-center align-items-center p-4 bg-orange bg-opacity-15 rounded-3">
+                                    <span class="display-6 text-orange mb-0"><i class="fas fa-clock fa-fw"></i></span>
+                                    <div class="ms-4">
+                                        <div class="d-flex">
+                                            <h5 class="purecounter mb-0 fw-bold" data-purecounter-start="0" data-purecounter-end="{{ pending_courses_count }}" data-purecounter-delay="200">{{ pending_courses_count }}</h5>
+                                        </div>
+                                        <span class="mb-0 h6 fw-light">Pending Courses</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <!-- Counter item -->
                             <div class="col-sm-6 col-lg-4">
                                 <div class="d-flex justify-content-center align-items-center p-4 bg-purple bg-opacity-10 rounded-3">

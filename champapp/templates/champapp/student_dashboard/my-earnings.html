@@ -191,14 +191,6 @@
                         </li>
 
                         <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -242,7 +234,11 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        {% else %}
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        {% endif %}
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -323,7 +319,7 @@ Page Banner START -->
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
                                                 <i class="bi bi-cash-stack text-success me-1"></i>
-                                                <span class="h6 text-success fw-bold">$0.00</span>
+                                                <span class="h6 text-success fw-bold">₹0.00</span>
                                                 <span class="text-body fw-light">Total Earned</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
@@ -391,7 +387,7 @@ Page content START -->
                                             <a class="list-group-item active" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
                                             <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
                                             <a class="list-group-item" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
-                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
                                             <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
                                             <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
                                             <a class="list-group-item" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
@@ -442,10 +438,10 @@ Page content START -->
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h2 class="purecounter mb-0 fw-bold text-success" data-purecounter-start="0" data-purecounter-end="{{ total_earned|default:0 }}" data-purecounter-delay="200">{{ total_earned|default:0 }}</h2>
-                                            <span class="mb-0 h6 fw-light">Total Earned ($)</span>
+                                            <span class="mb-0 h6 fw-light">Total Earned (₹)</span>
                                         </div>
                                         <div class="icon-lg rounded-circle bg-success text-white mb-0">
-                                            <i class="fas fa-dollar-sign fa-fw"></i>
+                                            <i class="fas fa-rupee-sign fa-fw"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -457,7 +453,7 @@ Page content START -->
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h2 class="purecounter mb-0 fw-bold text-primary" data-purecounter-start="0" data-purecounter-end="{{ monthly_earned|default:0 }}" data-purecounter-delay="200">{{ monthly_earned|default:0 }}</h2>
-                                            <span class="mb-0 h6 fw-light">This Month ($)</span>
+                                            <span class="mb-0 h6 fw-light">This Month (₹)</span>
                                         </div>
                                         <div class="icon-lg rounded-circle bg-primary text-white mb-0">
                                             <i class="fas fa-calendar-alt fa-fw"></i>
@@ -472,7 +468,7 @@ Page content START -->
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h2 class="purecounter mb-0 fw-bold text-warning" data-purecounter-start="0" data-purecounter-end="{{ available_balance|default:0 }}" data-purecounter-delay="200">{{ available_balance|default:0 }}</h2>
-                                            <span class="mb-0 h6 fw-light">Available Balance ($)</span>
+                                            <span class="mb-0 h6 fw-light">Available Balance (₹)</span>
                                         </div>
                                         <div class="icon-lg rounded-circle bg-warning text-white mb-0">
                                             <i class="fas fa-wallet fa-fw"></i>
@@ -514,11 +510,11 @@ Page content START -->
                                     <div class="col-md-6">
                                         <div class="d-flex">
                                             <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-2 flex-shrink-0">
-                                                <i class="bi bi-percent fs-5"></i>
+                                                <i class="bi bi-cash-stack fs-5"></i>
                                             </div>
                                             <div class="ms-3">
-                                                <h6>90% Revenue Share</h6>
-                                                <p class="mb-0 small">We keep only 10% - you get 90% of the course value. The highest revenue share in the industry!</p>
+                                                <h6>High Earning Potential</h6>
+                                                <p class="mb-0 small">Earn anywhere from ₹500 to ₹50,000 per month based on your learning performance and course completion!</p>
                                             </div>
                                         </div>
                                     </div>
@@ -529,7 +525,7 @@ Page content START -->
                                             </div>
                                             <div class="ms-3">
                                                 <h6>Easy Withdrawals</h6>
-                                                <p class="mb-0 small">Withdraw your earnings anytime once you reach the minimum threshold of $50. Fast and secure!</p>
+                                                <p class="mb-0 small">Withdraw your earnings anytime once you reach the minimum threshold of ₹50. Fast and secure!</p>
                                             </div>
                                         </div>
                                     </div>
@@ -564,7 +560,7 @@ Page content START -->
                                                             {{ earning.type }}
                                                         </span>
                                                     </td>
-                                                    <td class="text-end text-success fw-bold">+${{ earning.amount }}</td>
+                                                    <td class="text-end text-success fw-bold">+₹{{ earning.amount }}</td>
                                                 </tr>
                                                 {% endfor %}
                                             </tbody>

@@ -328,6 +328,10 @@ from .models import StudentProfile, UserCourse, EnrolledCourse, Course1, Lecture
 def user_dashboard(request):
     user = request.user
 
+    # Redirect instructors to instructor dashboard
+    if user.is_superuser or user.is_staff:
+        return redirect('instructor_dashboard')
+
     # Get or create the user's profile
     try:
         user_profile = StudentProfile.objects.get(user=user)
@@ -600,15 +604,15 @@ def edit_instructor_profile(request):
     if created:
         messages.info(request, "A new profile has been created for you.")
 
-    # Fetch courses created by the instructor (if needed)
-    created_courses = Course.objects.filter(instructor=user)
+    # Fetch courses created by the instructor (Course1 model)
+    created_courses = Course1.objects.filter(creator=user, status='Live')
 
     if request.method == 'POST':
         form = InstructorProfileForm(request.POST, request.FILES, instance=instructor_profile)
         if form.is_valid():
             form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect('edit_instructor_profile')
+            return redirect('instructor_edit_profile')
         else:
             logger.warning("Form validation failed. Errors: %s", form.errors)
             messages.error(request, "Please correct the errors below.")
@@ -617,8 +621,10 @@ def edit_instructor_profile(request):
 
     context = {
         "user": user,
-        "profile": instructor_profile,
+        "profile": instructor_profile,  # Using 'profile' for consistency with template
+        "instructor_profile": instructor_profile,  # Keep this for backward compatibility
         "courses": created_courses,
+        "instructor_courses_count": created_courses.count(),
         "form": form,
     }
 
@@ -646,7 +652,9 @@ def admin_course_category(request):
         courses = courses.filter(creator_id=creator_id)
     if status:
         courses = courses.filter(status=status)
-        
+    
+    # Order courses to ensure consistent pagination
+    courses = courses.order_by('-id')
 
     # Pagination logic: Show 10 courses per page
     paginator = Paginator(courses, 10)
@@ -712,6 +720,9 @@ def all_courses(request):
         courses = courses.filter(creator_id=creator_id)
     if status:
         courses = courses.filter(status=status)
+    
+    # Order courses to ensure consistent pagination
+    courses = courses.order_by('-id')
 
     # Pagination logic: Show 10 courses per page
     paginator = Paginator(courses, 10)
@@ -785,6 +796,8 @@ def instructor_dashboard(request):
     current_month_earnings = 0
     last_month_earnings = 0
     instructor_courses_count = 0
+    pending_courses_count = 0
+    live_courses_count = 0
     most_selling_courses = []
 
     # Count the number of students (users who are not staff)
@@ -794,9 +807,13 @@ def instructor_dashboard(request):
     if user.is_authenticated:
         instructor_courses = Course1.objects.filter(creator=user)  # Only get courses created by the instructor
         instructor_courses_count = instructor_courses.count()  # Count the courses
+        
+        # Count courses by status
+        pending_courses_count = instructor_courses.filter(status='Pending').count()
+        live_courses_count = instructor_courses.filter(status='Live').count()
 
-        # Count the total number of students enrolled in the instructor's courses
-        enrolled_students_count = EnrolledCourse.objects.filter(course__in=instructor_courses).count()
+        # Count the total number of students enrolled in the instructor's courses (only for Live courses)
+        enrolled_students_count = EnrolledCourse.objects.filter(course__in=instructor_courses.filter(status='Live')).count()
 
         # Calculate earnings for the current month
         current_month_start = timezone.now().replace(day=1)
@@ -851,16 +868,18 @@ def instructor_dashboard(request):
 
             })
 
-    # Try to get the user's profile (assuming it's a StudentProfile)
+    # Try to get the user's profile
     try:
-        user_profile = StudentProfile.objects.get(user=user)
+        user_profile = InstructorProfile.objects.get(user=user)
     except ObjectDoesNotExist:
         # If the profile does not exist, create one with default values
-        user_profile = StudentProfile.objects.create(user=user)
+        user_profile = InstructorProfile.objects.create(user=user)
 
     # Context for the template
     context = {
         "instructor_courses_count": instructor_courses_count,  # Pass the count to the template
+        "pending_courses_count": pending_courses_count,  # Pass pending courses count
+        "live_courses_count": live_courses_count,  # Pass live courses count
         "user": user,
         "profile": user_profile,  # Pass the user's profile to the template
         "total_students": total_students,  # Pass the total students count to the template
@@ -1062,8 +1081,8 @@ from django.shortcuts import render
 from .models import Course1
 
 def course_list(request):
-    # Fetch all created courses
-    courses = Course1.objects.all()
+    # Fetch all created courses ordered by ID
+    courses = Course1.objects.all().order_by('-id')
     paginator = Paginator(courses, 10)  # Show 10 courses per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -1087,6 +1106,8 @@ def course_list_view(request):
     if course_name:
         courses = courses.filter(name__icontains=course_name) 
 
+    # Order courses to ensure consistent pagination
+    courses = courses.order_by('-id')
 
     # Pagination logic: Show 10 courses per page
     paginator = Paginator(courses, 10)
@@ -1314,6 +1335,28 @@ def student_bookmarks(request):
     favorites = FavoriteCourse.objects.filter(user=request.user).select_related('course')
     return render(request, 'student/student-bookmark.html', {'favorites': favorites})
 
+@login_required
+def saved_courses(request):
+    """View for saved courses dashboard page"""
+    try:
+        profile = StudentProfile.objects.get(user=request.user)
+    except StudentProfile.DoesNotExist:
+        profile = StudentProfile.objects.create(user=request.user)
+    
+    # Get saved courses
+    saved_courses = FavoriteCourse.objects.filter(user=request.user).select_related('course')
+    
+    # Get total courses count
+    total_courses = EnrolledCourse.objects.filter(student=request.user).count()
+    
+    context = {
+        'profile': profile,
+        'saved_courses': saved_courses,
+        'total_courses': total_courses,
+    }
+    
+    return render(request, 'champapp/student_dashboard/saved-courses.html', context)
+
 
 #--------------student-dashboard-mycourses------------------#
 from django.shortcuts import render
@@ -1391,8 +1434,34 @@ def instructor_manage_course(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("You are not authorized to view this page.")
     
+    # Handle course status updates (publish/unpublish)
+    if request.method == 'POST':
+        if 'publish_course' in request.POST:
+            course_id = request.POST.get('course_id')
+            course = Course1.objects.get(id=course_id, creator=request.user)
+            course.status = 'Live'
+            course.save()
+            messages.success(request, f'Course "{course.name}" has been published successfully!')
+            return redirect('instructor_manage_course')
+        
+        elif 'unpublish_course' in request.POST:
+            course_id = request.POST.get('course_id')
+            course = Course1.objects.get(id=course_id, creator=request.user)
+            course.status = 'Pending'
+            course.save()
+            messages.success(request, f'Course "{course.name}" has been unpublished.')
+            return redirect('instructor_manage_course')
+        
+        elif 'delete_course' in request.POST:
+            course_id = request.POST.get('course_id')
+            course = Course1.objects.get(id=course_id, creator=request.user)
+            course_name = course.name
+            course.delete()
+            messages.success(request, f'Course "{course_name}" has been deleted.')
+            return redirect('instructor_manage_course')
+    
     # Fetch instructor's courses (assuming 'creator' field represents the instructor)
-    instructor_courses = Course1.objects.filter(creator=request.user)  # Filter courses by creator
+    instructor_courses = Course1.objects.filter(creator=request.user).order_by('-created_at')  # Filter courses by creator
 
     # Prepare course data for the template
     course_data = []
@@ -1400,11 +1469,21 @@ def instructor_manage_course(request):
         # Get the number of enrolled students
         enrolled_students_count = EnrolledCourse.objects.filter(course=course).count()
 
-        # Get the course status (e.g., LIVE, PENDING, REJECTED)
-        status = course.get_status_display()  # If using a `status` choice field
+        # Get the course status
+        status = course.status
 
-        # Assuming the price is stored in `price` field of the course model
+        # Get the price
         price = course.price
+
+        # Calculate revenue (only for Live courses with enrollments)
+        revenue = 0
+        if status == 'Live':
+            # Calculate discounted price if discount exists
+            if course.discount > 0:
+                actual_price = float(price) * (1 - float(course.discount) / 100)
+            else:
+                actual_price = float(price)
+            revenue = actual_price * enrolled_students_count
 
         # Prepare the course data
         course_data.append({
@@ -1413,11 +1492,27 @@ def instructor_manage_course(request):
             "status": status,
             "price": price,
             "course_id": course.id,
+            "revenue": revenue,
+            "image": course.image.url if course.image else None,
+            "created_at": course.created_at,
+            "is_featured": course.is_featured,
         })
 
+    # Get the current user
+    user = request.user
+
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+
     context = {
+        'user': user,
+        'profile': user_profile,
         'course_data': course_data,  # Pass the prepared course data to the template
         'page_title': 'Manage Courses',
+        'instructor_courses_count': instructor_courses.count(),
     }
 
     return render(request, 'champapp/instructor/instructor-manage-course.html', context)
@@ -1496,8 +1591,8 @@ def course_grid(request):
     search_query = request.GET.get('search', '')  # Get the search query
 
 
-    # Start with all courses
-    courses = Course1.objects.all()
+    # Start with only Live courses (visible to students)
+    courses = Course1.objects.filter(status='Live')
 
     # Apply category filter
     if selected_category != 'All':
@@ -1515,29 +1610,32 @@ def course_grid(request):
     if search_query:
         courses = courses.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
     
+    # Order courses by creation date (newest first) to ensure consistent pagination
+    courses = courses.order_by('-id')
+    
     # Pagination: 9 courses per page (3 rows with 3 courses each)
     paginator = Paginator(courses, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
 
-    # Fetch categories and their course counts
+    # Fetch categories and their course counts (only for Live courses)
     categories = (
-        Course1.objects.values('category')
+        Course1.objects.filter(status='Live').values('category')
         .annotate(count=Count('id'))
         .order_by('category')
     )
 
-    # Fetch languages and their course counts
+    # Fetch languages and their course counts (only for Live courses)
     languages = (
-        Course1.objects.values('languages')
+        Course1.objects.filter(status='Live').values('languages')
         .annotate(count=Count('id'))
         .order_by('languages')
     )
 
-    # Fetch levels and their course counts
+    # Fetch levels and their course counts (only for Live courses)
     levels = (
-        Course1.objects.values('level')
+        Course1.objects.filter(status='Live').values('level')
         .annotate(count=Count('id'))
         .order_by('level')
     )
@@ -1601,7 +1699,9 @@ def admin_instructor_request(request):
         courses = courses.filter(creator_id=creator_id)
     if status:
         courses = courses.filter(status=status)
-        
+    
+    # Order courses to ensure consistent pagination
+    courses = courses.order_by('-id')
 
     # Pagination logic: Show 10 courses per page
     paginator = Paginator(courses, 10)
@@ -1733,8 +1833,20 @@ def instructor_student_list(request):
             "image": getattr(student_profile, 'profile_picture', None),
         })
 
+    # Get instructor courses for sidebar
+    instructor_courses = Course1.objects.filter(creator=user)
+
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+
     context = {
+        "user": user,
+        "profile": user_profile,
         "enrolled_students": enrolled_students,
+        "instructor_courses_count": instructor_courses.count(),
     }
 
     return render(request, 'champapp/instructor/instructor-studentlist.html', context)
@@ -1793,4 +1905,346 @@ def get_course_content(request, course_id):
         'lectures': lectures,
         'progress_percentage': progress_percentage,
     })
+
+
+#########################---------instructor-earning-----------###############################################
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_earning(request):
+    """View for instructor earnings page"""
+    user = request.user
+    
+    # Get all courses created by the instructor
+    instructor_courses = Course1.objects.filter(creator=user, status='Live')
+    
+    # Calculate total earnings from all Live courses
+    total_earnings = 0
+    monthly_earnings = {}
+    course_earnings = []
+    
+    for course in instructor_courses:
+        # Get all enrollments for this course
+        enrollments = EnrolledCourse.objects.filter(course=course)
+        course_revenue = 0
+        
+        for enrollment in enrollments:
+            # Calculate actual price after discount
+            if course.discount and course.discount > 0:
+                actual_price = course.price * (1 - course.discount / 100)
+            else:
+                actual_price = course.price
+            
+            course_revenue += actual_price
+            
+            # Group by month for chart
+            month_year = enrollment.date_enrolled.strftime('%B %Y')
+            if month_year not in monthly_earnings:
+                monthly_earnings[month_year] = 0
+            monthly_earnings[month_year] += actual_price
+        
+        total_earnings += course_revenue
+        
+        # Add to course earnings list
+        course_earnings.append({
+            'course': course,
+            'enrollments': enrollments.count(),
+            'revenue': course_revenue,
+            'avg_per_student': course_revenue / enrollments.count() if enrollments.count() > 0 else 0
+        })
+    
+    # Sort course earnings by revenue (highest first)
+    course_earnings = sorted(course_earnings, key=lambda x: x['revenue'], reverse=True)
+    
+    # Get current month earnings
+    current_month = timezone.now().strftime('%B %Y')
+    current_month_earnings = monthly_earnings.get(current_month, 0)
+    
+    # Get total students enrolled
+    total_students_enrolled = EnrolledCourse.objects.filter(course__in=instructor_courses).values('student').distinct().count()
+    
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+    
+    context = {
+        'user': user,
+        'profile': user_profile,
+        'total_earnings': total_earnings,
+        'current_month_earnings': current_month_earnings,
+        'total_students_enrolled': total_students_enrolled,
+        'course_earnings': course_earnings,
+        'monthly_earnings': monthly_earnings,
+        'instructor_courses_count': instructor_courses.count(),
+    }
+    
+    return render(request, 'champapp/instructor/instructor-earning.html', context)
+
+
+#########################---------instructor-orders-----------###############################################
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_orders(request):
+    """View for instructor orders page"""
+    user = request.user
+    
+    # Get all courses created by the instructor
+    instructor_courses = Course1.objects.filter(creator=user, status='Live')
+    
+    # Get all enrollments (orders) for instructor's courses
+    orders = EnrolledCourse.objects.filter(course__in=instructor_courses).select_related('student', 'course').order_by('-date_enrolled')
+    
+    # Calculate statistics
+    total_orders = orders.count()
+    total_revenue = 0
+    completed_orders = orders.filter(status='completed').count()
+    in_progress_orders = orders.filter(status='in_progress').count()
+    
+    # Prepare order data with revenue calculation
+    order_data = []
+    for order in orders:
+        # Calculate actual price after discount
+        if order.course.discount and order.course.discount > 0:
+            actual_price = order.course.price * (1 - order.course.discount / 100)
+        else:
+            actual_price = order.course.price
+        
+        total_revenue += actual_price
+        
+        order_data.append({
+            'id': order.id,
+            'student': order.student,
+            'course': order.course,
+            'date_enrolled': order.date_enrolled,
+            'status': order.status,
+            'progress': order.progress_percentage,
+            'amount': actual_price,
+            'original_price': order.course.price,
+            'discount': order.course.discount,
+        })
+    
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+    
+    context = {
+        'user': user,
+        'profile': user_profile,
+        'total_orders': total_orders,
+        'total_revenue': total_revenue,
+        'completed_orders': completed_orders,
+        'in_progress_orders': in_progress_orders,
+        'orders': order_data,
+        'instructor_courses_count': instructor_courses.count(),
+    }
+    
+    return render(request, 'champapp/instructor/instructor-orders.html', context)
+
+
+#########################---------instructor-reviews-----------###############################################
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_reviews(request):
+    """View for instructor reviews page"""
+    user = request.user
+    
+    # Get all courses created by the instructor
+    instructor_courses = Course1.objects.filter(creator=user, status='Live')
+    
+    # Get all enrollments for instructor's courses (simulating reviews from enrolled students)
+    enrollments = EnrolledCourse.objects.filter(course__in=instructor_courses).select_related('student', 'course').order_by('-date_enrolled')
+    
+    # Calculate statistics
+    total_reviews = enrollments.count()
+    
+    # Simulate ratings (in real scenario, you would have a Review model)
+    # For now, we'll use course progress as a basis for rating
+    five_star = 0
+    four_star = 0
+    three_star = 0
+    two_star = 0
+    one_star = 0
+    total_rating_points = 0
+    
+    review_data = []
+    for enrollment in enrollments:
+        # Simulate rating based on progress (this is temporary until Review model is created)
+        if enrollment.progress >= 80:
+            rating = 5
+            five_star += 1
+        elif enrollment.progress >= 60:
+            rating = 4
+            four_star += 1
+        elif enrollment.progress >= 40:
+            rating = 3
+            three_star += 1
+        elif enrollment.progress >= 20:
+            rating = 2
+            two_star += 1
+        else:
+            rating = 1
+            one_star += 1
+        
+        total_rating_points += rating
+        
+        # Simulate review text based on rating
+        review_texts = {
+            5: "Excellent course! Very informative and well-structured. The instructor explained concepts clearly.",
+            4: "Great course overall. Good content and engaging lectures. Would recommend to others.",
+            3: "Decent course. Some topics could be explained better, but overall satisfactory.",
+            2: "Below expectations. Course needs improvement in content delivery.",
+            1: "Not satisfied with the course content and presentation."
+        }
+        
+        review_data.append({
+            'id': enrollment.id,
+            'student': enrollment.student,
+            'course': enrollment.course,
+            'date': enrollment.date_enrolled,
+            'rating': rating,
+            'review_text': review_texts.get(rating, "No review provided."),
+            'progress': enrollment.progress_percentage,
+        })
+    
+    # Calculate average rating
+    average_rating = total_rating_points / total_reviews if total_reviews > 0 else 0
+    
+    # Calculate percentages for rating breakdown
+    five_star_percent = (five_star * 100 / total_reviews) if total_reviews > 0 else 0
+    four_star_percent = (four_star * 100 / total_reviews) if total_reviews > 0 else 0
+    three_star_percent = (three_star * 100 / total_reviews) if total_reviews > 0 else 0
+    two_star_percent = (two_star * 100 / total_reviews) if total_reviews > 0 else 0
+    one_star_percent = (one_star * 100 / total_reviews) if total_reviews > 0 else 0
+    
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+    
+    context = {
+        'user': user,
+        'profile': user_profile,
+        'total_reviews': total_reviews,
+        'average_rating': average_rating,
+        'five_star': five_star,
+        'four_star': four_star,
+        'three_star': three_star,
+        'two_star': two_star,
+        'one_star': one_star,
+        'five_star_percent': five_star_percent,
+        'four_star_percent': four_star_percent,
+        'three_star_percent': three_star_percent,
+        'two_star_percent': two_star_percent,
+        'one_star_percent': one_star_percent,
+        'reviews': review_data,
+        'instructor_courses_count': instructor_courses.count(),
+    }
+    
+    return render(request, 'champapp/instructor/instructor-reviews.html', context)
+
+
+#########################---------instructor-payout-----------###############################################
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_payout(request):
+    """View for instructor payout page"""
+    user = request.user
+    
+    # Get all courses created by the instructor
+    instructor_courses = Course1.objects.filter(creator=user, status='Live')
+    
+    # Get all enrollments for instructor's courses
+    enrollments = EnrolledCourse.objects.filter(course__in=instructor_courses).select_related('student', 'course')
+    
+    # Calculate total earnings
+    total_earnings = 0
+    pending_balance = 0
+    total_withdrawn = 0
+    
+    for enrollment in enrollments:
+        course = enrollment.course
+        if course.discount and course.discount > 0:
+            actual_price = course.price * (1 - course.discount / 100)
+        else:
+            actual_price = course.price
+        total_earnings += actual_price
+    
+    # Simulate payout data (70% goes to instructor, 30% platform fee)
+    instructor_share = total_earnings * 0.7
+    pending_balance = instructor_share  # All earnings are pending (not yet withdrawn)
+    
+    # Get recent payout history (simulated)
+    payout_history = []
+    
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+    
+    context = {
+        'user': user,
+        'profile': user_profile,
+        'total_earnings': total_earnings,
+        'instructor_share': instructor_share,
+        'pending_balance': pending_balance,
+        'total_withdrawn': total_withdrawn,
+        'payout_history': payout_history,
+        'instructor_courses_count': instructor_courses.count(),
+    }
+    
+    return render(request, 'champapp/instructor/instructor-payout.html', context)
+
+
+#########################---------instructor-settings-----------###############################################
+@user_passes_test(superuser_or_staff_required, login_url='/403/')
+def instructor_settings(request):
+    """View for instructor settings page"""
+    user = request.user
+    
+    # Get all courses created by the instructor
+    instructor_courses = Course1.objects.filter(creator=user, status='Live')
+    
+    # Try to get the user's profile
+    try:
+        user_profile = InstructorProfile.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_profile = InstructorProfile.objects.create(user=user)
+    
+    if request.method == 'POST':
+        # Handle settings update
+        action = request.POST.get('action')
+        
+        if action == 'notification_settings':
+            # Update notification preferences (you can add fields to InstructorProfile model)
+            messages.success(request, "Notification settings updated successfully!")
+        elif action == 'privacy_settings':
+            # Update privacy settings
+            messages.success(request, "Privacy settings updated successfully!")
+        elif action == 'change_password':
+            # Handle password change
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if user.check_password(old_password):
+                if new_password == confirm_password:
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, "Password changed successfully!")
+                else:
+                    messages.error(request, "New passwords do not match!")
+            else:
+                messages.error(request, "Current password is incorrect!")
+        
+        return redirect('instructor_settings')
+    
+    context = {
+        'user': user,
+        'profile': user_profile,
+        'instructor_courses_count': instructor_courses.count(),
+    }
+    
+    return render(request, 'champapp/instructor/instructor-settings.html', context)
+
 

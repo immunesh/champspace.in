@@ -132,16 +132,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
                         </li>
-
-                        <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -163,19 +153,23 @@
                 <!-- Profile START -->
                 <div class="dropdown ms-1 ms-lg-0">
                     <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-					<img class="avatar-img rounded-circle" src="{% static 'instructor/instructor-manage-course/images/avatar/01.jpg' %}" alt="avatar">
-				</a>
+                        <img class="avatar-img rounded-circle" 
+                             src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/instructor-manage-course/images/avatar/01.jpg' %}{% endif %}" 
+                             alt="avatar">
+                    </a>
+                
+                
                     <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
                         <!-- Profile info -->
                         <li class="px-3 mb-3">
                             <div class="d-flex align-items-center">
                                 <!-- Avatar -->
                                 <div class="avatar me-3">
-                                    <img class="avatar-img rounded-circle shadow" src="{% static 'instructor/instructor-manage-course/images/avatar/01.jpg' %}" alt="avatar">
+                                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'student/student-edit-profile/images/avatar/07.jpg' %}{% endif %}" alt="Profile Image" class="rounded-circle me-2" width="30" height="30">
                                 </div>
                                 <div>
-                                    <a class="h6" href="#">Lori Ferguson</a>
-                                    <p class="small m-0">example@gmail.com</p>
+                                    <a class="h6" href="#">{{ profile.full_name }}</a>
+                                    <p class="small m-0">{{ request.user.email }}</p>
                                 </div>
                             </div>
                         </li>
@@ -183,9 +177,16 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        <li><a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-                        <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                        <li>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
+                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                </button>
+                            </form>
+                            </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -295,7 +296,7 @@ Inner part START -->
                         <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
                             <!-- Offcanvas header -->
                             <div class="offcanvas-header bg-light">
-                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Content Manager</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
                             </div>
                             <!-- Offcanvas body -->
@@ -303,18 +304,24 @@ Inner part START -->
                                 <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless">
-                                        <a class="list-group-item" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                        <a class="list-group-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
                                         <a class="list-group-item active" href="{% url 'instructor_manage_course' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                        <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                        <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                        <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                        <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                        <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                        <a class="list-group-item" href="instructor-edit-profile.html"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                        <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                        <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                        <a class="list-group-item" href="instructor-delete-account.html"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
-                                        <a class="list-group-item text-danger bg-danger-soft-hover" href="sign-in.html"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out</a>
+                                        <a class="list-group-item" href="{% url 'instructor_earning' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                        <a class="list-group-item" href="{% url 'instructor-student-list' %}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                        <a class="list-group-item" href="{% url 'instructor_orders' %}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                        <a class="list-group-item" href="{% url 'instructor_reviews' %}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                        <a class="list-group-item" href="{% url 'instructor_edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                        <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                        <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                        <li>
+                                            <form method="POST" action="{% url 'logout' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="list-group-item bg-danger-soft-hover" style="border: none; background: transparent; text-align: left; width: 100%;">
+                                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                                </button>
+                                            </form>
+                                        </li>
                                     </div>
                                 </div>
                             </div>
@@ -374,12 +381,26 @@ Inner part START -->
                                                 <th scope="col" class="border-0">Enrolled</th>
                                                 <th scope="col" class="border-0">Status</th>
                                                 <th scope="col" class="border-0">Price</th>
+                                                <th scope="col" class="border-0">Revenue</th>
                                                 <th scope="col" class="border-0 rounded-end">Action</th>
                                             </tr>
                                         </thead>
                                 
                                         <!-- Table body START -->
                                         <tbody>
+                                            {% if messages %}
+                                            <tr>
+                                                <td colspan="6">
+                                                    {% for message in messages %}
+                                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                                        {{ message }}
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    </div>
+                                                    {% endfor %}
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            
                                             {% for course in course_data %}
                                             <!-- Table item -->
                                             <tr>
@@ -388,31 +409,108 @@ Inner part START -->
                                                     <div class="d-flex align-items-center">
                                                         <!-- Image -->
                                                         <div class="w-60px">
+                                                            {% if course.image %}
+                                                            <img src="{{ course.image }}" class="rounded" alt="{{ course.course_name }}">
+                                                            {% else %}
                                                             <img src="{% static 'instructor/instructor-manage-course/images/courses/4by3/08.jpg' %}" class="rounded" alt="">
+                                                            {% endif %}
                                                         </div>
                                                         <div class="mb-0 ms-2">
                                                             <!-- Title -->
                                                             <h6><a href="#">{{ course.course_name }}</a></h6>
                                                             <!-- Info -->
                                                             <div class="d-sm-flex">
-                                                                <p class="h6 fw-light mb-0 small me-3"><i class="fas fa-table text-orange me-2"></i>{{ course.enrolled_students_count }} lectures</p>
-                                                                <p class="h6 fw-light mb-0 small"><i class="fas fa-check-circle text-success me-2"></i>{{ course.status }}</p>
+                                                                <p class="h6 fw-light mb-0 small me-3">
+                                                                    <i class="fas fa-calendar text-orange me-2"></i>
+                                                                    {{ course.created_at|date:"M d, Y" }}
+                                                                </p>
+                                                                {% if course.is_featured %}
+                                                                <span class="badge bg-warning text-dark">Featured</span>
+                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <!-- Enrolled item -->
-                                                <td class="text-center text-sm-start">{{ course.enrolled_students_count }}</td>
+                                                <td class="text-center text-sm-start">
+                                                    <strong>{{ course.enrolled_students_count }}</strong>
+                                                </td>
                                                 <!-- Status item -->
                                                 <td>
-                                                    <div class="badge bg-success bg-opacity-10 text-success">{{ course.status }}</div>
+                                                    {% if course.status == 'Live' %}
+                                                    <div class="badge bg-success bg-opacity-10 text-success">
+                                                        <i class="bi bi-check-circle me-1"></i>Live
+                                                    </div>
+                                                    {% elif course.status == 'Pending' %}
+                                                    <div class="badge bg-warning bg-opacity-10 text-warning">
+                                                        <i class="bi bi-clock me-1"></i>Pending
+                                                    </div>
+                                                    {% elif course.status == 'Rejected' %}
+                                                    <div class="badge bg-danger bg-opacity-10 text-danger">
+                                                        <i class="bi bi-x-circle me-1"></i>Rejected
+                                                    </div>
+                                                    {% endif %}
                                                 </td>
                                                 <!-- Price item -->
-                                                <td>${{ course.price }}</td>
+                                                <td><strong>₹{{ course.price }}</strong></td>
+                                                <!-- Revenue item -->
+                                                <td><strong>₹{{ course.revenue|floatformat:2 }}</strong></td>
                                                 <!-- Action item -->
                                                 <td>
-                                                    <a href="{% url 'step_1' course_id=course.course_id %}" class="btn btn-sm btn-success-soft btn-round me-1 mb-0"><i class="far fa-fw fa-edit"></i></a>
-                                                    <a href="{% url 'delete_course' course_id=course.course_id %}" class="btn btn-sm btn-danger-soft btn-round mb-0"><i class="fas fa-fw fa-times"></i></a>
+                                                    <div class="btn-group" role="group">
+                                                        <!-- Edit Button -->
+                                                        <a href="{% url 'step_1' course_id=course.course_id %}" 
+                                                           class="btn btn-sm btn-info-soft me-1" 
+                                                           title="Edit Course">
+                                                            <i class="far fa-fw fa-edit"></i>
+                                                        </a>
+                                                        
+                                                        <!-- Publish/Unpublish Button -->
+                                                        {% if course.status == 'Live' %}
+                                                        <form method="POST" style="display:inline;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="course_id" value="{{ course.course_id }}">
+                                                            <button type="submit" name="unpublish_course" 
+                                                                    class="btn btn-sm btn-warning-soft me-1" 
+                                                                    title="Unpublish Course"
+                                                                    onclick="return confirm('Are you sure you want to unpublish this course?')">
+                                                                <i class="bi bi-eye-slash"></i>
+                                                            </button>
+                                                        </form>
+                                                        {% else %}
+                                                        <form method="POST" style="display:inline;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="course_id" value="{{ course.course_id }}">
+                                                            <button type="submit" name="publish_course" 
+                                                                    class="btn btn-sm btn-success-soft me-1" 
+                                                                    title="Publish Course"
+                                                                    onclick="return confirm('Are you sure you want to publish this course?')">
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        </form>
+                                                        {% endif %}
+                                                        
+                                                        <!-- Delete Button -->
+                                                        <form method="POST" style="display:inline;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="course_id" value="{{ course.course_id }}">
+                                                            <button type="submit" name="delete_course" 
+                                                                    class="btn btn-sm btn-danger-soft" 
+                                                                    title="Delete Course"
+                                                                    onclick="return confirm('Are you sure you want to delete this course? This action cannot be undone.')">
+                                                                <i class="fas fa-fw fa-times"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center py-5">
+                                                    <div class="text-muted">
+                                                        <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                                                        <p class="mb-0">No courses found. <a href="{% url 'step_1' %}">Create your first course</a></p>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             {% endfor %}

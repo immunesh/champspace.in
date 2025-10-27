@@ -3,13 +3,13 @@
 <html lang="en">
 
 <head>
-    <title>Account Settings - Learn & Earn | ChampSpace</title>
+    <title>Saved Courses - Learn & Earn | ChampSpace</title>
 
     <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="ChampSpace">
-    <meta name="description" content="Account Settings - Manage your password, email, phone and privacy settings">
+    <meta name="description" content="Saved Courses - Access your bookmarked and saved courses">
 
     <!-- Dark mode -->
     <script>
@@ -381,10 +381,10 @@ Page content START -->
                                             <a class="list-group-item" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
                                             <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
                                             <a class="list-group-item" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
-                                            <a class="list-group-item" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item active" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
                                             <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
                                             <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
-                                            <a class="list-group-item active" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
                                             <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% else %}
                                             <!-- Sidebar for Staff (Instructor) -->
@@ -420,266 +420,117 @@ Page content START -->
                     <div class="col-xl-9">
                         <!-- Page heading -->
                         <div class="mb-4">
-                            <h1 class="h3 mb-0"><i class="bi bi-gear text-primary me-2"></i>Account Settings</h1>
-                            <p class="mb-0">Manage your account preferences and security settings</p>
+                            <h1 class="h3 mb-0"><i class="bi bi-bookmark-heart text-danger me-2"></i>Saved Courses</h1>
+                            <p class="mb-0">Access your bookmarked and favorite courses anytime</p>
                         </div>
 
-                        <!-- Success/Error Messages -->
-                        {% if success_message %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>{{ success_message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endif %}
-                        
-                        {% if error_message %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>{{ error_message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endif %}
-
-                        <!-- Account Information -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header bg-primary bg-opacity-10 border-bottom">
-                                <h5 class="mb-0"><i class="bi bi-person-circle text-primary me-2"></i>Account Information</h5>
-                            </div>
-                            <div class="card-body">
-                                <!-- Email Update Form -->
-                                <form method="POST" class="mb-4">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_email">
-                                    <div class="row align-items-end">
-                                        <div class="col-md-8">
-                                            <label class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" name="email" value="{{ request.user.email }}" required>
-                                            <small class="text-muted">This email will be used for notifications and login</small>
+                        <!-- Saved Courses Stats -->
+                        <div class="row g-4 mb-4">
+                            <!-- Total Saved -->
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="card card-body bg-danger bg-opacity-10 border border-danger p-4 h-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h2 class="purecounter mb-0 fw-bold text-danger" data-purecounter-start="0" data-purecounter-end="{{ saved_courses.count|default:0 }}">{{ saved_courses.count|default:0 }}</h2>
+                                            <span class="mb-0 h6 fw-light">Saved Courses</span>
                                         </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary w-100">
-                                                <i class="bi bi-check-lg me-1"></i>Update Email
-                                            </button>
+                                        <div class="icon-lg rounded-circle bg-danger text-white mb-0">
+                                            <i class="fas fa-bookmark fa-fw"></i>
                                         </div>
                                     </div>
-                                </form>
-
-                                <hr class="my-4">
-
-                                <!-- Username Update Form -->
-                                <form method="POST" class="mb-4">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_username">
-                                    <div class="row align-items-end">
-                                        <div class="col-md-8">
-                                            <label class="form-label">Username</label>
-                                            <input type="text" class="form-control" name="username" value="{{ request.user.username }}" required>
-                                            <small class="text-muted">Your unique identifier on the platform</small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary w-100">
-                                                <i class="bi bi-check-lg me-1"></i>Update Username
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <hr class="my-4">
-
-                                <!-- Phone Number Update Form -->
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_phone">
-                                    <div class="row align-items-end">
-                                        <div class="col-md-8">
-                                            <label class="form-label">Phone Number</label>
-                                            <input type="tel" class="form-control" name="phone_number" value="{{ profile.phone_number }}" placeholder="+1 (555) 000-0000">
-                                            <small class="text-muted">For account recovery and important updates</small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary w-100">
-                                                <i class="bi bi-check-lg me-1"></i>Update Phone
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Password & Security -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header bg-danger bg-opacity-10 border-bottom">
-                                <h5 class="mb-0"><i class="bi bi-shield-lock text-danger me-2"></i>Password & Security</h5>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_password">
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Current Password</label>
-                                        <input type="password" class="form-control" name="current_password" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">New Password</label>
-                                        <input type="password" class="form-control" name="new_password" required minlength="8">
-                                        <small class="text-muted">Must be at least 8 characters long</small>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Confirm New Password</label>
-                                        <input type="password" class="form-control" name="confirm_password" required minlength="8">
-                                    </div>
-
-                                    <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
-                                        <i class="bi bi-info-circle-fill fs-5 me-2"></i>
-                                        <div class="small">
-                                            <strong>Password Tips:</strong> Use a mix of letters, numbers, and symbols. Avoid common words or personal information.
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="bi bi-key me-1"></i>Change Password
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Notification Preferences -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header bg-warning bg-opacity-10 border-bottom">
-                                <h5 class="mb-0"><i class="bi bi-bell text-warning me-2"></i>Notification Preferences</h5>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_notifications">
-                                    
-                                    <div class="mb-3">
-                                        <h6 class="mb-3">Email Notifications</h6>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="emailCourses" name="email_courses" checked>
-                                            <label class="form-check-label" for="emailCourses">
-                                                Course updates and new content
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="emailEarnings" name="email_earnings" checked>
-                                            <label class="form-check-label" for="emailEarnings">
-                                                Earnings and payment notifications
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="emailCertificates" name="email_certificates" checked>
-                                            <label class="form-check-label" for="emailCertificates">
-                                                Certificate achievements
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="emailMarketing" name="email_marketing">
-                                            <label class="form-check-label" for="emailMarketing">
-                                                Marketing and promotional emails
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4">
-
-                                    <div class="mb-3">
-                                        <h6 class="mb-3">Push Notifications</h6>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="pushMessages" name="push_messages" checked>
-                                            <label class="form-check-label" for="pushMessages">
-                                                Important messages and alerts
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="pushReminders" name="push_reminders">
-                                            <label class="form-check-label" for="pushReminders">
-                                                Course reminders and deadlines
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-warning">
-                                        <i class="bi bi-check-lg me-1"></i>Save Preferences
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Privacy Settings -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header bg-info bg-opacity-10 border-bottom">
-                                <h5 class="mb-0"><i class="bi bi-shield-check text-info me-2"></i>Privacy Settings</h5>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="update_privacy">
-                                    
-                                    <div class="mb-3">
-                                        <h6 class="mb-3">Profile Visibility</h6>
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="profile_visibility" id="visibilityPublic" value="public" checked>
-                                            <label class="form-check-label" for="visibilityPublic">
-                                                <strong>Public</strong> - Anyone can view your profile
-                                            </label>
-                                        </div>
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="profile_visibility" id="visibilityPrivate" value="private">
-                                            <label class="form-check-label" for="visibilityPrivate">
-                                                <strong>Private</strong> - Only you can view your profile
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <hr class="my-4">
-
-                                    <div class="mb-3">
-                                        <h6 class="mb-3">Data & Privacy</h6>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="showProgress" name="show_progress" checked>
-                                            <label class="form-check-label" for="showProgress">
-                                                Show my course progress to others
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="showCertificates" name="show_certificates" checked>
-                                            <label class="form-check-label" for="showCertificates">
-                                                Display my certificates publicly
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="analytics" name="analytics" checked>
-                                            <label class="form-check-label" for="analytics">
-                                                Allow analytics and performance tracking
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-info">
-                                        <i class="bi bi-check-lg me-1"></i>Update Privacy Settings
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Danger Zone -->
-                        <div class="card shadow border-danger">
-                            <div class="card-header bg-danger bg-opacity-10 border-bottom border-danger">
-                                <h5 class="mb-0 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Danger Zone</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">Delete Account</h6>
-                                        <p class="mb-0 small text-muted">Permanently delete your account and all associated data. This action cannot be undone.</p>
-                                    </div>
-                                    <a href="{% url 'student_delete_account' %}" class="btn btn-danger">
-                                        <i class="bi bi-trash me-1"></i>Delete Account
-                                    </a>
                                 </div>
+                            </div>
+
+                            <!-- In Progress -->
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="card card-body bg-primary bg-opacity-10 border border-primary p-4 h-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h2 class="purecounter mb-0 fw-bold text-primary" data-purecounter-start="0" data-purecounter-end="0">0</h2>
+                                            <span class="mb-0 h6 fw-light">In Progress</span>
+                                        </div>
+                                        <div class="icon-lg rounded-circle bg-primary text-white mb-0">
+                                            <i class="fas fa-spinner fa-fw"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- To Start -->
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="card card-body bg-success bg-opacity-10 border border-success p-4 h-100">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h2 class="purecounter mb-0 fw-bold text-success" data-purecounter-start="0" data-purecounter-end="0">0</h2>
+                                            <span class="mb-0 h6 fw-light">To Start</span>
+                                        </div>
+                                        <div class="icon-lg rounded-circle bg-success text-white mb-0">
+                                            <i class="fas fa-play-circle fa-fw"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Courses List -->
+                        <div class="card shadow">
+                            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-bookmark-heart text-danger me-2"></i>My Saved Courses</h5>
+                                <a href="{% url 'course_grid' %}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-plus-circle me-1"></i>Browse More
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                {% if saved_courses %}
+                                    <div class="row g-4">
+                                        {% for favorite in saved_courses %}
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card border h-100">
+                                                <!-- Course Image -->
+                                                <img src="{{ favorite.course.image.url }}" class="card-img-top" alt="{{ favorite.course.title }}" style="height: 200px; object-fit: cover;">
+                                                <div class="position-absolute top-0 end-0 m-2">
+                                                    <button class="btn btn-sm btn-danger rounded-circle" onclick="removeBookmark({{ favorite.id }})">
+                                                        <i class="bi bi-heart-fill"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="mb-2">{{ favorite.course.title }}</h6>
+                                                    <p class="small text-muted mb-3">
+                                                        <i class="bi bi-person me-1"></i>{{ favorite.course.instructor }}
+                                                    </p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <div>
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                            <span class="small">{{ favorite.course.rating|default:"4.5" }}</span>
+                                                        </div>
+                                                        <span class="badge bg-primary">{{ favorite.course.category }}</span>
+                                                    </div>
+                                                    <div class="d-flex gap-2">
+                                                        <a href="{% url 'course_detail' favorite.course.id %}" class="btn btn-sm btn-primary flex-fill">
+                                                            <i class="bi bi-play-circle me-1"></i>Start Learning
+                                                        </a>
+                                                        <a href="{% url 'course_detail' favorite.course.id %}" class="btn btn-sm btn-light">
+                                                            <i class="bi bi-info-circle"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <!-- Empty State -->
+                                    <div class="text-center py-5">
+                                        <div class="mb-3">
+                                            <i class="bi bi-bookmark-heart fs-1 text-muted"></i>
+                                        </div>
+                                        <h5>No Saved Courses Yet</h5>
+                                        <p class="text-muted mb-4">Start saving your favorite courses to access them quickly!</p>
+                                        <a href="{% url 'course_grid' %}" class="btn btn-primary">
+                                            <i class="bi bi-search me-2"></i>Browse Courses
+                                        </a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
 

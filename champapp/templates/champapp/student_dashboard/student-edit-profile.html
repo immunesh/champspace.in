@@ -133,16 +133,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
                         </li>
-
-                        <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -189,7 +179,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -351,28 +341,27 @@ Page content START -->
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
                                         {% if not request.user.is_staff %}
-                                            <a class="list-group-item active" href="{% url 'student-dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                            <a class="list-group-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-2"></i>My Subscriptions</a>
-                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                            <a class="list-group-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-2"></i>Course Resume</a>
-                                            <a class="list-group-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                            <a class="list-group-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front fa-fw me-2"></i>Payment Info</a>
-                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-cart-check fa-fw me-2"></i>Wishlist</a>
-                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item" href="{% url 'student_mycourses' %}"><i class="bi bi-play-circle fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
+                                            <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
+                                            <a class="list-group-item" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
+                                            <a class="list-group-item" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
+                                            <a class="list-group-item active" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
                                             <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% else %}
                                             <!-- Sidebar for Staff (Instructor) -->
-                                            <a class="list-group-item active" href="instructor-dashboard.html"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
-                                            <a class="list-group-item" href="instructor-manage-course.html"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
-                                            <a class="list-group-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-2"></i>Quiz</a>
-                                            <a class="list-group-item" href="instructor-earning.html"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
-                                            <a class="list-group-item" href="instructor-studentlist.html"><i class="bi bi-people fa-fw me-2"></i>Students</a>
-                                            <a class="list-group-item" href="instructor-order.html"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
-                                            <a class="list-group-item" href="instructor-review.html"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
-                                            <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
-                                            <a class="list-group-item" href="instructor-payout.html"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
-                                            <a class="list-group-item" href="instructor-setting.html"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
+                                            <a class="list-group-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a>
+                                            <a class="list-group-item" href="{% url 'instructor_manage_course' %}"><i class="bi bi-basket fa-fw me-2"></i>My Courses</a>
+                                            <a class="list-group-item" href="{% url 'instructor_earning' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Earnings</a>
+                                            <a class="list-group-item" href="{% url 'instructor_orders' %}"><i class="bi bi-folder-check fa-fw me-2"></i>Orders</a>
+                                            <a class="list-group-item" href="{% url 'instructor_reviews' %}"><i class="bi bi-star fa-fw me-2"></i>Reviews</a>
+                                            <a class="list-group-item" href="{% url 'instructor_student_list' %}"><i class="bi bi-people fa-fw me-2"></i>Students</a>
+                                            <a class="list-group-item active" href="{% url 'edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
+                                            <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
+                                            <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
                                             <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         {% endif %}
                                                                                 <li>
@@ -383,15 +372,6 @@ Page content START -->
                                                 </button>
                                             </form>
                                             </li>
-                                        <!-- Collapse menu -->
-                                        <a class="list-group-item" data-bs-toggle="collapse" href="#collapseauthentication" role="button" aria-expanded="false" aria-controls="collapseauthentication">
-							        		<i class="bi bi-lock fa-fw me-2"></i>Dropdown level
-								        </a>
-                                        <!-- Submenu -->
-                                        <ul class="nav collapse flex-column" id="collapseauthentication" data-bs-parent="#navbar-sidebar">
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                            <li class="nav-item"> <a class="nav-link" href="#">Dropdown item</a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>

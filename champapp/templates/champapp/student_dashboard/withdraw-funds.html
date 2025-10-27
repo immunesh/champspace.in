@@ -191,14 +191,6 @@
                         </li>
 
                         <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -242,7 +234,11 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        {% else %}
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        {% endif %}
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
                         <li>
                             <form method="POST" action="{% url 'logout' %}">
@@ -323,7 +319,7 @@ Page Banner START -->
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
                                                 <i class="bi bi-cash-stack text-success me-1"></i>
-                                                <span class="h6 text-success fw-bold">$0.00</span>
+                                                <span class="h6 text-success fw-bold">₹0.00</span>
                                                 <span class="text-body fw-light">Total Earned</span>
                                             </li>
                                             <li class="list-inline-item me-3 mb-1 mb-sm-0">
@@ -391,7 +387,7 @@ Page content START -->
                                             <a class="list-group-item" href="{% url 'my_earnings' %}"><i class="bi bi-cash-stack fa-fw me-2 text-success"></i>My Earnings</a>
                                             <a class="list-group-item" href="{% url 'revenue_stats' %}"><i class="bi bi-graph-up fa-fw me-2"></i>Revenue Stats</a>
                                             <a class="list-group-item active" href="{% url 'withdraw_funds' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Withdraw Funds</a>
-                                            <a class="list-group-item" href="{% url 'student_bookmarks' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
+                                            <a class="list-group-item" href="{% url 'saved_courses' %}"><i class="bi bi-bookmark-heart fa-fw me-2"></i>Saved Courses</a>
                                             <a class="list-group-item" href="{% url 'certificates' %}"><i class="bi bi-trophy fa-fw me-2"></i>Certificates</a>
                                             <a class="list-group-item" href="{% url 'edit_profile' %}"><i class="bi bi-person-circle fa-fw me-2"></i>Edit Profile</a>
                                             <a class="list-group-item" href="{% url 'student_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
@@ -440,11 +436,11 @@ Page content START -->
                                 <div class="d-sm-flex justify-content-sm-between align-items-center">
                                     <div>
                                         <h6 class="mb-2">Available for Withdrawal</h6>
-                                        <h2 class="purecounter mb-0 fw-bold text-success" data-purecounter-start="0" data-purecounter-end="{{ available_balance|default:0 }}" data-purecounter-delay="200">${{ available_balance|default:0 }}</h2>
-                                        <p class="mb-0 small mt-2">Minimum withdrawal amount: <strong>$50.00</strong></p>
+                                        <h2 class="purecounter mb-0 fw-bold text-success" data-purecounter-start="0" data-purecounter-end="{{ available_balance|default:0 }}" data-purecounter-delay="200">₹{{ available_balance|default:0 }}</h2>
+                                        <p class="mb-0 small mt-2">Minimum withdrawal amount: <strong>₹50.00</strong></p>
                                     </div>
                                     <div class="icon-xl rounded-circle bg-success text-white mb-0">
-                                        <i class="fas fa-hand-holding-usd fa-fw"></i>
+                                        <i class="fas fa-rupee-sign fa-fw"></i>
                                     </div>
                                 </div>
                             </div>
@@ -461,9 +457,9 @@ Page content START -->
                                     
                                     <!-- Amount -->
                                     <div class="mb-4">
-                                        <label class="form-label">Withdrawal Amount ($)</label>
+                                        <label class="form-label">Withdrawal Amount (₹)</label>
                                         <input type="number" class="form-control" name="amount" placeholder="Enter amount" min="50" step="0.01" required>
-                                        <div class="form-text">Minimum: $50.00 | Maximum: ${{ available_balance|default:0 }}</div>
+                                        <div class="form-text">Minimum: ₹50.00 | Maximum: ₹{{ available_balance|default:0 }}</div>
                                     </div>
 
                                     <!-- Payment Method -->
@@ -545,7 +541,7 @@ Page content START -->
                                                 {% for withdrawal in withdrawal_history %}
                                                 <tr>
                                                     <td>{{ withdrawal.date|date:"M d, Y" }}</td>
-                                                    <td class="fw-bold">${{ withdrawal.amount }}</td>
+                                                    <td class="fw-bold">₹{{ withdrawal.amount }}</td>
                                                     <td>
                                                         <i class="{% if withdrawal.method == 'paypal' %}fab fa-paypal text-primary{% else %}bi bi-bank text-success{% endif %} me-1"></i>
                                                         {{ withdrawal.method|title }}
