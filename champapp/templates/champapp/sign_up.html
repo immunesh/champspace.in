@@ -135,6 +135,23 @@
                                 <h2>Sign up for your account!</h2>
                                 <p class="lead mb-4">Nice to see you! Please Sign up with your account.</p>
 
+                                <!-- Alert for instructors -->
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Want to teach instead? <a href="{% url 'instructor-signup' %}" class="alert-link">Sign up as an instructor</a>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Display messages -->
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
                                 <!-- Form START -->
                                 <!-- Form START -->
     <form method="POST">

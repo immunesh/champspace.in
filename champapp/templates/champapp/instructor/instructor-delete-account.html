@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <title>Eduport - Delete Account</title>
+
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Webestica.com">
+    <meta name="description" content="Eduport- LMS, Education and Course Theme">
+    <!--Font Awesome icon library-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+   <!--Bootstrap Icons library-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">  
+
+    <!-- Dark mode -->
+    <script>
+        const storedTheme = localStorage.getItem('theme')
+
+        const getPreferredTheme = () => {
+            if (storedTheme) {
+                return storedTheme
+            }
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
+        }
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme)
+            }
+        }
+
+        setTheme(getPreferredTheme())
+
+        window.addEventListener('DOMContentLoaded', () => {
+            var el = document.querySelector('.theme-icon-active');
+            if (el != 'undefined' && el != null) {
+                const showActiveTheme = theme => {
+                    const activeThemeIcon = document.querySelector('.theme-icon-active use')
+                    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+                    const svgOfActiveBtn = btnToActive.querySelector('.mode-switch use').getAttribute('href')
+
+                    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+                        element.classList.remove('active')
+                    })
+
+                    btnToActive.classList.add('active')
+                    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+                }
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (storedTheme !== 'light' || storedTheme !== 'dark') {
+                        setTheme(getPreferredTheme())
+                    }
+                })
+
+                showActiveTheme(getPreferredTheme())
+
+                document.querySelectorAll('[data-bs-theme-value]')
+                    .forEach(toggle => {
+                        toggle.addEventListener('click', () => {
+                            const theme = toggle.getAttribute('data-bs-theme-value')
+                            localStorage.setItem('theme', theme)
+                            setTheme(theme)
+                            showActiveTheme(theme)
+                        })
+                    })
+
+            }
+        })
+    </script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'instructor/images/favicon.ico' %}">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'instructor/vendor/font-awesome/css/all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'instructor/vendor/bootstrap-icons/bootstrap-icons.css' %}">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'instructor/css/style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- Header START -->
+    <header class="navbar-light navbar-sticky">
+        <!-- Logo Nav START -->
+        <nav class="navbar navbar-expand-xl">
+            <div class="container">
+                <!-- Logo START -->
+                <a class="navbar-brand" href="{% url 'index' %}">
+				<img class="light-mode-item navbar-brand-item" src="{% static 'instructor/images/logo.svg' %}" alt="logo">
+				<img class="dark-mode-item navbar-brand-item" src="{% static 'instructor/images/logo-light.svg' %}" alt="logo">
+			</a>
+                <!-- Logo END -->
+
+                <!-- Responsive navbar toggler -->
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+                <!-- Main navbar START -->
+                <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+                    <!-- Nav Main menu START -->
+                    <ul class="navbar-nav navbar-nav-scroll mx-auto">
+                        <!-- Nav item 1 Home -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        </li>
+
+                        <!-- Nav item 2 Courses -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
+                        </li>
+
+                        <!-- Nav item 3 Account -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                                <li> <a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
+                                <li> <a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- Nav Main menu END -->
+
+                    <!-- Nav Search START -->
+                    <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                        <div class="nav-item w-100">
+                            <form class="position-relative">
+                                <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                                <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Nav Search END -->
+                </div>
+                <!-- Main navbar END -->
+
+                <!-- Profile START -->
+                <div class="dropdown ms-1 ms-lg-0">
+                    <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+					<img class="avatar-img rounded-circle" src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/images/avatar/01.jpg' %}{% endif %}" alt="avatar">
+				</a>
+                    <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                        <!-- Profile info -->
+                        <li class="px-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <!-- Avatar -->
+                                <div class="avatar me-3">
+                                    <img class="avatar-img rounded-circle border border-white border-3 shadow" 
+                                             src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/images/avatar/01.jpg' %}{% endif %}" 
+                                             alt="Profile Image">
+                                </div>
+                                <div>
+                                    <a class="h6" href="#">{{ request.user.get_full_name|default:request.user.email }}</a>
+                                    <p class="small m-0">{{ request.user.email }}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <!-- Links -->
+                        <li><a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                        <li>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
+                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                </button>
+                            </form>
+                            </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <!-- Dark mode options START -->
+                        <li>
+                            <div class="bg-light dark-mode-switch theme-icon-active d-flex align-items-center p-1 rounded mt-2">
+                                <button type="button" class="btn btn-sm mb-0" data-bs-theme-value="light">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+									<use href="#"></use>
+								</svg> Light
+							</button>
+                                <button type="button" class="btn btn-sm mb-0" data-bs-theme-value="dark">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"/>
+									<path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+									<use href="#"></use>
+								</svg> Dark
+							</button>
+                                <button type="button" class="btn btn-sm mb-0 active" data-bs-theme-value="auto">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+									<use href="#"></use>
+								</svg> Auto
+							</button>
+                            </div>
+                        </li>
+                        <!-- Dark mode options END-->
+                    </ul>
+                </div>
+                <!-- Profile START -->
+            </div>
+        </nav>
+        <!-- Logo Nav END -->
+    </header>
+    <!-- Header END -->
+
+    <!-- **************** MAIN CONTENT START **************** -->
+    <main>
+
+        <!-- =======================
+Page Banner START -->
+        <section class="pt-0">
+            <!-- Modern Profile Header with Gradient -->
+            <div class="container-fluid" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 30px 0;">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <!-- Profile Picture -->
+                        <div class="col-auto">
+                            <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/images/avatar/01.jpg' %}{% endif %}" 
+                                 alt="Profile Picture" 
+                                 class="rounded-circle border border-white border-3"
+                                 style="width: 120px; height: 120px; object-fit: cover;">
+                        </div>
+                        
+                        <!-- Profile Info -->
+                        <div class="col">
+                            <h2 class="text-white mb-2">
+                                {{ profile.email|default:request.user.email }}
+                                <i class="bi bi-patch-check-fill text-success ms-2"></i>
+                            </h2>
+                            
+                            <!-- Stats Badges -->
+                            <div class="d-flex flex-wrap gap-3 mb-3">
+                                <div class="bg-white bg-opacity-10 rounded px-3 py-2">
+                                    <i class="bi bi-book text-white me-2"></i>
+                                    <span class="text-white fw-semibold">{{ courses_created|default:0 }} Courses</span>
+                                </div>
+                                <div class="bg-white bg-opacity-10 rounded px-3 py-2">
+                                    <i class="bi bi-currency-dollar text-white me-2"></i>
+                                    <span class="text-white fw-semibold">${{ total_earnings|default:0 }} Earnings</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Create Course Button -->
+                            <a href="{% url 'step_1' %}" class="btn btn-success btn-lg">
+                                <i class="bi bi-plus-circle me-2"></i>Create New Course
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Profile banner END -->
+            
+            <!-- Advanced filter responsive toggler START -->
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12 d-xl-none d-flex justify-content-between align-items-center">
+                        <a class="h6 mb-0 fw-bold" href="#">Menu</a>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Advanced filter responsive toggler END -->
+        </section>
+        <!-- =======================
+Page Banner END -->
+
+        <!-- =======================
+Page content START -->
+        <section class="pt-0">
+            <div class="container">
+                <div class="row">
+
+                    <!-- Left sidebar START -->
+                    <div class="col-xl-3">
+                        <!-- Responsive offcanvas body START -->
+                        <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                            <!-- Offcanvas header -->
+                            <div class="offcanvas-header bg-light">
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Instructor Menu</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                            </div>
+                            <!-- Offcanvas body -->
+                            <div class="offcanvas-body p-3 p-xl-0">
+                                <div class="card bg-light border rounded-3 p-0">
+                                    <!-- Dashboard menu -->
+                                    <div class="list-group list-group-borderless">
+                                        <a class="list-group-item" href="{% url 'instructor_dashboard' %}">
+                                            <i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_manage_course' %}">
+                                            <i class="bi bi-basket fa-fw me-2"></i>My Courses
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_quiz' %}">
+                                            <i class="bi bi-question-diamond fa-fw me-2"></i>Quiz
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_earning' %}">
+                                            <i class="bi bi-graph-up fa-fw me-2"></i>Earnings
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor-student-list' %}">
+                                            <i class="bi bi-people fa-fw me-2"></i>Students
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_orders' %}">
+                                            <i class="bi bi-folder-check fa-fw me-2"></i>Orders
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_reviews' %}">
+                                            <i class="bi bi-star fa-fw me-2"></i>Reviews
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_edit_profile' %}">
+                                            <i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_payout' %}">
+                                            <i class="bi bi-wallet2 fa-fw me-2"></i>Payouts
+                                        </a>
+                                        <a class="list-group-item" href="{% url 'instructor_settings' %}">
+                                            <i class="bi bi-gear fa-fw me-2"></i>Settings
+                                        </a>
+                                        <a class="list-group-item active" href="{% url 'instructor_delete_account' %}">
+                                            <i class="bi bi-trash fa-fw me-2"></i>Delete Profile
+                                        </a>
+                                        <a class="list-group-item text-danger bg-danger-soft-hover" href="{% url 'logout' %}">
+                                            <i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Responsive offcanvas body END -->
+                    </div>
+                    <!-- Left sidebar END -->
+
+                    <!-- Main content START -->
+                    <div class="col-xl-9">
+                        <!-- Display messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <!-- Title and select START -->
+                        <div class="card border rounded-3 shadow-sm mb-0">
+                            <!-- Card header -->
+                            <div class="card-header bg-transparent border-bottom">
+                                <h3 class="card-header-title mb-0 text-danger">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Delete Instructor Account
+                                </h3>
+                            </div>
+                            <!-- Card body -->
+                            <div class="card-body p-4">
+                                <div class="alert alert-warning border-warning" role="alert">
+                                    <h5 class="alert-heading">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>Warning: This action is permanent!
+                                    </h5>
+                                    <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                                </div>
+                                
+                                <h5 class="mb-3">Before you go...</h5>
+                                <ul class="mb-4">
+                                    <li class="mb-2"><i class="bi bi-download text-primary me-2"></i>Take a backup of your data <a href="#" class="fw-bold">Here</a></li>
+                                    <li class="mb-2"><i class="bi bi-x-circle text-danger me-2"></i>If you delete your account, you will lose <strong>all your data</strong> including your courses.</li>
+                                    <li class="mb-2"><i class="bi bi-trash text-danger me-2"></i><strong>All courses you created will be permanently deleted.</strong></li>
+                                    <li class="mb-2"><i class="bi bi-people text-warning me-2"></i>Students enrolled in your courses will lose access to them.</li>
+                                </ul>
+                                
+                                <div class="bg-light p-4 rounded-3 mb-4">
+                                    <h6 class="mb-3">Account Deletion Details</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-book fs-4 text-primary me-3"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Total Courses</small>
+                                                    <strong class="fs-5">{{ courses_created|default:0 }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-currency-dollar fs-4 text-success me-3"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Total Earnings</small>
+                                                    <strong class="fs-5">${{ total_earnings|default:0 }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form method="POST" action="{% url 'instructor_delete_account' %}" id="deleteForm">
+                                    {% csrf_token %}
+                                    <div class="form-check form-check-md my-4 p-3 bg-danger bg-opacity-10 rounded-3">
+                                        <input class="form-check-input" type="checkbox" value="confirm" id="deleteaccountCheck" name="confirm" required>
+                                        <label class="form-check-label fw-bold text-danger" for="deleteaccountCheck">
+                                            <i class="bi bi-check-circle me-2"></i>Yes, I understand and want to permanently delete my instructor account and all associated courses
+                                        </label>
+                                    </div>
+                                
+                                    <div class="d-flex gap-3 justify-content-end">
+                                        <!-- Button to keep the account -->
+                                        <a href="{% url 'instructor_dashboard' %}" class="btn btn-success btn-lg">
+                                            <i class="bi bi-arrow-left me-2"></i>Keep my account
+                                        </a>
+                                    
+                                        <!-- Submit button to delete the account -->
+                                        <button type="submit" class="btn btn-danger btn-lg" id="deleteButton">
+                                            <i class="bi bi-trash me-2"></i>Delete my account permanently
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Title and select END -->
+                    </div>
+                    <!-- Main content END -->
+                </div>
+            </div>
+        </section>
+        <!-- =======================
+Page content END -->
+
+    </main>
+    <!-- **************** MAIN CONTENT END **************** -->
+
+    <!-- =======================
+Footer START -->
+    <footer class="bg-dark p-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <!-- Widget -->
+                <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                    <!-- Logo START -->
+                    <a href="{% url 'index' %}"> <img class="h-20px" src="{% static 'instructor/images/logo-light.svg' %}" alt="logo"> </a>
+                </div>
+
+                <!-- Widget -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="text-center text-white text-primary-hover">
+                        Copyrights ©2024 Eduport.
+                    </div>
+                </div>
+                <!-- Widget -->
+                <div class="col-md-4">
+                    <!-- Rating -->
+                    <ul class="list-inline mb-0 text-center text-md-end">
+                        <li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-facebook"></i></a></li>
+                        <li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-instagram"></i></a></li>
+                        <li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-linkedin-in"></i></a></li>
+                        <li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-twitter"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- =======================
+Footer END -->
+
+    <!-- Back to top -->
+    <div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'instructor/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Template Functions -->
+    <script src="{% static 'instructor/js/functions.js' %}"></script>
+    <script>
+        document.getElementById('deleteButton').addEventListener('click', function(event) {
+            const checkbox = document.getElementById('deleteaccountCheck');
+            if (checkbox.checked) {
+                if (!confirm("Are you sure you want to delete your instructor account? This action cannot be undone and all your courses will be permanently deleted.")) {
+                    event.preventDefault(); // Cancel the form submission
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

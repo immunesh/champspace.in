@@ -104,7 +104,7 @@
         <nav class="navbar navbar-expand-xl">
             <div class="container">
                 <!-- Logo START -->
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{% url 'index' %}">
 				<img class="light-mode-item navbar-brand-item" src="{% static 'instructor/instructor-studentlist/images/logo.svg' %}" alt="logo">
 				<img class="dark-mode-item navbar-brand-item" src="{% static 'instructor/instructor-studentlist/images/logo-light.svg' %}" alt="logo">
 			</a>
@@ -133,16 +133,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
                         </li>
-
-                        <!-- Nav item 3 Account -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                            <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                                <li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a> </li>
-                                <li> <a class="dropdown-item" href="student-dashboard.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a> </li>
-                                <li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
-                            </ul>
-                        </li>
                     </ul>
                     <!-- Nav Main menu END -->
 
@@ -164,19 +154,23 @@
                 <!-- Profile START -->
                 <div class="dropdown ms-1 ms-lg-0">
                     <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-					<img class="avatar-img rounded-circle" src="{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}" alt="avatar">
-				</a>
+                        <img class="avatar-img rounded-circle" 
+                             src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}{% endif %}" 
+                             alt="avatar">
+                    </a>
+                
+                
                     <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
                         <!-- Profile info -->
                         <li class="px-3 mb-3">
                             <div class="d-flex align-items-center">
                                 <!-- Avatar -->
                                 <div class="avatar me-3">
-                                    <img class="avatar-img rounded-circle shadow" src="{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}" alt="avatar">
+                                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}{% endif %}" alt="Profile Image" class="rounded-circle me-2" width="30" height="30">
                                 </div>
                                 <div>
-                                    <a class="h6" href="#">Lori Ferguson</a>
-                                    <p class="small m-0">example@gmail.com</p>
+                                    <a class="h6" href="#">{{ profile.full_name }}</a>
+                                    <p class="small m-0">{{ request.user.email }}</p>
                                 </div>
                             </div>
                         </li>
@@ -184,9 +178,16 @@
                             <hr class="dropdown-divider">
                         </li>
                         <!-- Links -->
-                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        <li><a class="dropdown-item" href="{% url 'instructor_dashboard' %}"><i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-                        <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                        <li>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link" style="border: none; background: transparent;">
+                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                </button>
+                            </form>
+                            </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -230,52 +231,59 @@
         <!-- =======================
 Main Banner START -->
         <section class="pt-0">
-            <!-- Main banner background image -->
-            <div class="container-fluid px-0">
-                <div class="bg-blue h-100px h-md-200px rounded-0" style="background:url({% static 'instructor/instructor-studentlist/images/pattern/04.png' %}) no-repeat center center; background-size:cover;">
-                </div>
-            </div>
-            <div class="container mt-n4">
-                <div class="row">
-                    <!-- Profile banner START -->
-                    <div class="col-12">
-                        <div class="card bg-transparent card-body p-0">
-                            <div class="row d-flex justify-content-between">
+            <!-- Profile Info Bar -->
+            <div class="container-fluid" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 30px 0;">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <!-- Profile Picture and Info -->
+                        <div class="col-lg-8 col-md-7">
+                            <div class="d-flex align-items-center">
                                 <!-- Avatar -->
-                                <div class="col-auto mt-4 mt-md-0">
-                                    <div class="avatar avatar-xxl mt-n3">
-                                        <img class="avatar-img rounded-circle border border-white border-3 shadow" src="{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}" alt="">
-                                    </div>
+                                <div class="avatar avatar-xxl me-3" style="width: 120px; height: 120px;">
+                                    <img class="rounded-circle border border-white border-3" 
+                                         src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'instructor/instructor-studentlist/images/avatar/01.jpg' %}{% endif %}" 
+                                         alt="avatar"
+                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <!-- Profile info -->
-                                <div class="col d-md-flex justify-content-between align-items-center mt-4">
-                                    <div>
-                                        <h1 class="my-1 fs-4">Lori Stevens <i class="bi bi-patch-check-fill text-info small"></i></h1>
-                                        <ul class="list-inline mb-0">
-                                            <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-star text-warning me-2"></i>4.5/5.0</li>
-                                            <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-user-graduate text-orange me-2"></i>12k Enrolled Students</li>
-                                            <li class="list-inline-item h6 fw-light me-3 mb-1 mb-sm-0"><i class="fas fa-book text-purple me-2"></i>25 Courses</li>
-                                        </ul>
-                                    </div>
-                                    <!-- Button -->
-                                    <div class="d-flex align-items-center mt-2 mt-md-0">
-                                        <a href="instructor-create-course.html" class="btn btn-success mb-0">Create a course</a>
+                                <!-- Profile Info -->
+                                <div class="text-white">
+                                    <h2 class="mb-2 text-white">
+                                        {{ request.user.email }} 
+                                        <i class="bi bi-patch-check-fill text-info"></i>
+                                    </h2>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-book me-2"></i>
+                                            <span>{{ profile.courses_created }} Courses</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-wallet me-2"></i>
+                                            <span>₹{{ profile.total_earnings|floatformat:2|default:"0.00" }} Available</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Profile banner END -->
-
-                        <!-- Advanced filter responsive toggler START -->
-                        <!-- Divider -->
-                        <hr class="d-xl-none">
-                        <div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
-                            <a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
-                            <button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-						<i class="fas fa-sliders-h"></i>
-					</button>
+                        <!-- Create Course Button -->
+                        <div class="col-lg-4 col-md-5 text-md-end mt-3 mt-md-0">
+                            <a href="{% url 'step_1' %}" class="btn btn-success btn-lg px-4">
+                                <i class="fas fa-plus-circle me-2"></i>Create New Course
+                            </a>
                         </div>
-                        <!-- Advanced filter responsive toggler END -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Toggle for Mobile -->
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-xl-none d-flex justify-content-between align-items-center">
+                            <a class="h6 mb-0 fw-bold" href="#">Menu</a>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                                <i class="fas fa-sliders-h"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -312,7 +320,7 @@ Inner part START -->
                                         <a class="list-group-item" href="{% url 'instructor_edit_profile' %}"><i class="bi bi-pencil-square fa-fw me-2"></i>Edit Profile</a>
                                         <a class="list-group-item" href="{% url 'instructor_payout' %}"><i class="bi bi-wallet2 fa-fw me-2"></i>Payouts</a>
                                         <a class="list-group-item" href="{% url 'instructor_settings' %}"><i class="bi bi-gear fa-fw me-2"></i>Settings</a>
-                                        <a class="list-group-item" href="{% url 'student_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
+                                        <a class="list-group-item" href="{% url 'instructor_delete_account' %}"><i class="bi bi-trash fa-fw me-2"></i>Delete Profile</a>
                                         <li>
                                             <form method="POST" action="{% url 'logout' %}">
                                                 {% csrf_token %}

@@ -10,7 +10,7 @@ from .views import role_based_redirect
 from .views import instructor_dashboard
 from .views import admin_student_list
 from .views import course_list_view
-from champapp.views import course_list_view, delete_course_view, course_detail_adv
+from champapp.views import course_list_view, delete_course_view, course_detail_adv, course_detail_modern
 from champapp.views import edit_quiz, instructor_quiz
 from .views import create_payment, verify_payment
 from .views import get_course_content
@@ -34,6 +34,7 @@ urlpatterns = [
     path('join-now/', views.join_now, name='join_now'),
     path('403/', views.custom_403_view, name='403'),
     path('sign-up/', views.sign_up, name='sign-up'),
+    path('instructor/sign-up/', views.instructor_signup, name='instructor-signup'),
     path('sign-in/', views.sign_in, name='sign-in'),  
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('forgot-password/', views.forgot_password, name='forgot-password'),
@@ -45,6 +46,7 @@ urlpatterns = [
     #############################testttttttttttttttt##############
     path('dashboard/class-course-preview/', views.class_course_preview, name='class-course-preview'),    
     path('course-detail-adv/<int:pk>/', views.course_detail_adv, name='course_detail_adv'),
+    path('course-detail-modern/<int:pk>/', views.course_detail_modern, name='course_detail_modern'),
     path('role-based-redirect/', role_based_redirect, name='role_based_redirect'),
     path('instructor/dashboard/', instructor_dashboard, name='instructor_dashboard'),
     path('instructor/earning/', instructor_earning, name='instructor_earning'),
@@ -81,6 +83,7 @@ urlpatterns = [
     path('toggle-favorite/<int:course_id>/', views.toggle_favorite, name='toggle_favorite'),
     path("student/mycourses/", views.student_mycourses, name="student_mycourses"),
     path('student/delete-account/', views.student_delete_account, name='student_delete_account'),
+    path('instructor/delete-account/', views.instructor_delete_account, name='instructor_delete_account'),
     path('instructor/manage-course/', views.instructor_manage_course, name='instructor_manage_course'),
     path('instructor/quiz/', views.instructor_quiz, name='instructor_quiz'),
     path('quiz/edit/<int:quiz_id>/', views.edit_quiz, name='edit_quiz'),

@@ -372,6 +372,9 @@ class Course1(models.Model):  # Renamed to Course1
         default=PENDING,
     )
 
+    class Meta:
+        verbose_name = "Course"
+        verbose_name_plural = "All Courses"
 
     def __str__(self):
         return self.name
@@ -534,3 +537,292 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.question
+
+
+############################## AD REVENUE MODELS ##############################
+
+class AdImpression(models.Model):
+    """
+    Tracks each ad view/impression during course watching
+    Similar to how YouTube tracks ad views
+    """
+    PLATFORM_CHOICES = [
+        ('google_adsense', 'Google AdSense'),
+        ('facebook_ads', 'Facebook Audience Network'),
+        ('other', 'Other'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ad_impressions')
+    course = models.ForeignKey('Course1', on_delete=models.CASCADE, related_name='ad_impressions')
+    lecture = models.ForeignKey('Lecture', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # Ad details
+    ad_platform = models.CharField(max_length=50, choices=PLATFORM_CHOICES, default='google_adsense')
+    ad_unit_id = models.CharField(max_length=100, blank=True)  # AdSense unit ID
+    
+    # Revenue data
+    estimated_revenue = models.DecimalField(max_digits=10, decimal_places=4, default=0.0000)  # Revenue per impression
+    cpm_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Cost per 1000 impressions
+    
+    # Tracking
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    
+    # Quality metrics
+    is_valid = models.BooleanField(default=True)  # Filter out invalid/bot clicks
+    view_duration = models.IntegerField(default=0)  # Seconds ad was visible
+    
+    class Meta:
+        ordering = ['-viewed_at']
+        indexes = [
+            models.Index(fields=['-viewed_at']),
+            models.Index(fields=['user', 'course']),
+        ]
+    
+    def __str__(self):
+        return f"{self.ad_platform} - {self.user.username} - ₹{self.estimated_revenue}"
+
+
+class AdRevenue(models.Model):
+    """
+    Daily aggregated ad revenue for platform
+    Syncs with Google AdSense and Facebook Ads API
+    """
+    date = models.DateField(unique=True)
+    
+    # Platform-wise revenue
+    google_adsense_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    facebook_ads_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    total_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    # Metrics
+    total_impressions = models.IntegerField(default=0)
+    total_clicks = models.IntegerField(default=0)
+    average_cpm = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    # Sync status
+    is_synced = models.BooleanField(default=False)
+    last_synced_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-date']
+        verbose_name_plural = "Ad Revenues"
+    
+    def __str__(self):
+        return f"{self.date} - ₹{self.total_revenue}"
+
+
+class Earning(models.Model):
+    """
+    Tracks earnings for both students and instructors from ad revenue
+    """
+    EARNING_TYPE_CHOICES = [
+        ('student_watch', 'Student Watch Time'),
+        ('instructor_course', 'Instructor Course Content'),
+        ('referral_bonus', 'Referral Bonus'),
+        ('completion_bonus', 'Course Completion Bonus'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('paid', 'Paid'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='earnings')
+    course = models.ForeignKey('Course1', on_delete=models.CASCADE, related_name='earnings')
+    
+    # Earning details
+    earning_type = models.CharField(max_length=50, choices=EARNING_TYPE_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(blank=True)
+    
+    # Ad impression reference (if applicable)
+    ad_impressions = models.ManyToManyField(AdImpression, blank=True, related_name='earnings')
+    
+    # Status tracking
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    earned_at = models.DateTimeField(auto_now_add=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    
+    # Related withdrawal (when paid)
+    withdrawal = models.ForeignKey('Withdrawal', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-earned_at']
+        indexes = [
+            models.Index(fields=['user', 'status']),
+            models.Index(fields=['-earned_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.earning_type} - ₹{self.amount}"
+
+
+class UserWallet(models.Model):
+    """
+    Virtual wallet for each user to track their balance
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wallet')
+    
+    # Balance tracking
+    total_earned = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    available_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    pending_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    withdrawn_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    # Statistics
+    total_watch_time = models.IntegerField(default=0)  # Minutes
+    total_courses_watched = models.IntegerField(default=0)
+    total_ad_impressions = models.IntegerField(default=0)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "User Wallet"
+        verbose_name_plural = "User Wallets"
+    
+    def __str__(self):
+        return f"{self.user.username} - Balance: ₹{self.available_balance}"
+    
+    def update_balance(self):
+        """Recalculate balance from approved earnings"""
+        from django.db.models import Sum
+        
+        # Calculate total approved earnings
+        approved_earnings = self.user.earnings.filter(status='approved', paid_at__isnull=True).aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+        
+        # Calculate pending earnings
+        pending_earnings = self.user.earnings.filter(status='pending').aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+        
+        # Calculate withdrawn amount
+        withdrawn = self.user.earnings.filter(status='paid').aggregate(
+            total=Sum('amount')
+        )['total'] or 0
+        
+        self.available_balance = approved_earnings
+        self.pending_balance = pending_earnings
+        self.withdrawn_amount = withdrawn
+        self.total_earned = approved_earnings + pending_earnings + withdrawn
+        self.save()
+
+
+class Withdrawal(models.Model):
+    """
+    Withdrawal requests from users
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('rejected', 'Rejected'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    PAYMENT_METHOD_CHOICES = [
+        ('bank_transfer', 'Bank Transfer'),
+        ('upi', 'UPI'),
+        ('paytm', 'Paytm'),
+        ('paypal', 'PayPal'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='withdrawals')
+    
+    # Amount details
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    processing_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    net_amount = models.DecimalField(max_digits=10, decimal_places=2)  # After fee
+    
+    # Payment details
+    payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES)
+    bank_name = models.CharField(max_length=100, blank=True)
+    account_number = models.CharField(max_length=50, blank=True)
+    ifsc_code = models.CharField(max_length=20, blank=True)
+    upi_id = models.CharField(max_length=100, blank=True)
+    
+    # Status and tracking
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    transaction_id = models.CharField(max_length=100, blank=True)  # Bank/UPI transaction ID
+    
+    # Notes
+    user_notes = models.TextField(blank=True)
+    admin_notes = models.TextField(blank=True)
+    rejection_reason = models.TextField(blank=True)
+    
+    # Timestamps
+    requested_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    
+    # Processed by admin
+    processed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_withdrawals')
+    
+    class Meta:
+        ordering = ['-requested_at']
+        indexes = [
+            models.Index(fields=['user', 'status']),
+            models.Index(fields=['-requested_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - ₹{self.amount} - {self.status}"
+    
+    def save(self, *args, **kwargs):
+        # Calculate net amount after processing fee
+        if not self.net_amount:
+            self.net_amount = self.amount - self.processing_fee
+        super().save(*args, **kwargs)
+
+
+class RevenueShare(models.Model):
+    """
+    Defines revenue sharing percentages
+    Can be customized per course or globally
+    """
+    # Revenue split configuration
+    student_share_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=90.00)  # 90% to students
+    instructor_share_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)  # 10% to instructors
+    platform_share_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)  # 0% platform fee
+    
+    # Optional: Per-course basis
+    course = models.OneToOneField('Course1', on_delete=models.CASCADE, null=True, blank=True, related_name='revenue_share')
+    
+    # Default configuration
+    is_default = models.BooleanField(default=False)
+    
+    # Earnings calculation rules
+    minimum_watch_time = models.IntegerField(default=5)  # Minimum minutes to earn
+    earnings_per_minute = models.DecimalField(max_digits=10, decimal_places=4, default=0.5000)  # ₹0.50 per minute
+    completion_bonus = models.DecimalField(max_digits=10, decimal_places=2, default=100.00)  # ₹100 on completion
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Revenue Share Configuration"
+        verbose_name_plural = "Revenue Share Configurations"
+    
+    def __str__(self):
+        if self.course:
+            return f"Revenue Share for {self.course.name}"
+        return "Default Revenue Share"
+    
+    def clean(self):
+        """Validate that percentages add up to 100"""
+        total = self.student_share_percentage + self.instructor_share_percentage + self.platform_share_percentage
+        if total != 100:
+            from django.core.exceptions import ValidationError
+            raise ValidationError(f"Revenue shares must add up to 100%. Currently: {total}%")
+

@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.name }} - ChampSpace</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #5624d0;
+            --secondary-color: #a435f0;
+            --text-dark: #1c1d1f;
+            --text-muted: #6a6f73;
+            --border-color: #d1d7dc;
+            --hover-bg: #f7f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            background-color: #f8f9fa;
+        }
+        
+        /* Hero Section */
+        .course-hero {
+            background: linear-gradient(135deg, #1c1d1f 0%, #2d2f31 100%);
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .course-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .course-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #e3e3e3;
+        }
+        
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        .star-rating {
+            color: #f69c08;
+            font-size: 0.9rem;
+        }
+        
+        /* Sticky Sidebar */
+        .course-sidebar {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .price-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+        }
+        
+        .preview-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .preview-video img, .preview-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .price-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .current-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .original-price {
+            font-size: 1.2rem;
+            text-decoration: line-through;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+        
+        .discount-badge {
+            background: #eceb98;
+            color: var(--text-dark);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        
+        .btn-enroll {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            transition: background 0.3s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-enroll:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-wishlist {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--text-dark);
+            background: white;
+            color: var(--text-dark);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .btn-wishlist:hover {
+            background: var(--text-dark);
+            color: white;
+        }
+        
+        .course-includes {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .include-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .include-item i {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content */
+        .course-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        /* What You'll Learn */
+        .learning-outcomes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .learning-item {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+        
+        .learning-item i {
+            color: var(--text-dark);
+            margin-top: 0.25rem;
+        }
+        
+        /* Curriculum */
+        .curriculum-section {
+            margin-bottom: 1rem;
+        }
+        
+        .lecture-header {
+            background: var(--hover-bg);
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .lecture-header:hover {
+            background: #e8e9eb;
+        }
+        
+        .lecture-title {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .lecture-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .topics-list {
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+        
+        .topic-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+        
+        .topic-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topic-duration {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .preview-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Instructor */
+        .instructor-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        
+        .instructor-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .instructor-info h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructor-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+        }
+        
+        /* Reviews */
+        .review-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* FAQ */
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+        
+        .faq-question {
+            background: var(--hover-bg);
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            background: white;
+        }
+        
+        /* Requirements */
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .requirements-list li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .requirements-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .course-title {
+                font-size: 1.5rem;
+            }
+            
+            .course-sidebar {
+                position: static;
+                margin-top: 2rem;
+            }
+            
+            .learning-outcomes {
+                grid-template-columns: 1fr;
+            }
+            
+            .instructor-card {
+                flex-direction: column;
+            }
+        }
+        
+        .collapse-icon {
+            transition: transform 0.3s;
+        }
+        
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* Navbar Styles */
+        .navbar-light {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .navbar-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+
+        .navbar {
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand-item {
+            height: 40px;
+            width: auto;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: color 0.2s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .dropdown-menu {
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+        }
+
+        .navbar-nav .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .navbar-nav .dropdown-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--primary-color);
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler-animation {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .navbar-toggler-animation span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-dark);
+            transition: all 0.3s;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dropdown-animation {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Adjust dropdown submenu */
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-left: 0.1rem;
+        }
+
+        /* Advertisement Placeholder Styles */
+        .ad-placeholder {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            border: 2px dashed #d1d7dc;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #6a6f73;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ad-placeholder:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ad-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .ad-placeholder:hover::before {
+            left: 100%;
+        }
+
+        .ad-placeholder i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .ad-placeholder h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .ad-placeholder p {
+            font-size: 0.9rem;
+            margin: 0;
+            opacity: 0.7;
+        }
+
+        /* Different ad sizes */
+        .ad-leaderboard {
+            height: 120px;
+        }
+
+        .ad-banner {
+            height: 250px;
+        }
+
+        .ad-rectangle {
+            height: 300px;
+        }
+
+        .ad-skyscraper {
+            height: 600px;
+        }
+
+        .ad-square {
+            height: 250px;
+        }
+
+        /* Sticky ad */
+        .ad-sticky {
+            position: sticky;
+            top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header START -->
+    <header class="navbar-light navbar-sticky header-static">
+        <!-- Nav START -->
+        <nav class="navbar navbar-expand-xl">
+            <div class="container-fluid px-3 px-xl-5">
+                <!-- Logo START -->
+                <a class="navbar-brand" href="{% url 'index' %}">
+				<img class="light-mode-item navbar-brand-item" src="{% static 'index/images/logo.svg' %}" alt="logo">
+				<img class="dark-mode-item navbar-brand-item" src="{% static 'index/images/logo-light.svg' %}" alt="logo">
+			</a>
+                <!-- Logo END -->
+
+                <!-- Responsive navbar toggler -->
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+                <!-- Main navbar START -->
+                <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+                    <!-- Nav Main menu START -->
+                    <ul class="navbar-nav navbar-nav-scroll me-auto">
+                        <!-- Nav item 1 Home -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'index' %}">Home</a>
+                        </li>
+
+                        <!-- Nav item 2 Courses -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'course_grid' %}">Courses</a>
+                        </li>
+
+                        <!-- Nav item 3 How it Works -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'how_it_works' %}">How it Works</a>
+                        </li>
+
+                        <!-- Nav item 5 Join Now -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'join_now' %}">Join Now</a>
+                        </li>
+                    </ul>
+                    <!-- Nav Main menu END -->
+
+                    <!-- Nav Search START -->
+                    <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                        <div class="nav-item w-100">
+                            <form class="position-relative">
+                                <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                                <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Nav Search END -->
+                </div>
+                <!-- Main navbar END -->
+
+                <!-- Profile START -->
+                <div class="dropdown ms-1 ms-lg-0">
+                    <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img class="avatar-img rounded-circle" 
+                        src="{% if profile and profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'index/images/avatar/01.jpg' %}{% endif %}" 
+                        alt="avatar">
+				</a>
+                    <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                        <!-- Profile info -->
+                        <li class="px-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <!-- Avatar -->
+                                <div class="avatar me-3">
+                                    <img src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'student/student-edit-profile/images/avatar/07.jpg' %}{% endif %}" alt="Profile Image" class="rounded-circle me-2" width="30" height="30">
+                                </div>
+                                <div>
+                                    <a class="h6" href="#">{{ profile.full_name }}</a>
+                                    <p class="small m-0">{{ request.user.email }}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <!-- Links -->
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'student-dashboard' %}"><i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                        <li>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link">
+                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                </button>
+                            </form>
+                        </li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <!-- Dark mode options START -->
+                        <li>
+                            <div class="bg-light dark-mode-switch theme-icon-active d-flex align-items-center p-1 rounded mt-2">
+                                <button type="button" class="btn btn-sm mb-0" data-bs-theme-value="light">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+									<use href="#"></use>
+								</svg> Light
+							</button>
+                                <button type="button" class="btn btn-sm mb-0" data-bs-theme-value="dark">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"/>
+									<path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+									<use href="#"></use>
+								</svg> Dark
+							</button>
+                                <button type="button" class="btn btn-sm mb-0 active" data-bs-theme-value="auto">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half fa-fw mode-switch" viewBox="0 0 16 16">
+									<path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+									<use href="#"></use>
+								</svg> Auto
+							</button>
+                            </div>
+                        </li>
+                        <!-- Dark mode options END-->
+                    </ul>
+                </div>
+                <!-- Profile START -->
+            </div>
+        </nav>
+        <!-- Nav END -->
+    </header>
+    <!-- Header END -->
+
+    <!-- Course Hero Section -->
+    <section class="course-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb text-white-50">
+                            <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white-50">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'course_grid' %}" class="text-white-50">Courses</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">{{ course.category }}</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="course-title">{{ course.name }}</h1>
+                    <p class="course-subtitle">{{ course.short_description }}</p>
+                    
+                    <div class="course-meta">
+                        {% if course.is_featured %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-star-fill"></i> Bestseller
+                        </span>
+                        {% endif %}
+                        
+                        <div class="rating-badge">
+                            <strong>4.5</strong>
+                            <span class="star-rating">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </span>
+                            <span>(500 ratings)</span>
+                        </div>
+                        
+                        <div class="text-white-50">
+                            <i class="bi bi-people-fill"></i> {{ enrolled_count }} students enrolled
+                        </div>
+                        
+                        <div class="text-white-50">
+                            <i class="bi bi-globe"></i> {{ course.languages }}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-white-50">
+                        Created by <strong class="text-white">{{ course.creator.get_full_name|default:course.creator.username }}</strong>
+                    </div>
+                    
+                    <div class="mt-2 text-white-50">
+                        <i class="bi bi-clock"></i> Last updated {{ course.created_at|date:"F Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Leaderboard Ad -->
+    <section class="py-3 bg-light">
+        <div class="container">
+            <div class="ad-placeholder ad-leaderboard">
+                <i class="bi bi-badge-ad"></i>
+                <h4>Advertisement Space</h4>
+                <p>728 x 90 - Leaderboard Ad</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Main Column -->
+                <div class="col-lg-8">
+                    <!-- What You'll Learn -->
+                    <div class="course-content">
+                        <h2 class="section-title">What you'll learn</h2>
+                        <div class="learning-outcomes">
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Master the fundamentals of {{ course.name }}</span>
+                            </div>
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Build real-world projects to strengthen your portfolio</span>
+                            </div>
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Learn industry best practices and standards</span>
+                            </div>
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Get hands-on experience with practical exercises</span>
+                            </div>
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Understand advanced concepts and techniques</span>
+                            </div>
+                            <div class="learning-item">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Prepare for professional certification exams</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medium Rectangle Ad -->
+                    <div class="ad-placeholder ad-rectangle my-4">
+                        <i class="bi bi-badge-ad"></i>
+                        <h4>Sponsored Content</h4>
+                        <p>300 x 250 - Medium Rectangle Ad</p>
+                    </div>
+
+                    <!-- Course Content / Curriculum -->
+                    <div class="course-content">
+                        <h2 class="section-title">Course content</h2>
+                        <div class="mb-3">
+                            <span class="fw-semibold">{{ total_lectures }} section{{ total_lectures|pluralize }}</span> • 
+                            <span class="fw-semibold">{{ total_topics }} lecture{{ total_topics|pluralize }}</span> • 
+                            <span class="fw-semibold">{{ duration_hours }}h {{ duration_minutes }}m total length</span>
+                        </div>
+                        
+                        <div class="accordion" id="curriculumAccordion">
+                            {% for lecture in lectures %}
+                            <div class="curriculum-section">
+                                <div class="lecture-header collapsed" data-bs-toggle="collapse" data-bs-target="#lecture{{ lecture.id }}" aria-expanded="false">
+                                    <div>
+                                        <h5 class="lecture-title">
+                                            <i class="bi bi-chevron-down collapse-icon"></i>
+                                            {{ forloop.counter }}. {{ lecture.title }}
+                                        </h5>
+                                    </div>
+                                    <div class="lecture-meta">
+                                        {{ lecture.topics.count }} lecture{{ lecture.topics.count|pluralize }}
+                                    </div>
+                                </div>
+                                <div id="lecture{{ lecture.id }}" class="collapse" data-bs-parent="#curriculumAccordion">
+                                    <div class="topics-list">
+                                        {% for topic in lecture.topics.all %}
+                                        <div class="topic-item">
+                                            <div class="topic-name">
+                                                {% if topic.video_file or topic.url %}
+                                                <i class="bi bi-play-circle"></i>
+                                                {% else %}
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                {% endif %}
+                                                <span>{{ topic.name }}</span>
+                                                {% if topic.is_free %}
+                                                <span class="preview-badge">Preview</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="topic-duration">
+                                                {% if topic.duration %}
+                                                    {{ topic.get_duration }}
+                                                {% else %}
+                                                    5m
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                        <div class="topic-item">
+                                            <span class="text-muted">No topics yet</span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">No curriculum content available yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <div class="course-content">
+                        <h2 class="section-title">Requirements</h2>
+                        <ul class="requirements-list">
+                            <li>No prior experience required - we'll teach you everything you need to know</li>
+                            <li>A computer with internet connection</li>
+                            <li>Enthusiasm and willingness to learn</li>
+                            <li>Basic computer literacy</li>
+                        </ul>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="course-content">
+                        <h2 class="section-title">Description</h2>
+                        <div class="course-description">
+                            {{ course.description|linebreaks }}
+                        </div>
+                    </div>
+
+                    <!-- Banner Ad -->
+                    <div class="ad-placeholder ad-banner my-4">
+                        <i class="bi bi-badge-ad"></i>
+                        <h4>Partner Advertisement</h4>
+                        <p>468 x 60 - Banner Ad</p>
+                    </div>
+
+                    <!-- Instructor -->
+                    <div class="course-content">
+                        <h2 class="section-title">Instructor</h2>
+                        <div class="instructor-card">
+                            <img src="{% if instructor_profile.profile_image %}{{ instructor_profile.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ course.creator.username }}&size=100&background=5624d0&color=fff{% endif %}" 
+                                 alt="{{ course.creator.get_full_name }}" 
+                                 class="instructor-avatar">
+                            <div class="instructor-info">
+                                <h4>{{ course.creator.get_full_name|default:course.creator.username }}</h4>
+                                <p class="text-muted">Professional Instructor</p>
+                                
+                                <div class="instructor-stats">
+                                    <div class="stat-item">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span>4.5 Instructor Rating</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="bi bi-people-fill"></i>
+                                        <span>{{ enrolled_count }} Students</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="bi bi-play-circle-fill"></i>
+                                        <span>{{ instructor_courses.count|add:1 }} Courses</span>
+                                    </div>
+                                </div>
+                                
+                                {% if instructor_profile %}
+                                <p class="mt-3">{{ instructor_profile.bio|default:"Experienced instructor passionate about teaching and helping students achieve their goals." }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if instructor_courses %}
+                        <div class="mt-4">
+                            <h5 class="mb-3">More courses by {{ course.creator.get_full_name|default:course.creator.username }}</h5>
+                            <div class="row g-3">
+                                {% for other_course in instructor_courses %}
+                                <div class="col-md-6">
+                                    <a href="{% url 'course_detail_modern' other_course.id %}" class="text-decoration-none">
+                                        <div class="card h-100 shadow-sm">
+                                            {% if other_course.image %}
+                                            <img src="{{ other_course.image.url }}" class="card-img-top" alt="{{ other_course.name }}" style="height: 150px; object-fit: cover;">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ other_course.name|truncatewords:10 }}</h6>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">₹{{ other_course.price }}</span>
+                                                    <span class="text-warning">
+                                                        <i class="bi bi-star-fill"></i> 4.5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Reviews -->
+                    <div class="course-content">
+                        <h2 class="section-title">Student feedback</h2>
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                <h1 class="display-3 fw-bold">4.5</h1>
+                                <div class="star-rating fs-4">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                                <p class="text-muted">Course Rating</p>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2">5 star</span>
+                                    <div class="progress flex-grow-1 me-2">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 70%"></div>
+                                    </div>
+                                    <span>70%</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2">4 star</span>
+                                    <div class="progress flex-grow-1 me-2">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 20%"></div>
+                                    </div>
+                                    <span>20%</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2">3 star</span>
+                                    <div class="progress flex-grow-1 me-2">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 7%"></div>
+                                    </div>
+                                    <span>7%</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2">2 star</span>
+                                    <div class="progress flex-grow-1 me-2">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 2%"></div>
+                                    </div>
+                                    <span>2%</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">1 star</span>
+                                    <div class="progress flex-grow-1 me-2">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 1%"></div>
+                                    </div>
+                                    <span>1%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sample Reviews -->
+                        <div class="review-item">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">JD</div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <div class="star-rating small">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                    <small class="text-muted">2 weeks ago</small>
+                                </div>
+                            </div>
+                            <p>Excellent course! The instructor explains everything clearly and the hands-on projects really helped me understand the concepts. Highly recommended!</p>
+                        </div>
+                        
+                        <div class="review-item">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">SM</div>
+                                <div>
+                                    <h6 class="mb-0">Sarah Miller</h6>
+                                    <div class="star-rating small">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                    </div>
+                                    <small class="text-muted">1 month ago</small>
+                                </div>
+                            </div>
+                            <p>Great content and well-structured curriculum. The only thing I wish was better is more real-world examples, but overall a solid course.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQs -->
+                    {% if faqs %}
+                    <div class="course-content">
+                        <h2 class="section-title">Frequently Asked Questions</h2>
+                        <div class="accordion" id="faqAccordion">
+                            {% for faq in faqs %}
+                            <div class="faq-item">
+                                <div class="faq-question collapsed" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}" aria-expanded="false">
+                                    <span>{{ faq.question }}</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div id="faq{{ faq.id }}" class="collapse faq-answer" data-bs-parent="#faqAccordion">
+                                    {{ faq.answer }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="course-sidebar">
+                        <div class="price-card">
+                            <!-- Preview Image/Video -->
+                            <div class="preview-video">
+                                {% if course.video_upload %}
+                                <video controls poster="{% if course.image %}{{ course.image.url }}{% endif %}">
+                                    <source src="{{ course.video_upload.url }}" type="video/mp4">
+                                </video>
+                                {% elif course.video_url %}
+                                <iframe src="{{ course.video_url }}" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>
+                                {% elif course.image %}
+                                <img src="{{ course.image.url }}" alt="{{ course.name }}">
+                                {% else %}
+                                <img src="https://via.placeholder.com/640x360/5624d0/ffffff?text=Course+Preview" alt="Course Preview">
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Price -->
+                            <div class="price-section">
+                                <div class="mb-2">
+                                    <span style="color: #6a6f73; font-size: 1rem; display: block; margin-bottom: 0.5rem;">Earn by enrolling</span>
+                                    <span class="current-price">₹{{ discounted_price }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            {% if is_enrolled %}
+                            <a href="#" class="btn btn-enroll">
+                                <i class="bi bi-play-circle-fill me-2"></i>Go to Course
+                            </a>
+                            {% else %}
+                            <a href="{% url 'add_to_cart' course.id %}" class="btn btn-enroll w-100 mb-3">
+                                <i class="bi bi-person-plus-fill me-2"></i>ENROLL NOW
+                            </a>
+                            {% endif %}
+                            
+                            <button class="btn btn-wishlist" onclick="toggleWishlist({{ course.id }})">
+                                <i class="bi bi-heart me-2"></i>Add to Wishlist
+                            </button>
+                            
+                            <!-- This course includes -->
+                            <div class="course-includes">
+                                <h6 class="fw-bold mb-3">This course includes:</h6>
+                                <div class="include-item">
+                                    <i class="bi bi-badge-cc"></i>
+                                    <span>{{ course.course_time }} on-demand video</span>
+                                </div>
+                                <div class="include-item">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    <span>{{ total_topics }} downloadable resources</span>
+                                </div>
+                                <div class="include-item">
+                                    <i class="bi bi-phone"></i>
+                                    <span>Access on mobile and TV</span>
+                                </div>
+                                <div class="include-item">
+                                    <i class="bi bi-infinity"></i>
+                                    <span>Full lifetime access</span>
+                                </div>
+                                <div class="include-item">
+                                    <i class="bi bi-award"></i>
+                                    <span>Certificate of completion</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Share -->
+                            <div class="border-top pt-3 mt-3">
+                                <h6 class="fw-bold mb-3">Share this course</h6>
+                                <div class="d-flex gap-2">
+                                    <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-facebook"></i></a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-twitter"></i></a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-linkedin"></i></a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-envelope"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar Ad - Square -->
+                        <div class="ad-placeholder ad-square ad-sticky mt-4">
+                            <i class="bi bi-badge-ad"></i>
+                            <h4>Featured Partner</h4>
+                            <p>250 x 250 - Square Ad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Width Ad before Related Courses -->
+    <section class="py-3 bg-white">
+        <div class="container">
+            <div class="ad-placeholder ad-leaderboard">
+                <i class="bi bi-badge-ad"></i>
+                <h4>Recommended for You</h4>
+                <p>728 x 90 - Leaderboard Ad</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Courses -->
+    {% if related_courses %}
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="mb-4">Students also bought</h2>
+            <div class="row g-4">
+                {% for related in related_courses %}
+                <div class="col-md-3">
+                    <a href="{% url 'course_detail_modern' related.id %}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            {% if related.image %}
+                            <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}" style="height: 180px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title">{{ related.name|truncatewords:8 }}</h6>
+                                <p class="text-muted small mb-2">{{ related.creator.get_full_name|default:related.creator.username }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">₹{{ related.price }}</span>
+                                    <span class="text-warning small">
+                                        <i class="bi bi-star-fill"></i> 4.5
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Bottom Leaderboard Ad -->
+    <section class="py-3 bg-light border-top">
+        <div class="container">
+            <div class="ad-placeholder ad-leaderboard">
+                <i class="bi bi-badge-ad"></i>
+                <h4>Advertisement</h4>
+                <p>728 x 90 - Bottom Leaderboard Ad</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-mortarboard-fill"></i> ChampSpace
+                    </h5>
+                    <p class="text-white-50">Empowering learners worldwide with quality online education.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'course_grid' %}" class="text-white-50 text-decoration-none">All Courses</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Become Instructor</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">About Us</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="mb-3">Follow Us</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="text-center text-white-50">
+                <p class="mb-0">&copy; 2025 ChampSpace. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Toggle wishlist
+        function toggleWishlist(courseId) {
+            fetch(`/toggle-favorite/${courseId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    alert('Added to wishlist!');
+                } else if (data.status === 'removed') {
+                    alert('Removed from wishlist!');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        // Update collapse icons
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(element => {
+            element.addEventListener('click', function() {
+                this.classList.toggle('collapsed');
+            });
+        });
+    </script>
+</body>
+</html>

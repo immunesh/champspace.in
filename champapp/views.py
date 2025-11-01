@@ -9,7 +9,7 @@ from .models import UserProfile
 from django.http import HttpResponse
 from .models import Course  # For instance, if you need to handle Course data
 from .forms import StudentEditProfileForm  # Create this form in forms.py
-from .models import StudentProfile, UserCourse
+from .models import StudentProfile, InstructorProfile, UserCourse
 from champapp.models import Profile, UserCourse
 from .models import CourseCategory
 import razorpay
@@ -213,7 +213,53 @@ def sign_up(request):
     return render(request, 'champapp/sign_up.html')
 
 
+def instructor_signup(request):
+    """Handle instructor signup - separate from student signup."""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        full_name = request.POST.get('full_name', '')
+        phone_number = request.POST.get('phone_number', '')
+        expertise = request.POST.get('expertise', '')
+        terms_accepted = request.POST.get('terms')
 
+        # Validation
+        if not terms_accepted:
+            messages.error(request, 'You must agree to the terms and conditions.')
+        elif password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+        elif len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already registered. Please use a different email or sign in.')
+        else:
+            # Create a new instructor user with is_staff=True
+            user = User.objects.create_user(
+                username=email, 
+                email=email, 
+                password=password,
+                is_staff=True,  # Mark as staff to differentiate from students
+                first_name=full_name.split()[0] if full_name else '',
+                last_name=' '.join(full_name.split()[1:]) if len(full_name.split()) > 1 else ''
+            )
+            
+            # Create InstructorProfile (NOT StudentProfile)
+            instructor_profile, created = InstructorProfile.objects.get_or_create(user=user)
+            if created:
+                instructor_profile.email = email
+                instructor_profile.username = email
+                instructor_profile.full_name = full_name
+                instructor_profile.phone_number = phone_number
+                instructor_profile.expertise = expertise
+                instructor_profile.save()
+            
+            # UserProfile will be created automatically via the signal
+            login(request, user)  # Log the instructor in automatically after sign-up
+            messages.success(request, 'Instructor account created successfully! Welcome to your dashboard.')
+            return redirect('instructor_dashboard')  # Redirect to instructor dashboard
+    
+    return render(request, 'champapp/instructor_signup.html')
 
 
 @login_required
@@ -760,17 +806,147 @@ def class_course_preview(request):
 
 # Course Detail Advanced View
 def course_detail_adv(request, pk):
-    """View to show course details for admin review or general viewing"""
-    class_course = get_object_or_404(Course1, pk=pk)
+    """View to show comprehensive course details like Udemy/Coursera"""
+    course = get_object_or_404(Course1, pk=pk)
     profile = None
+    
     if request.user.is_authenticated:
         profile, created = Profile.objects.get_or_create(user=request.user)
     
-    return render(
-        request, 
-        'champapp/admin/course-detail-adv.html', 
-        {'class_course': class_course, 'profile': profile, 'course': class_course}
-    )
+    # Get all lectures with their topics
+    lectures = course.lectures.all().prefetch_related('topics').order_by('created_at')
+    
+    # Get all FAQs
+    faqs = course.faqs.all().order_by('created_at')
+    
+    # Calculate total course duration
+    total_duration = 0
+    total_topics = 0
+    for lecture in lectures:
+        for topic in lecture.topics.all():
+            total_topics += 1
+            if topic.duration:
+                total_duration += topic.duration
+    
+    # Convert total duration to hours and minutes
+    duration_hours = total_duration // 3600
+    duration_minutes = (total_duration % 3600) // 60
+    
+    # Get enrolled students count
+    enrolled_count = EnrolledCourse.objects.filter(course=course).count()
+    
+    # Get instructor profile
+    try:
+        instructor_profile = InstructorProfile.objects.get(user=course.creator)
+    except ObjectDoesNotExist:
+        instructor_profile = None
+    
+    # Get instructor's other courses
+    instructor_courses = Course1.objects.filter(creator=course.creator, status='Live').exclude(id=course.id)[:3]
+    
+    # Check if user is enrolled
+    is_enrolled = False
+    if request.user.is_authenticated:
+        is_enrolled = EnrolledCourse.objects.filter(student=request.user, course=course).exists()
+    
+    # Get related courses (same category)
+    related_courses = Course1.objects.filter(category=course.category, status='Live').exclude(id=course.id)[:4]
+    
+    # Calculate discounted price
+    discounted_price = course.price - (course.price * course.discount / 100) if course.discount else course.price
+    
+    context = {
+        'course': course,
+        'class_course': course,  # For backward compatibility
+        'profile': profile,
+        'lectures': lectures,
+        'faqs': faqs,
+        'total_lectures': lectures.count(),
+        'total_topics': total_topics,
+        'total_duration': total_duration,
+        'duration_hours': duration_hours,
+        'duration_minutes': duration_minutes,
+        'enrolled_count': enrolled_count,
+        'instructor_profile': instructor_profile,
+        'instructor_courses': instructor_courses,
+        'is_enrolled': is_enrolled,
+        'related_courses': related_courses,
+        'discounted_price': discounted_price,
+    }
+    
+    return render(request, 'champapp/admin/course-detail-adv.html', context)
+
+
+def course_detail_modern(request, pk):
+    """Modern Udemy-style course detail page"""
+    course = get_object_or_404(Course1, pk=pk)
+    profile = None
+    
+    if request.user.is_authenticated:
+        profile, created = Profile.objects.get_or_create(user=request.user)
+    
+    # Get all lectures with their topics
+    lectures = course.lectures.all().prefetch_related('topics').order_by('created_at')
+    
+    # Get all FAQs
+    faqs = course.faqs.all().order_by('created_at')
+    
+    # Calculate total course duration
+    total_duration = 0
+    total_topics = 0
+    for lecture in lectures:
+        for topic in lecture.topics.all():
+            total_topics += 1
+            if topic.duration:
+                total_duration += topic.duration
+    
+    # Convert total duration to hours and minutes
+    duration_hours = total_duration // 3600
+    duration_minutes = (total_duration % 3600) // 60
+    
+    # Get enrolled students count
+    enrolled_count = EnrolledCourse.objects.filter(course=course).count()
+    
+    # Get instructor profile
+    try:
+        instructor_profile = InstructorProfile.objects.get(user=course.creator)
+    except ObjectDoesNotExist:
+        instructor_profile = None
+    
+    # Get instructor's other courses
+    instructor_courses = Course1.objects.filter(creator=course.creator, status='Live').exclude(id=course.id)[:3]
+    
+    # Check if user is enrolled
+    is_enrolled = False
+    if request.user.is_authenticated:
+        is_enrolled = EnrolledCourse.objects.filter(student=request.user, course=course).exists()
+    
+    # Get related courses (same category)
+    related_courses = Course1.objects.filter(category=course.category, status='Live').exclude(id=course.id)[:4]
+    
+    # Calculate discounted price
+    discounted_price = course.price - (course.price * course.discount / 100) if course.discount else course.price
+    
+    context = {
+        'course': course,
+        'class_course': course,  # For backward compatibility
+        'profile': profile,
+        'lectures': lectures,
+        'faqs': faqs,
+        'total_lectures': lectures.count(),
+        'total_topics': total_topics,
+        'total_duration': total_duration,
+        'duration_hours': duration_hours,
+        'duration_minutes': duration_minutes,
+        'enrolled_count': enrolled_count,
+        'instructor_profile': instructor_profile,
+        'instructor_courses': instructor_courses,
+        'is_enrolled': is_enrolled,
+        'related_courses': related_courses,
+        'discounted_price': discounted_price,
+    }
+    
+    return render(request, 'champapp/admin/course-detail-modern.html', context)
 
 ########## instructor dashboard #################
 from django.contrib.auth.decorators import user_passes_test
@@ -1421,6 +1597,26 @@ def student_delete_account(request):
             messages.error(request, "You must confirm account deletion.")
 
     return render(request, 'champapp/student_dashboard/student-delete-account.html')
+
+
+def instructor_delete_account(request):
+    """View for instructor account deletion"""
+    if request.method == "POST":
+        # Ensure the checkbox value is confirmed
+        if 'confirm' in request.POST:
+            user = request.user
+            # Delete all courses created by the instructor
+            Course1.objects.filter(creator=user).delete()
+            # Delete the instructor profile
+            InstructorProfile.objects.filter(user=user).delete()
+            # Delete the user account
+            user.delete()
+            messages.success(request, "Your instructor account has been deleted successfully.")
+            return redirect('index')  # Redirect to the homepage
+        else:
+            messages.error(request, "You must confirm account deletion.")
+
+    return render(request, 'champapp/instructor/instructor-delete-account.html')
 
 #--------instructor-manage-course--------#
 from django.contrib.auth.decorators import login_required

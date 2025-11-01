@@ -141,14 +141,14 @@
 <body>
 
     <!-- Header START -->
-    <header class="navbar-light navbar-sticky">
+    <header class="navbar-light navbar-sticky header-static">
         <!-- Logo Nav START -->
         <nav class="navbar navbar-expand-xl">
-            <div class="container">
+            <div class="container-fluid px-3 px-xl-5">
                 <!-- Logo START -->
-                <a class="navbar-brand" href="index.html">
-				<img class="light-mode-item navbar-brand-item" src="{% static 'course-grid/images/logo.svg' %}" alt="logo">
-				<img class="dark-mode-item navbar-brand-item" src="{% static 'course-grid/images/logo-light.svg' %}" alt="logo">
+                <a class="navbar-brand" href="{% url 'index' %}">
+				<img class="light-mode-item navbar-brand-item" src="{% static 'index/images/logo.svg' %}" alt="logo">
+				<img class="dark-mode-item navbar-brand-item" src="{% static 'index/images/logo-light.svg' %}" alt="logo">
 			</a>
                 <!-- Logo END -->
 
@@ -206,7 +206,9 @@
                 <!-- Profile START -->
                 <div class="dropdown ms-1 ms-lg-0">
                     <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-					<img class="avatar-img rounded-circle" src="{% static 'course-grid/images/avatar/01.jpg' %}" alt="avatar">
+                        <img class="avatar-img rounded-circle" 
+                        src="{% if profile and profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'index/images/avatar/01.jpg' %}{% endif %}" 
+                        alt="avatar">
 				</a>
                     <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
                         <!-- Profile info -->
@@ -214,11 +216,11 @@
                             <div class="d-flex align-items-center">
                                 <!-- Avatar -->
                                 <div class="avatar me-3">
-                                    <img class="avatar-img rounded-circle shadow" src="{% static 'course-grid/images/avatar/01.jpg' %}" alt="avatar">
+                                    <img src="{% if profile and profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'student/student-edit-profile/images/avatar/07.jpg' %}{% endif %}" alt="Profile Image" class="rounded-circle me-2" width="30" height="30">
                                 </div>
                                 <div>
-                                    <a class="h6" href="#">Lori Ferguson</a>
-                                    <p class="small m-0">example@gmail.com</p>
+                                    <a class="h6" href="#">{% if profile and profile.full_name %}{{ profile.full_name }}{% else %}Guest User{% endif %}</a>
+                                    <p class="small m-0">{% if request.user.email %}{{ request.user.email }}{% else %}guest@example.com{% endif %}</p>
                                 </div>
                             </div>
                         </li>
@@ -232,7 +234,14 @@
                         <li><a class="dropdown-item" href="{% url 'sign-in' %}"><i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Sign In</a></li>
                         {% endif %}
                         <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-                        <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                        <li>
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item bg-danger-soft-hover btn btn-link">
+                                    <i class="bi bi-power fa-fw me-2"></i> Sign Out
+                                </button>
+                            </form>
+                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -319,7 +328,7 @@ Page content START -->
 
                             <!-- Select option -->
                             <div class="col-xl-3 mt-3 mt-xl-0">
-                                <form class="border rounded p-2 input-borderless">
+                                <form class="border rounded p-2 input-borderless h-100 d-flex align-items-center">
                                     <select class="form-select form-select-sm js-choice border-0" aria-label=".form-select-sm">
 							<option value="">Most Viewed</option>
 							<option>Recently search</option>
@@ -347,10 +356,10 @@ Page content START -->
 
                             <!-- Card item START -->
                             <div class="container">
-                                <div class="row">
+                                <div class="row g-4">
                                     {% for course in page_obj %}
-                                    <div class="col-sm-6 col-xl-4">
-                                        <div class="card shadow h-100">
+                                    <div class="col-sm-6 col-xl-4 mb-4">
+                                        <div class="card shadow h-100 p-2">
                                             <!-- Image -->
                                             <div class="image-container">
                                                 {% if course.image %}
@@ -360,27 +369,36 @@ Page content START -->
                                                 {% endif %}
                                             </div>
                                             <!-- Card body -->
-                                            <div class="card-body pb-0">
+                                            <div class="card-body pb-0 px-3 pt-3">
                                                 <!-- Badge and favorite -->
                                                 <div class="d-flex justify-content-between mb-2">
                                                     <a href="#" class="badge bg-purple bg-opacity-10 text-purple">{{ course.level }}</a>
                                                     <a href="#" class="h6 fw-light mb-0"><i class="far fa-heart"></i></a>
                                                 </div>
                                                 <!-- Title -->
-                                                <h5 class="card-title"><a href="{% url 'course_detail' course.id %}">{{ course.name }}</a></h5>
+                                                <h5 class="card-title fw-bold mb-2"><a href="{% url 'course_detail' course.id %}">{{ course.name }}</a></h5>
                                                 <p class="mb-2 text-truncate-2">{{ course.short_description }}</p>
-                                                <!-- Rating star -->
-                                                <ul class="list-inline mb-0">
-                                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                    <li class="list-inline-item me-0 small"><i class="fas fa-star text-warning"></i></li>
-                                                    <li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>
-                                                    <li class="list-inline-item ms-2 h6 fw-light mb-0">4.0/5.0</li>
-                                                </ul>
+                                                
+                                                <!-- Price and Earn by Enrolling -->
+                                                <div class="mb-2">
+                                                    <div class="mb-2">
+                                                        <h4 class="text-success mb-0">
+                                                            {% if course.price %}
+                                                                ₹{{ course.price }}
+                                                            {% else %}
+                                                                Free
+                                                            {% endif %}
+                                                        </h4>
+                                                    </div>
+                                                    <div>
+                                                        <span class="badge bg-success bg-opacity-10 text-success text-nowrap">
+                                                            <i class="fas fa-coins me-1"></i>EARN BY ENROLLING
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <!-- Card footer -->
-                                            <div class="card-footer pt-0 pb-3">
+                                            <div class="card-footer pt-0 pb-3 px-3">
                                                 <hr>
                                                 <div class="d-flex justify-content-between">
                                                     <span class="h6 fw-light mb-0"><i class="far fa-clock text-danger me-2"></i>{{ course.course_time }}</span>
@@ -408,21 +426,34 @@ Page content START -->
 
                         <!-- Pagination START -->
                         <div class="col-12">
-                            <nav class="mt-4 d-flex justify-content-center" aria-label="Page navigation">
+                            <nav class="mt-5 d-flex justify-content-center" aria-label="Page navigation">
                                 <ul class="pagination pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+                                    <!-- First and Previous buttons -->
                                     {% if page_obj.has_previous %}
                                     <li class="page-item mb-0">
-                                        <a class="page-link" href="?page=1" tabindex="-1"><i class="fas fa-angle-double-left"></i></a>
+                                        <a class="page-link" href="?page=1" tabindex="-1" aria-label="First">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
                                     </li>
                                     <li class="page-item mb-0">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item mb-0 disabled">
+                                        <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
+                                    </li>
+                                    <li class="page-item mb-0 disabled">
+                                        <span class="page-link"><i class="fas fa-angle-left"></i></span>
                                     </li>
                                     {% endif %}
                         
+                                    <!-- Page numbers -->
                                     {% for num in page_obj.paginator.page_range %}
                                         {% if page_obj.number == num %}
                                         <li class="page-item mb-0 active" aria-current="page">
-                                            <a class="page-link" href="#">{{ num }}</a>
+                                            <span class="page-link">{{ num }}</span>
                                         </li>
                                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                                         <li class="page-item mb-0">
@@ -431,12 +462,24 @@ Page content START -->
                                         {% endif %}
                                     {% endfor %}
                         
+                                    <!-- Next and Last buttons -->
                                     {% if page_obj.has_next %}
                                     <li class="page-item mb-0">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-angle-right"></i></a>
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
                                     </li>
                                     <li class="page-item mb-0">
-                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item mb-0 disabled">
+                                        <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                                    </li>
+                                    <li class="page-item mb-0 disabled">
+                                        <span class="page-link"><i class="fas fa-angle-double-right"></i></span>
                                     </li>
                                     {% endif %}
                                 </ul>
@@ -576,59 +619,62 @@ Page content START -->
 Page content END -->
 
         <!-- =======================
-Newsletter START -->
+Ad Banner START -->
         <section class="pt-0">
             <div class="container position-relative overflow-hidden">
-                <!-- SVG decoration -->
-                <figure class="position-absolute top-50 start-50 translate-middle ms-3">
-                    <svg>
-			<path d="m496 22.999c0 10.493-8.506 18.999-18.999 18.999s-19-8.506-19-18.999 8.507-18.999 19-18.999 18.999 8.506 18.999 18.999z" fill="#fff" fill-rule="evenodd" opacity=".502"/>
-			<path d="m775 102.5c0 5.799-4.701 10.5-10.5 10.5-5.798 0-10.499-4.701-10.499-10.5 0-5.798 4.701-10.499 10.499-10.499 5.799 0 10.5 4.701 10.5 10.499z" fill="#fff" fill-rule="evenodd" opacity=".102"/>
-			<path d="m192 102c0 6.626-5.373 11.999-12 11.999s-11.999-5.373-11.999-11.999c0-6.628 5.372-12 11.999-12s12 5.372 12 12z" fill="#fff" fill-rule="evenodd" opacity=".2"/>
-			<path d="m20.499 10.25c0 5.66-4.589 10.249-10.25 10.249-5.66 0-10.249-4.589-10.249-10.249-0-5.661 4.589-10.25 10.249-10.25 5.661-0 10.25 4.589 10.25 10.25z" fill="#fff" fill-rule="evenodd" opacity=".2"/>
-		</svg>
-                </figure>
-                <!-- Svg decoration -->
-                <figure class="position-absolute bottom-0 end-0 mb-5 d-none d-sm-block">
-                    <svg class="rotate-130" width="258.7px" height="86.9px" viewBox="0 0 258.7 86.9">
-			<path stroke="white" fill="none" stroke-width="2" d="M0,7.2c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5 c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5c16,0,16,25.5,31.9,25.5s16-25.5,31.9-25.5"/>
-			<path stroke="white" fill="none" stroke-width="2" d="M0,57c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5 c16,0,16,25.5,31.9,25.5c16,0,16-25.5,31.9-25.5c16,0,16,25.5,31.9,25.5s16-25.5,31.9-25.5"/>
-		</svg>
-                </figure>
+                <!-- Ad Banner Container -->
+                <div class="bg-primary bg-opacity-10 p-4 p-sm-5 rounded-3 position-relative overflow-hidden" style="border: 2px solid #5624d0;">
+                    <!-- Decorative elements -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-1">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <i class="fas fa-star text-warning fa-2x"></i>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3">
+                            <i class="fas fa-graduation-cap text-primary fa-3x opacity-25"></i>
+                        </div>
+                    </div>
 
-                <div class="bg-grad-pink p-3 p-sm-5 rounded-3">
-                    <div class="row justify-content-center position-relative">
-                        <!-- SVG decoration -->
-                        <figure class="fill-white opacity-1 position-absolute top-50 start-0 translate-middle-y">
-                            <svg width="141px" height="141px">
-					<path d="M140.520,70.258 C140.520,109.064 109.062,140.519 70.258,140.519 C31.454,140.519 -0.004,109.064 -0.004,70.258 C-0.004,31.455 31.454,-0.003 70.258,-0.003 C109.062,-0.003 140.520,31.455 140.520,70.258 Z"/>
-				</svg>
-                        </figure>
-                        <!-- Newsletter -->
-                        <div class="col-12 position-relative my-2 my-sm-3">
-                            <div class="row align-items-center">
-                                <!-- Title -->
-                                <div class="col-lg-6">
-                                    <h3 class="text-white mb-3 mb-lg-0">Are you ready for a more great Conversation?</h3>
+                    <div class="row align-items-center position-relative">
+                        <!-- Ad Content -->
+                        <div class="col-lg-8 mb-3 mb-lg-0">
+                            <div class="d-flex align-items-center">
+                                <!-- Ad Icon/Image -->
+                                <div class="icon-lg bg-primary text-white rounded-circle me-4 d-none d-sm-block">
+                                    <i class="fas fa-bullhorn fa-2x"></i>
                                 </div>
-                                <!-- Input item -->
-                                <div class="col-lg-6 text-lg-end">
-                                    <form class="bg-body rounded p-2">
-                                        <div class="input-group">
-                                            <input class="form-control border-0 me-1" type="email" placeholder="Type your email here">
-                                            <button type="button" class="btn btn-dark mb-0 rounded">Subscribe</button>
-                                        </div>
-                                    </form>
+                                <!-- Ad Text -->
+                                <div>
+                                    <h3 class="mb-2">Special Offer: Get 50% OFF on Premium Courses!</h3>
+                                    <p class="mb-0">Upgrade your skills with our top-rated courses. Limited time offer - don't miss out on this amazing opportunity to advance your career.</p>
                                 </div>
                             </div>
                         </div>
+                        <!-- CTA Button -->
+                        <div class="col-lg-4 text-lg-end">
+                            <a href="#" class="btn btn-primary btn-lg mb-0">
+                                <i class="fas fa-rocket me-2"></i>Claim Offer Now
+                            </a>
+                            <p class="small mt-2 mb-0 text-muted">*Offer valid until end of month</p>
+                        </div>
                     </div>
-                    <!-- Row END -->
                 </div>
+
+                <!-- Alternative Ad Banner Style (Uncomment to use) -->
+                <!--
+                <div class="bg-gradient p-4 p-sm-5 rounded-3 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <h2 class="text-white mb-3">Boost Your Learning Journey Today!</h2>
+                            <p class="text-white mb-4">Join thousands of students already learning on our platform. Access premium content and expert instructors.</p>
+                            <a href="#" class="btn btn-light btn-lg">Explore Courses</a>
+                        </div>
+                    </div>
+                </div>
+                -->
             </div>
         </section>
         <!-- =======================
-Newsletter END -->
+Ad Banner END -->
 
     </main>
     <!-- **************** MAIN CONTENT END **************** -->

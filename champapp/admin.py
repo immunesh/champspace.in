@@ -10,7 +10,10 @@ from .models import (
     InstructorClassCourse, Course1, FAQ, Lecture, Topic,
     StudentProfile, InstructorProfile, EnrolledCourse,
     UserTopicProgress, FavoriteCourse, Quiz, Tag,
-    Cart, CartItem, Payment
+    Cart, CartItem, Payment,
+    # Ad Revenue Models
+    AdImpression, AdRevenue, Earning, UserWallet, 
+    Withdrawal, RevenueShare
 )
 
 # ===========================
@@ -24,34 +27,26 @@ admin.site.index_title = "Welcome to ChampSpace Administration"
 # ===========================
 # USER MANAGEMENT
 # ===========================
-class StudentProfileInline(admin.StackedInline):
-    model = StudentProfile
-    can_delete = False
-    verbose_name_plural = 'Student Profile'
-    fk_name = 'user'
-    fields = ('full_name', 'username', 'phone_number', 'location', 'education', 
-              'profile_image', 'points', 'achieved_certificates', 'email')
-
-class InstructorProfileInline(admin.StackedInline):
-    model = InstructorProfile
-    can_delete = False
-    verbose_name_plural = 'Instructor Profile'
-    fk_name = 'user'
-    fields = ('full_name', 'username', 'phone_number', 'location', 'education',
-              'profile_image', 'courses_created', 'expertise', 'ratings', 'email')
-
 class CustomUserAdmin(BaseUserAdmin):
-    inlines = (StudentProfileInline,)
-    
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 
-                    'is_active', 'date_joined', 'enrolled_courses_count')
+    """
+    Simplified User admin without profile inlines.
+    Student and Instructor profiles are managed separately.
+    """
+    list_display = ('username', 'email', 'first_name', 'last_name', 'get_user_type',
+                    'is_active', 'date_joined')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('-date_joined',)
     
-    def enrolled_courses_count(self, obj):
-        return EnrolledCourse.objects.filter(student=obj).count()
-    enrolled_courses_count.short_description = 'Enrolled Courses'
+    def get_user_type(self, obj):
+        if obj.is_superuser:
+            return format_html('<span style="background-color: #ff5722; color: white; padding: 3px 8px; border-radius: 3px; font-weight: bold;">ADMIN</span>')
+        elif obj.is_staff:
+            return format_html('<span style="background-color: #ff9800; color: white; padding: 3px 8px; border-radius: 3px; font-weight: bold;">INSTRUCTOR</span>')
+        else:
+            return format_html('<span style="background-color: #4caf50; color: white; padding: 3px 8px; border-radius: 3px; font-weight: bold;">STUDENT</span>')
+    get_user_type.short_description = 'User Type'
+    get_user_type.admin_order_field = 'is_staff'
 
 # Unregister the default User admin and register our custom one
 admin.site.unregister(User)
@@ -63,30 +58,114 @@ admin.site.register(User, CustomUserAdmin)
 # ===========================
 @admin.register(StudentProfile)
 class StudentProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'full_name', 'email', 'phone_number', 'points', 
-                    'achieved_certificates', 'location', 'education')
-    search_fields = ('user__username', 'full_name', 'email', 'phone_number')
-    list_filter = ('location', 'education', 'achieved_certificates')
-    readonly_fields = ('user',)
+    list_display = ('get_student_id', 'full_name', 'email', 'get_user_status',
+                    'phone_number', 'points', 'achieved_certificates', 
+                    'location', 'education', 'get_profile_image', 'get_joined_date')
+    search_fields = ('user__username', 'full_name', 'email', 'phone_number', 'location')
+    list_filter = ('location', 'education', 'achieved_certificates', 'points', 
+                   'user__is_active', 'user__date_joined')
+    readonly_fields = ('user', 'get_profile_image_preview', 'get_enrolled_courses', 
+                       'get_completed_courses', 'get_joined_date')
+    list_per_page = 25
+    date_hierarchy = 'user__date_joined'
     
     fieldsets = (
-        ('User Information', {
-            'fields': ('user', 'full_name', 'username', 'email')
+        ('👤 User Information', {
+            'fields': ('user', 'full_name', 'username', 'email', 'get_joined_date')
         }),
-        ('Contact Information', {
+        ('📞 Contact Information', {
             'fields': ('phone_number', 'location')
         }),
-        ('Profile Details', {
-            'fields': ('profile_image', 'about_me', 'education')
+        ('📋 Profile Details', {
+            'fields': ('get_profile_image_preview', 'profile_image', 'about_me', 'education')
         }),
-        ('Achievements', {
-            'fields': ('points', 'achieved_certificates')
+        ('🏆 Achievements & Progress', {
+            'fields': ('points', 'achieved_certificates', 'get_enrolled_courses', 'get_completed_courses'),
+            'classes': ('wide',)
         }),
-        ('Social Media', {
+        ('🌐 Social Media Links', {
             'fields': ('facebook_username', 'twitter_username', 'instagram_username', 'youtube_url'),
             'classes': ('collapse',)
         }),
     )
+    
+    actions = ['activate_students', 'deactivate_students', 'reset_points', 'award_bonus_points']
+    
+    def get_student_id(self, obj):
+        return f"STU-{obj.user.id:05d}"
+    get_student_id.short_description = 'Student ID'
+    get_student_id.admin_order_field = 'user__id'
+    
+    def get_user_status(self, obj):
+        if obj.user.is_active:
+            return format_html('<span style="color: green; font-weight: bold;">✓ Active</span>')
+        return format_html('<span style="color: red; font-weight: bold;">✗ Inactive</span>')
+    get_user_status.short_description = 'Status'
+    get_user_status.admin_order_field = 'user__is_active'
+    
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return format_html('<img src="{}" width="40" height="40" style="border-radius: 50%;" />', 
+                             obj.profile_image.url)
+        return '—'
+    get_profile_image.short_description = 'Photo'
+    
+    def get_profile_image_preview(self, obj):
+        if obj.profile_image:
+            return format_html('<img src="{}" width="150" height="150" style="border-radius: 10px;" />', 
+                             obj.profile_image.url)
+        return 'No image uploaded'
+    get_profile_image_preview.short_description = 'Profile Picture Preview'
+    
+    def get_enrolled_courses(self, obj):
+        count = EnrolledCourse.objects.filter(student=obj.user).count()
+        return format_html('<strong style="color: #2196F3; font-size: 16px;">{}</strong>', count)
+    get_enrolled_courses.short_description = 'Enrolled Courses'
+    
+    def get_completed_courses(self, obj):
+        count = EnrolledCourse.objects.filter(student=obj.user, progress=100).count()
+        return format_html('<strong style="color: #4CAF50; font-size: 16px;">{}</strong>', count)
+    get_completed_courses.short_description = 'Completed Courses'
+    
+    def get_joined_date(self, obj):
+        return obj.user.date_joined.strftime('%B %d, %Y')
+    get_joined_date.short_description = 'Joined Date'
+    get_joined_date.admin_order_field = 'user__date_joined'
+    
+    # Admin Actions
+    def activate_students(self, request, queryset):
+        count = 0
+        for student in queryset:
+            if not student.user.is_active:
+                student.user.is_active = True
+                student.user.save()
+                count += 1
+        self.message_user(request, f'{count} student(s) activated successfully.')
+    activate_students.short_description = '✓ Activate selected students'
+    
+    def deactivate_students(self, request, queryset):
+        count = 0
+        for student in queryset:
+            if student.user.is_active:
+                student.user.is_active = False
+                student.user.save()
+                count += 1
+        self.message_user(request, f'{count} student(s) deactivated successfully.')
+    deactivate_students.short_description = '✗ Deactivate selected students'
+    
+    def reset_points(self, request, queryset):
+        count = queryset.update(points=0)
+        self.message_user(request, f'Points reset for {count} student(s).')
+    reset_points.short_description = '🔄 Reset points to 0'
+    
+    def award_bonus_points(self, request, queryset):
+        count = 0
+        for student in queryset:
+            student.points += 100
+            student.save()
+            count += 1
+        self.message_user(request, f'100 bonus points awarded to {count} student(s).')
+    award_bonus_points.short_description = '🎁 Award 100 bonus points'
 
 
 # ===========================
@@ -94,30 +173,101 @@ class StudentProfileAdmin(admin.ModelAdmin):
 # ===========================
 @admin.register(InstructorProfile)
 class InstructorProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'full_name', 'email', 'expertise', 'courses_created', 
-                    'ratings', 'location')
-    search_fields = ('user__username', 'full_name', 'email', 'expertise')
-    list_filter = ('expertise', 'location', 'ratings')
-    readonly_fields = ('user', 'courses_created', 'ratings')
+    list_display = ('get_instructor_id', 'full_name', 'email', 'get_user_status', 
+                    'expertise', 'courses_created', 'ratings', 'location', 'phone_number',
+                    'get_profile_image', 'get_joined_date')
+    search_fields = ('user__username', 'full_name', 'email', 'expertise', 'phone_number')
+    list_filter = ('expertise', 'location', 'ratings', 'user__is_active', 'user__date_joined')
+    readonly_fields = ('user', 'courses_created', 'ratings', 'get_profile_image_preview', 
+                       'get_total_students', 'get_joined_date')
+    list_per_page = 25
+    date_hierarchy = 'user__date_joined'
     
     fieldsets = (
-        ('User Information', {
-            'fields': ('user', 'full_name', 'username', 'email')
+        ('👤 User Information', {
+            'fields': ('user', 'full_name', 'username', 'email', 'get_joined_date')
         }),
-        ('Contact Information', {
+        ('📞 Contact Information', {
             'fields': ('phone_number', 'location')
         }),
-        ('Profile Details', {
-            'fields': ('profile_image', 'about_me', 'education', 'expertise')
+        ('📋 Profile Details', {
+            'fields': ('get_profile_image_preview', 'profile_image', 'about_me', 'education', 'expertise')
         }),
-        ('Statistics', {
-            'fields': ('courses_created', 'ratings')
+        ('📊 Statistics & Performance', {
+            'fields': ('courses_created', 'ratings', 'get_total_students'),
+            'classes': ('wide',)
         }),
-        ('Social Media', {
+        ('🌐 Social Media Links', {
             'fields': ('facebook_username', 'twitter_username', 'instagram_username', 'youtube_url'),
             'classes': ('collapse',)
         }),
     )
+    
+    actions = ['activate_instructors', 'deactivate_instructors', 'send_welcome_email']
+    
+    def get_instructor_id(self, obj):
+        return f"INST-{obj.user.id:05d}"
+    get_instructor_id.short_description = 'Instructor ID'
+    get_instructor_id.admin_order_field = 'user__id'
+    
+    def get_user_status(self, obj):
+        if obj.user.is_active:
+            return format_html('<span style="color: green; font-weight: bold;">✓ Active</span>')
+        return format_html('<span style="color: red; font-weight: bold;">✗ Inactive</span>')
+    get_user_status.short_description = 'Status'
+    get_user_status.admin_order_field = 'user__is_active'
+    
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return format_html('<img src="{}" width="40" height="40" style="border-radius: 50%;" />', 
+                             obj.profile_image.url)
+        return '—'
+    get_profile_image.short_description = 'Photo'
+    
+    def get_profile_image_preview(self, obj):
+        if obj.profile_image:
+            return format_html('<img src="{}" width="150" height="150" style="border-radius: 10px;" />', 
+                             obj.profile_image.url)
+        return 'No image uploaded'
+    get_profile_image_preview.short_description = 'Profile Picture Preview'
+    
+    def get_total_students(self, obj):
+        # Count total students enrolled in this instructor's courses
+        total = EnrolledCourse.objects.filter(course__creator=obj.user).values('student').distinct().count()
+        return format_html('<strong style="color: #2196F3; font-size: 16px;">{}</strong>', total)
+    get_total_students.short_description = 'Total Students Enrolled'
+    
+    def get_joined_date(self, obj):
+        return obj.user.date_joined.strftime('%B %d, %Y')
+    get_joined_date.short_description = 'Joined Date'
+    get_joined_date.admin_order_field = 'user__date_joined'
+    
+    # Admin Actions
+    def activate_instructors(self, request, queryset):
+        count = 0
+        for instructor in queryset:
+            if not instructor.user.is_active:
+                instructor.user.is_active = True
+                instructor.user.save()
+                count += 1
+        self.message_user(request, f'{count} instructor(s) activated successfully.')
+    activate_instructors.short_description = '✓ Activate selected instructors'
+    
+    def deactivate_instructors(self, request, queryset):
+        count = 0
+        for instructor in queryset:
+            if instructor.user.is_active:
+                instructor.user.is_active = False
+                instructor.user.save()
+                count += 1
+        self.message_user(request, f'{count} instructor(s) deactivated successfully.')
+    deactivate_instructors.short_description = '✗ Deactivate selected instructors'
+    
+    def send_welcome_email(self, request, queryset):
+        count = queryset.count()
+        # Placeholder for email sending logic
+        self.message_user(request, f'Welcome email would be sent to {count} instructor(s).')
+    send_welcome_email.short_description = '✉ Send welcome email'
 
 
 # ===========================
@@ -216,11 +366,14 @@ class Course1Admin(admin.ModelAdmin):
     def price_display(self, obj):
         if obj.discount > 0:
             discounted_price = float(obj.price) * (1 - float(obj.discount) / 100)
+            original_price = f'{float(obj.price):.2f}'
+            final_price = f'{discounted_price:.2f}'
             return format_html(
-                '<span style="text-decoration: line-through; color: #999;">₹{}</span> <strong style="color: #28a745;">₹{:.2f}</strong>',
-                obj.price, discounted_price
+                '<span style="text-decoration: line-through; color: #999;">₹{}</span> <strong style="color: #28a745;">₹{}</strong>',
+                original_price, final_price
             )
-        return f'₹{obj.price}'
+        price_formatted = f'{float(obj.price):.2f}'
+        return format_html('₹{}', price_formatted)
     price_display.short_description = 'Price'
     
     def status_badge(self, obj):
@@ -331,9 +484,9 @@ class EnrolledCourseAdmin(admin.ModelAdmin):
         color = '#28a745' if progress >= 80 else '#ffc107' if progress >= 50 else '#dc3545'
         return format_html(
             '<div style="width: 100px; background-color: #e9ecef; border-radius: 4px;">'
-            '<div style="width: {}%; background-color: {}; height: 20px; border-radius: 4px; text-align: center; color: white; font-weight: bold; line-height: 20px;">{:.1f}%</div>'
+            '<div style="width: {}%; background-color: {}; height: 20px; border-radius: 4px; text-align: center; color: white; font-weight: bold; line-height: 20px;">{}</div>'
             '</div>',
-            progress, color, progress
+            progress, color, f'{progress:.1f}%'
         )
     progress_bar.short_description = 'Progress'
     
@@ -368,36 +521,10 @@ class UserTopicProgressAdmin(admin.ModelAdmin):
 # ===========================
 # OLD COURSE MODELS (Legacy)
 # ===========================
-@admin.register(Course)
-class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'level', 'price', 'status', 'rating', 'enrolled')
-    search_fields = ('title', 'description')
-    list_filter = ('status', 'level', 'category', 'is_featured')
-    ordering = ('-rating',)
-
-
-@admin.register(UserCourse)
-class UserCourseAdmin(admin.ModelAdmin):
-    list_display = ('user', 'course', 'completed_lectures', 'progress_display')
-    search_fields = ('user__username', 'course__title')
-    
-    def progress_display(self, obj):
-        return f"{obj.progress}%"
-    progress_display.short_description = 'Progress'
-
-
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'points', 'achieved_certificates')
-    search_fields = ('user__username',)
-
-
-@admin.register(InstructorClassCourse)
-class InstructorClassCourseAdmin(admin.ModelAdmin):
-    list_display = ('course_title', 'category', 'level', 'course_time', 'total_lecture', 
-                    'price', 'discount_price', 'is_featured')
-    list_filter = ('category', 'level', 'is_featured')
-    search_fields = ('course_title', 'short_description')
+# Course admin removed - using Course1 (All courses) as the main course model
+# UserCourse admin removed - EnrolledCourse provides comprehensive enrollment management
+# UserProfile admin removed - students and instructors have separate profile tables
+# InstructorClassCourse admin removed - legacy model, replaced by Course1 (All Courses)
 
 
 # ===========================
@@ -411,15 +538,7 @@ class FavoriteCourseAdmin(admin.ModelAdmin):
     date_hierarchy = 'added_at'
 
 
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'items_count', 'created_at')
-    search_fields = ('user__username',)
-    readonly_fields = ('created_at',)
-    
-    def items_count(self, obj):
-        return obj.items.count()
-    items_count.short_description = 'Items'
+# Cart admin removed - Cart Items provides comprehensive cart management
 
 
 @admin.register(CartItem)
@@ -468,3 +587,232 @@ class QuizAdmin(admin.ModelAdmin):
     list_display = ('question', 'correct_option', 'created_by')
     search_fields = ('question',)
     list_filter = ('correct_option', 'created_by')
+
+
+# ===========================
+# AD REVENUE & EARNINGS MANAGEMENT
+# ===========================
+
+@admin.register(AdImpression)
+class AdImpressionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'ad_platform', 'estimated_revenue_display', 'viewed_at', 'is_valid')
+    list_filter = ('ad_platform', 'is_valid', 'viewed_at')
+    search_fields = ('user__username', 'course__name', 'ad_unit_id')
+    date_hierarchy = 'viewed_at'
+    readonly_fields = ('viewed_at',)
+    
+    def estimated_revenue_display(self, obj):
+        return format_html('<span style="color: green; font-weight: bold;">₹{}</span>', f'{float(obj.estimated_revenue):.4f}')
+    estimated_revenue_display.short_description = 'Revenue'
+    
+    fieldsets = (
+        ('User & Course', {
+            'fields': ('user', 'course', 'lecture')
+        }),
+        ('Ad Details', {
+            'fields': ('ad_platform', 'ad_unit_id', 'cpm_rate', 'estimated_revenue')
+        }),
+        ('Tracking', {
+            'fields': ('viewed_at', 'ip_address', 'user_agent', 'view_duration', 'is_valid')
+        }),
+    )
+
+
+@admin.register(AdRevenue)
+class AdRevenueAdmin(admin.ModelAdmin):
+    list_display = ('date', 'total_revenue_display', 'google_revenue', 'facebook_revenue', 
+                    'total_impressions', 'average_cpm', 'is_synced')
+    list_filter = ('is_synced', 'date')
+    search_fields = ('date',)
+    date_hierarchy = 'date'
+    readonly_fields = ('created_at', 'updated_at', 'last_synced_at')
+    
+    def total_revenue_display(self, obj):
+        revenue_formatted = f'{obj.total_revenue:,.2f}'
+        return format_html('<span style="color: green; font-weight: bold;">₹{}</span>', revenue_formatted)
+    total_revenue_display.short_description = 'Total Revenue'
+    
+    def google_revenue(self, obj):
+        revenue_formatted = f'{obj.google_adsense_revenue:,.2f}'
+        return format_html('₹{}', revenue_formatted)
+    google_revenue.short_description = 'Google AdSense'
+    
+    def facebook_revenue(self, obj):
+        revenue_formatted = f'{obj.facebook_ads_revenue:,.2f}'
+        return format_html('₹{}', revenue_formatted)
+    facebook_revenue.short_description = 'Facebook Ads'
+
+
+@admin.register(Earning)
+class EarningAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'earning_type', 'amount_display', 'status', 'earned_at')
+    list_filter = ('earning_type', 'status', 'earned_at')
+    search_fields = ('user__username', 'course__name', 'description')
+    date_hierarchy = 'earned_at'
+    readonly_fields = ('earned_at', 'approved_at', 'paid_at')
+    actions = ['approve_earnings', 'mark_as_paid']
+    
+    def amount_display(self, obj):
+        color = 'green' if obj.status == 'paid' else 'orange' if obj.status == 'approved' else 'gray'
+        return format_html('<span style="color: {}; font-weight: bold;">₹{}</span>', color, f'{float(obj.amount):.2f}')
+    amount_display.short_description = 'Amount'
+    
+    def approve_earnings(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.filter(status='pending').update(status='approved', approved_at=timezone.now())
+        self.message_user(request, f'{updated} earnings approved successfully.')
+    approve_earnings.short_description = 'Approve selected earnings'
+    
+    def mark_as_paid(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.filter(status='approved').update(status='paid', paid_at=timezone.now())
+        self.message_user(request, f'{updated} earnings marked as paid.')
+    mark_as_paid.short_description = 'Mark as paid'
+    
+    fieldsets = (
+        ('User & Course', {
+            'fields': ('user', 'course', 'earning_type')
+        }),
+        ('Amount', {
+            'fields': ('amount', 'description')
+        }),
+        ('Status', {
+            'fields': ('status', 'earned_at', 'approved_at', 'paid_at', 'withdrawal')
+        }),
+    )
+
+
+@admin.register(UserWallet)
+class UserWalletAdmin(admin.ModelAdmin):
+    list_display = ('user', 'available_balance_display', 'pending_balance_display', 
+                    'withdrawn_display', 'total_earned_display', 'total_watch_time', 
+                    'total_ad_impressions')
+    search_fields = ('user__username', 'user__email')
+    readonly_fields = ('created_at', 'updated_at')
+    actions = ['update_all_balances']
+    
+    def available_balance_display(self, obj):
+        balance_formatted = f'{obj.available_balance:,.2f}'
+        return format_html('<span style="color: green; font-weight: bold;">₹{}</span>', balance_formatted)
+    available_balance_display.short_description = 'Available'
+    
+    def pending_balance_display(self, obj):
+        balance_formatted = f'{obj.pending_balance:,.2f}'
+        return format_html('<span style="color: orange;">₹{}</span>', balance_formatted)
+    pending_balance_display.short_description = 'Pending'
+    
+    def withdrawn_display(self, obj):
+        amount_formatted = f'{obj.withdrawn_amount:,.2f}'
+        return format_html('<span style="color: gray;">₹{}</span>', amount_formatted)
+    withdrawn_display.short_description = 'Withdrawn'
+    
+    def total_earned_display(self, obj):
+        earned_formatted = f'{obj.total_earned:,.2f}'
+        return format_html('<span style="color: blue; font-weight: bold;">₹{}</span>', earned_formatted)
+    total_earned_display.short_description = 'Total Earned'
+    
+    def update_all_balances(self, request, queryset):
+        for wallet in queryset:
+            wallet.update_balance()
+        self.message_user(request, f'{queryset.count()} wallets updated successfully.')
+    update_all_balances.short_description = 'Update balances'
+
+
+@admin.register(Withdrawal)
+class WithdrawalAdmin(admin.ModelAdmin):
+    list_display = ('user', 'amount_display', 'payment_method', 'status_badge', 'requested_at', 'completed_at')
+    list_filter = ('status', 'payment_method', 'requested_at')
+    search_fields = ('user__username', 'transaction_id', 'upi_id', 'account_number')
+    date_hierarchy = 'requested_at'
+    readonly_fields = ('requested_at', 'processed_at', 'completed_at', 'net_amount')
+    actions = ['approve_withdrawals', 'reject_withdrawals', 'mark_as_completed']
+    
+    def amount_display(self, obj):
+        return format_html('<span style="font-weight: bold;">₹{}</span>', f'{float(obj.amount):,.2f}')
+    amount_display.short_description = 'Amount'
+    
+    def status_badge(self, obj):
+        colors = {
+            'pending': '#ffc107',
+            'processing': '#17a2b8',
+            'completed': '#28a745',
+            'rejected': '#dc3545',
+            'cancelled': '#6c757d'
+        }
+        return format_html(
+            '<span style="background: {}; color: white; padding: 3px 10px; border-radius: 3px;">{}</span>',
+            colors.get(obj.status, '#6c757d'),
+            obj.get_status_display()
+        )
+    status_badge.short_description = 'Status'
+    
+    def approve_withdrawals(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.filter(status='pending').update(status='processing', processed_at=timezone.now(), processed_by=request.user)
+        self.message_user(request, f'{updated} withdrawals approved and set to processing.')
+    approve_withdrawals.short_description = 'Approve and process'
+    
+    def reject_withdrawals(self, request, queryset):
+        updated = queryset.filter(status='pending').update(status='rejected')
+        self.message_user(request, f'{updated} withdrawals rejected.')
+    reject_withdrawals.short_description = 'Reject selected'
+    
+    def mark_as_completed(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.filter(status='processing').update(status='completed', completed_at=timezone.now())
+        self.message_user(request, f'{updated} withdrawals marked as completed.')
+    mark_as_completed.short_description = 'Mark as completed'
+    
+    fieldsets = (
+        ('User & Amount', {
+            'fields': ('user', 'amount', 'processing_fee', 'net_amount')
+        }),
+        ('Payment Details', {
+            'fields': ('payment_method', 'bank_name', 'account_number', 'ifsc_code', 'upi_id', 'transaction_id')
+        }),
+        ('Status & Notes', {
+            'fields': ('status', 'user_notes', 'admin_notes', 'rejection_reason', 'processed_by')
+        }),
+        ('Timestamps', {
+            'fields': ('requested_at', 'processed_at', 'completed_at')
+        }),
+    )
+
+
+@admin.register(RevenueShare)
+class RevenueShareAdmin(admin.ModelAdmin):
+    list_display = ('get_name', 'student_share', 'instructor_share', 'platform_share', 
+                    'earnings_per_minute', 'completion_bonus', 'is_default')
+    list_filter = ('is_default',)
+    search_fields = ('course__name',)
+    
+    def get_name(self, obj):
+        if obj.course:
+            return f"Revenue Share: {obj.course.name}"
+        return "Default Revenue Share"
+    get_name.short_description = 'Configuration'
+    
+    def student_share(self, obj):
+        return format_html('<span style="color: blue; font-weight: bold;">{}%</span>', obj.student_share_percentage)
+    student_share.short_description = 'Student Share'
+    
+    def instructor_share(self, obj):
+        return format_html('<span style="color: green; font-weight: bold;">{}%</span>', obj.instructor_share_percentage)
+    instructor_share.short_description = 'Instructor Share'
+    
+    def platform_share(self, obj):
+        return format_html('<span style="color: orange; font-weight: bold;">{}%</span>', obj.platform_share_percentage)
+    platform_share.short_description = 'Platform Fee'
+    
+    fieldsets = (
+        ('Revenue Split', {
+            'fields': ('student_share_percentage', 'instructor_share_percentage', 'platform_share_percentage')
+        }),
+        ('Earning Rules', {
+            'fields': ('minimum_watch_time', 'earnings_per_minute', 'completion_bonus')
+        }),
+        ('Configuration', {
+            'fields': ('course', 'is_default')
+        }),
+    )
+
